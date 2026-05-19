@@ -1,0 +1,1439 @@
+Hey guys.
+
+Welcome to Concept Encoding.
+
+And this is Shreyansh or ARB generic classes we have already covered in the second session of this classes.
+
+And today I am going to cover this three Pojos enum and final.
+
+So this is the third part of this video.
+
+So it's a big topic to cover if you go in depth.
+
+And currently we are going in depth on.
+
+Finally in the fourth part I will cover this last three.
+
+Okay.
+
+So let's today cover this Pojos enum.
+
+So here if you see there is lot of different type of enum which I wanted to cover, right?
+
+And the final singleton immutable and wrapper will cover in the next part.
+
+I'll cover then in the maybe I think uh the next video I'll cover this up.
+
+Okay.
+
+Let's start with our part three with the Pojo classes.
+
+So what is Pojo.
+
+So see Pojo First of all, full form is plain old Java object, right?
+
+So now here in the name say Old Java object.
+
+So old Java objects means very simple class, right?
+
+No fancy things.
+
+It contains variables and its getter and setter method.
+
+Okay.
+
+The class should be public.
+
+It should have public default constructor.
+
+Okay.
+
+No annotation like at the rate entity.
+
+At the rate table.
+
+Like on annotation on the variables.
+
+Nothing.
+
+No annotation.
+
+It should not have any annotation.
+
+It should not extend any class or any or it doesn't implement any interface.
+
+Right.
+
+If a class has this properties then a class is known as Pojo classes okay.
+
+So just remember few things that it has.
+
+No it has very less restriction.
+
+Right?
+
+So here I have created a very simple class student.
+
+So here if you see that student does it extend anything.
+
+Does it implement any interface.
+
+No.
+
+Okay.
+
+One good thing it is public.
+
+Yes okay.
+
+So another thing here.
+
+If you see that it has a variable right.
+
+So no restriction.
+
+So here I have created one variable default.
+
+Another is private.
+
+Another is protected.
+
+You can create another public right.
+
+So there is no restriction anything.
+
+And I have a getter setter for this get and set methods for the name.
+
+Similarly for each one okay.
+
+So the default constructor is always a public.
+
+So I haven't uh so it's uh has a public default constructor.
+
+So this property is also satisfied class should be public.
+
+So yeah this is also satisfied it has a variables and getter and setter.
+
+Yes it has right.
+
+Uh no annotation used.
+
+I haven't used uh at the rate uh entity or at the table here something.
+
+Right.
+
+So it doesn't have any annotation and it doesn't extend any class or implement any interface.
+
+It doesn't extend or implements anything.
+
+So these type of classes is known as Pojo.
+
+Right.
+
+So where does it this used.
+
+So right here I will tell you that see in whenever I work day to day right.
+
+I, I do use a term lot of term time pojos here.
+
+Right.
+
+One Pojo.
+
+So see I'll tell you two places.
+
+Generally I write a pojos only first places when a request comes to our system.
+
+Let's say this is our component.
+
+This is client.
+
+Client send a request.
+
+So let's say request has certain object ID name something or two fields ID and name.
+
+It's a request object.
+
+So when the component receives this data.
+
+So it is always advisable that don't work on this object.
+
+Right.
+
+Do like a massager.
+
+Do you have a massage this and have in a like so.
+
+Because in a component there might be different classes right.
+
+So it have class one, class two, class three, class four.
+
+And you might need this kind of data this data to be used by multiple classes.
+
+So it is it is a good practice that whatever the objects which is coming from the request, that should
+
+not be used directly by all the classes in our component.
+
+Why?
+
+Because if anything, you have to change here.
+
+Let's say uh, because of certain thing, ID has to be changed to customer underscore ID, then it is
+
+possible that it might cause an issue in all the classes.
+
+Okay, so it is always advisable that you should do 1 to 1 mapping in your component, which all the
+
+rest of the classes understand.
+
+So there we write one Pojos.
+
+So let's say in that Pojo I have a variable name int here in the request it is id.
+
+But here I am saying uh let's say uh customer ID.
+
+And here they are saying name.
+
+I am saying here string customer name.
+
+Right.
+
+And I have a getter setter here.
+
+Now whatever this ID comes I do a mapping.
+
+So I first create an object of this and fill this value id.
+
+I fill this in customer id name, I fill this in customer name and all other classes use this Pojo.
+
+Okay not this.
+
+And if in future anything change, it would be a change only at one place while doing a mapping because
+
+rest of the code understand this class, not this one.
+
+Okay, so this is one place where the Pojo helps.
+
+Okay?
+
+There might be another place like you have a like request comes in.
+
+It goes through controller right where you have our Rest APIs.
+
+Then from Rest API it goes to the business logic okay.
+
+From business logic it goes to your repo repository okay.
+
+So there it creates Pojos.
+
+Or you can say that it has entity objects.
+
+Generally we can say that let's say one for let's say you are creating a certain student table.
+
+So you have one student entity.
+
+So there you have a student Pojo kind of thing.
+
+And then ultimately we store into the DB.
+
+Okay.
+
+So generally two places, uh, which mostly I deal with and uh, maybe as a software engineer, you
+
+might be see that generally these are the places where you need more pojos.
+
+Okay.
+
+So just a simple example, but what is Pojo?
+
+I think that should be clear to you, right?
+
+A very, very simple Java class.
+
+Right.
+
+Okay.
+
+Now let's go to enum class.
+
+So see this is very interesting.
+
+Right now if you see that enum so what it has first of all it has a collection of constants.
+
+Before going forward.
+
+Do you know what is constant in the variable class?
+
+I have told that how to define a constant.
+
+You know that using a static final keyword we can create a constant right?
+
+Using static final we can create a constant.
+
+So then what is enum?
+
+Enum as a collection of constant.
+
+You can have more than one constant in this enum class okay.
+
+And what is constant variables.
+
+Which values cannot be changed okay.
+
+So it's constant in enum class.
+
+Whatever the constant you will define, they are static and final implicitly, so means we don't have
+
+to for each constant.
+
+We don't have to tell static final, so they are implicitly static and final in enum class.
+
+Right.
+
+So these are some of the properties which I will explain.
+
+But first question should have comes to your mind that hey, when we have already have a way to define
+
+a constant using static final, why we need a enum class, right?
+
+So that's where I have covered this also.
+
+I have covered this part, but I will tell you later only because first you need to understand how to
+
+define enum.
+
+What are the advantages?
+
+Then only you would be able to understand what is the benefit of enum class, when we can already create
+
+a constant through static final.
+
+So we will cover this also.
+
+So please hold this question for now.
+
+But let's first understand what is enum right.
+
+And then we will see the difference where it helps actually okay so there are few properties of it right.
+
+And we will see that first property is it cannot extend any class.
+
+Why why it cannot extend any class.
+
+Because we are calling it a class then class we know that by definition it should.
+
+It can extend at least not at least at most one class.
+
+Right.
+
+So why it cannot extend any class because it internally extends Java dot lang enum class.
+
+So all the enums like.
+
+So this is how we can create an enum class public instead of class.
+
+So you create a class by like this public class keyword.
+
+And let's say any class name right.
+
+Let's say test.
+
+So this is how you create a class.
+
+So how you create an enum.
+
+So we don't use a class keyword we have to use enum keyword.
+
+And even though we are not extending anything implicitly it extends Java dot dot enum class.
+
+So that's why you can't do extends here because we cannot extend from more than two parents.
+
+Right.
+
+You guys already know by now, right?
+
+Uh, we cannot extend more than two parents.
+
+That is not allowed only from one parent.
+
+We can extend.
+
+Right.
+
+And even though we are not writing anything here, it internally extends Java dot lang dot enum.
+
+That's why enum classes cannot be cannot extend any class.
+
+It can implement interfaces as you know class can implement as many as interface.
+
+So here it is also allowed.
+
+It can implement interfaces.
+
+No restriction over there.
+
+It can have variable constructors and methods.
+
+I will tell you how to create those.
+
+It cannot be initiated right.
+
+It cannot be initiated as its constructor will be private only.
+
+Even if you give default in bytecode, it will be private.
+
+So whatever the enum you will generate class.
+
+Its constructor is always private.
+
+Let me show you.
+
+Right.
+
+So this is the enum sample I have created one enum class public enum and I have given the name enum
+
+sample Example, I have created an enum like Monday, Tuesday, Wednesday, Thursday, Friday, Saturday,
+
+Sunday.
+
+Right.
+
+So these are all the constants.
+
+I'll go more in depth.
+
+Right.
+
+Uh, what their mean is.
+
+But what I wanted to show you that see this dot class file.
+
+Right.
+
+This is the byte code.
+
+Right.
+
+So here, if you see that I haven't defined any constructor, so means there would be one by default
+
+constructor there and see what it generated private.
+
+So by default even it is generated a private itself.
+
+So that's why we are saying that it cannot be initiated because constructor is private in enum it will
+
+always be constructor will be private.
+
+Right.
+
+No other class can extend enum class also.
+
+That is also it has one restriction that no other class can also extend it.
+
+Okay, it can have abstract method, and all the constants should implement that abstract method.
+
+So I will uh, discuss this point also, but these are few of the properties which you should know.
+
+And we'll go through these properties one by one okay.
+
+So let's go with the normal enum class first okay.
+
+So now with the definition of enum what is enum.
+
+It is used to create constant.
+
+Now how to create a constant.
+
+So here now what I have been doing is first of all I'm creating an enum class public using an enum keyword.
+
+Right.
+
+And the name, whatever the name you wanted to give it to an enum class.
+
+Okay.
+
+Now here you can give the constant like this.
+
+Like I have given the constant like Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday.
+
+And remember this semicolon at the end.
+
+Okay, so I have given the constant like this.
+
+Right.
+
+So maybe there might be a different use cases.
+
+You might to have a constant.
+
+Right.
+
+Uh, let's say for example, there was, uh, like, uh, coins in the coins, you have ₹1 coin.
+
+Uh, maybe, uh, sent.
+
+So these are constant and, uh, you might you can also define values.
+
+I will come to it.
+
+But these are constant which have certain values are constant which cannot be changed.
+
+Right.
+
+So here I have used this values.
+
+And these are now my enums here.
+
+Internally its values are given as zero started from
+
+00123456.
+
+Right.
+
+So in the enum whatever the constant you are defining.
+
+Internally there is one value is assigned to them which is started from zero.
+
+The first one has a value like a zero.
+
+Then here my Tuesday is one, Wednesday is two, Thursday is three.
+
+Likewise.
+
+Similarly, Sunday is my six.
+
+Starting from zero it is started.
+
+Okay, I told you that constant has always has certain value.
+
+Certain value which cannot be changed.
+
+So here in the constant, if you haven't defined any, uh, custom values, we will see how to define
+
+a custom value.
+
+If you have just define a constant name but you haven't defined any value.
+
+So internally there is a value is already assigned to them unique values which is started from zero.
+
+Now let's see.
+
+So you have created this enum class and defined your constant right basic no custom values.
+
+And uh, you know that 0 to 0 numbering has been assigned to it.
+
+So they have certain values right now in the method.
+
+Let's see how to use it.
+
+So these are four common methods which is used generally in the enum.
+
+So with this two samples I will show you how to use this for.
+
+So now we have already created the enum class.
+
+Now let's say I'm showing you the first usage of values and ordinal.
+
+Okay, so now I have to iterate over this constant.
+
+I have to iterate over this constant.
+
+How I can iterate.
+
+So enum sample values right.
+
+So here if you see that I haven't defined you can ask me hey we haven't defined values method.
+
+Right.
+
+And it is trying to access directly through class name.
+
+So what method you can directly access to class name which are static, right?
+
+And it is calling values.
+
+Method values is not even defined here.
+
+Then how it is able to access those.
+
+Where is this method?
+
+I told you, right.
+
+Internally it extends Java dot lang dot enum class in.
+
+In this class this method is present which is static in nature.
+
+So what this class, what this method does is it gives you a array.
+
+It returns an array of this constants right?
+
+First Monday, then Tuesday, then Wednesday, then Thursday, then Friday and Saturday.
+
+Sunday.
+
+Right.
+
+So I am taking one by one in the for loop one by one are enum sample and the variable.
+
+And then I am putting what ordinal.
+
+Okay so here first of all you got the usage of the values right.
+
+So values usage is getting each enum Getting each enum in an array form, it will return in an array
+
+form like.
+
+This would be the output enum.
+
+Sample this array.
+
+This would.
+
+This is the return type for this one array.
+
+And now I am iterating one by one.
+
+Whatever the arrays are, I am getting first Monday, then Tuesday and all.
+
+And for each one let's say first sample would be Monday.
+
+For Monday I am doing dot ordinal and what it will print ordinal.
+
+I told you that there is a default values assigned to it which is started from zero.
+
+These are known as ordinal ordinals, right?
+
+When you print dot ordinal.
+
+So you will see that first it prints zero, then in the values.
+
+Second it will come Tuesday.
+
+So Tuesday variable Tuesday sample dot ordinal.
+
+It will print one, then Wednesday.
+
+Wednesday dot ordinal two, then three, then four five, and then for last values is Sunday.
+
+So Sunday.
+
+Sample dot ordinal.
+
+It will print six.
+
+Okay so you got it.
+
+What is the purpose of values.
+
+It will return an array so that we can iterate over this.
+
+All the enums.
+
+And then ordinal is used to get this default uh numbering of this one.
+
+And then there is something called value of a name.
+
+So let's see this one okay.
+
+So now I have this value of method.
+
+Again I haven't defined in this class.
+
+So this is also a static method present into the Java dot lang dot enum class which is a parent of this
+
+class.
+
+So I called this and I send a name Friday.
+
+Hey I don't I don't have a uh, this enum sample variable for this one, but I know the name.
+
+So here value of just pass a string.
+
+So what it will do is it will match up with the name of your constant Monday Tuesday Wednesday.
+
+Internally it iterate and its match with okay the name has been match exact name.
+
+So it's a.
+
+So if you have passed the capital letter.
+
+So it will exactly check for the capital letter only.
+
+So Friday has been match so it will return me the enum sample object right for this Friday one.
+
+And if you want to print its name.
+
+So there is another method called name.
+
+So this is known as name.
+
+So when you do name this name ultimately get printed the constant names right.
+
+So now I am printing dot name enum variable.
+
+Which one.
+
+It I got it.
+
+So it say for Friday.
+
+So Friday it will match this and it will return this.
+
+It will return this enum sample.
+
+And then for this enum sample I am doing dot name.
+
+So what it will print Friday only.
+
+Capital Friday only.
+
+Okay so you got it.
+
+This.
+
+What is the purpose of this for method values is used to iterate over the constants.
+
+Ordinal is to uh know the default values which is automatically assigned starting from zeros.
+
+Value of is like you just pass the string.
+
+It will internally iterate.
+
+Find out the enum object for you, right?
+
+And uh, with the name it will return.
+
+What is the name of the constant you have given?
+
+Okay.
+
+So this is a normal enum class.
+
+So with this normal enum class I think one thing should be clear with you is this extent part right
+
+and it cannot be initiated.
+
+That's also, I have shown you that all its constructors are private, no matter if you given default
+
+also.
+
+Right.
+
+Okay.
+
+Now let's see more things.
+
+Enum with custom values okay.
+
+So now here I told you that if you haven't assign any values, yes they have certain ordinals which
+
+uniquely has value for them.
+
+Okay.
+
+But you can even define certain custom values like this.
+
+So for Monday I have defined two values.
+
+One is v.
+
+So there are two.
+
+Variables I have defined.
+
+So now remember one thing whatever you will define Here.
+
+Whatever the method you are defining, that is for each, that is, for each constant, that is, for
+
+each constant.
+
+Okay, I have defined.
+
+One is integer type val and another of my variable is string.
+
+Comment.
+
+So Monday has this two things.
+
+Tuesday has its own these two things like this.
+
+All the constant has this.
+
+So now how to fill this value for each one.
+
+So Monday has two.
+
+So see I told you one thing that its constructors are private.
+
+That's why they cannot be initiated right.
+
+So even if you see here I haven't defined anything.
+
+So means by default it is default.
+
+But you know that it is.
+
+When you create a bytecode it will be created as a private only.
+
+Right.
+
+I showed you previously.
+
+Now.
+
+So now here.
+
+If you see that its constructors are always private means it cannot be initiated.
+
+But this private constructor can be initiated from within this class itself and how it can be initiated.
+
+So here, here, if you see that Monday it is calling constructor here actually.
+
+So it is passing 101 and one string.
+
+First day of the week.
+
+It is passing one string.
+
+And this values are assigned here in the value and command.
+
+So this is for this Monday.
+
+Similarly it is for Tuesday Wednesday Thursday Friday Saturday and Sunday right.
+
+So for whatever the custom values you wanted to define two, three, four and all.
+
+So the appropriate member variables you need to have okay.
+
+First thing Second thing, you need to have a parameterized constructor.
+
+Like if so, here in this I have two variables.
+
+One is integer, another is string.
+
+So here I have a constructor.
+
+One is accepting the integer, another is string and I am initializing this.
+
+Variables.
+
+These also are for each method for each constant Monday.
+
+Also you will have get well get comment Tuesday also Wednesday.
+
+Also they internally have their version right.
+
+And whatever the method which you wanted to keep at a class level, you have to define it as static
+
+so that it won't be there for each constant separately.
+
+Okay, now I have one method like based upon this value.
+
+So let's say I pass the value one zero 5 or 1 zero six.
+
+Any integer, let's say 107.
+
+So what I am doing is enum sample dot value.
+
+So when you do values what it will do is it will iterate.
+
+It will iterate.
+
+So first Monday it will come.
+
+So it's a Monday sample object.
+
+What I'm doing is Monday sample dot val.
+
+So it's dot val.
+
+So what value it has 101 right.
+
+So is it equals to let's say 107.
+
+No.
+
+Then next one.
+
+So similarly at when Sunday comes.
+
+So Sunday dot val Sunday dot val is 107.
+
+Is it equals to this.
+
+Then it will return me the object of Sunday one.
+
+And here if you see that this is a static, this is static means it is related to this enum class,
+
+not for each constant.
+
+Okay.
+
+And this is how we can use it that I created that get enum from value I passes 107 because it is static.
+
+I don't need an object of it.
+
+I can directly call with a class name.
+
+Okay, and once I got it, so which object I will got Sunday one right?
+
+So Sunday has 107 value.
+
+So what I am printing are the Sunday sample variable dot get command.
+
+So it's get comment I am getting.
+
+So it will return the comment this one.
+
+And what is present over here.
+
+It's second week of.
+
+So it will print second week off.
+
+So you got it.
+
+How enum with custom values work.
+
+Now let's see method override by constant.
+
+Now here I created a simple enum class again public enum enum sample okay Monday.
+
+Tuesday.
+
+Wednesday.
+
+Thursday, Friday.
+
+Saturday, Sunday.
+
+Forget about this now.
+
+Forget this.
+
+Don't worry about this one.
+
+So I have just created a Monday, then Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday.
+
+Like this.
+
+Previously like this Monday to Sunday.
+
+Simple, right?
+
+And I have told you that any method you declare here, bottom of this semicolon, it would be it would
+
+not be a common.
+
+It would be like separate for each one for Monday.
+
+It will also have its dummy method.
+
+Tuesday, Wednesday, Thursday, Friday.
+
+All has this method, right?
+
+But let's say Monday.
+
+Say that, hey, I don't want this method.
+
+I want to override this method like I want to make certain changes.
+
+Then you can also override it also.
+
+Okay, how you can override it.
+
+See I have defined one dummy method here Idea and printing default dummy method.
+
+So now this whenever you get a Tuesday.
+
+Object Tuesday enum sample dot Tuesday and you do dummy method.
+
+It will do this.
+
+But if Monday want to override it you can override like this.
+
+And there it override.
+
+It's a dummy method.
+
+So see same method name same parameter.
+
+Everything should be same.
+
+And I'm putting Monday dummy method okay so this is how you override it.
+
+Similarly in Tuesday.
+
+Also you can write your own.
+
+Right.
+
+So just see this Monday I have initiated the parentheses.
+
+Right.
+
+And inside this create a method which will override this.
+
+Now I am calling.
+
+So let's say I am creating for enum sample dot Friday.
+
+So enum sample Friday.
+
+So this variable I am calling its dummy method which one it will call.
+
+So see, I haven't overrided this for the Friday one, so it will call this one default dummy method.
+
+Default dummy method.
+
+Now enum sample dot Monday enum sample dot Monday.
+
+Now I am calling dot dummy method, so which one it will call?
+
+I have override it so it will call Monday dummy method Monday dummy method.
+
+So you got it right how to override it.
+
+And I think now it will make more sense to you when I say that each method is like for each one.
+
+Monday also has this.
+
+Tuesday also has this right?
+
+You can because you can still override it.
+
+Inside this one you can.
+
+Instead of before putting comma, you can start the block and override those.
+
+Okay.
+
+So I think a method override you got how to do it and what generally this thing.
+
+Now just see this enum with abstract method.
+
+So sometimes what you want is like like you know like what is abstract.
+
+You just define it.
+
+So Monday Tuesday Wednesday, Thursday, Friday I just take three Monday Tuesday and Sunday okay.
+
+Semicolon.
+
+And after that I have put one abstract method right.
+
+Public abstract void.
+
+And if you see there it is only declaration no definition.
+
+And you know that whenever you create an abstract method, its child classes have to define it, right?
+
+But in the abstract, whenever you create an abstract method, all the constant have to override and
+
+provide the definition of it.
+
+So here, if you see that I have created one abstract method dummy method.
+
+Now Monday is providing its definition.
+
+Dummy method in Monday Tuesdays also has to provide the definition because this is abstract, so all
+
+content has to provide.
+
+So Tuesday block started and it is providing this dummy method in Tuesday.
+
+Similarly Sunday in Sunday.
+
+Okay.
+
+Now from the main method let's say I have enum sample dot Monday.
+
+So I got Monday constant and I'm printing dot dummy method.
+
+So it will print its dummy method in Monday.
+
+So it will print in Monday.
+
+Okay.
+
+So you know that in abstract method is also allowed in enum and how it generally takes care of the abstract
+
+method.
+
+So what if any abstract method is defined each constant has to define it or implement it.
+
+Okay Now enum implement interface.
+
+So now here if you see that hey I don't want like each one to do it.
+
+I can want constant like they can use only all this constant can use one functionality.
+
+Right.
+
+So here if you see that I have created an interface, let's say I have given a name my interface, and
+
+I have put method two lowercase right.
+
+I have an enum sample normal public enum name.
+
+But I have implemented an interface.
+
+Whenever you implemented the interface, you know that what you have to do, you have to provide its
+
+definition.
+
+So here I have provided the definition or implementation.
+
+But first in the enum I have created my constants Monday, Tuesday, Wednesday, Thursday, Friday,
+
+Saturday, Sunday, semicolon.
+
+Remember.
+
+And for this Is constant.
+
+My interface.
+
+The method.
+
+So now remember that after semicolon, whatever you have it is for each one.
+
+So means you can still go ahead and overwrite in the Monday you can still have two lowercase.
+
+And also you can override it because this is for all right.
+
+But let's say interface is generally used when certain method is generally common for all.
+
+So that's why I have used an example of two lowercase.
+
+So what I'm doing is whenever this method is invoked, whatever the name of the constant dot name.
+
+So let's say if it is a Monday object, the Monday object dot name.
+
+So it would be Monday capital.
+
+And I'm doing dot two lowercase so inbuilt.
+
+So it will change it to Monday small and then it will return.
+
+So here if you see that this method is very generic and it is common for all.
+
+So instead of putting it like an abstract and then everybody do the same thing so we can just put it
+
+into an interface.
+
+Right.
+
+And in the interface then whatever we just implemented and it would be common for all just one example
+
+like how we can use an interface with the enum.
+
+Generally very rarely it gonna used right.
+
+But still it's better to know that how to use an interface with an enum.
+
+So now here if you see that enum sample dot Monday.
+
+So you got a Monday or this enum sample variable and I'm printing dot two lowercase.
+
+So this is the only one.
+
+So it will call this one common for all.
+
+So this means enum sample which was Monday dot name.
+
+So it will be capital.
+
+And then it will uh calling two layer.
+
+So it will change it to small and then return.
+
+And it is printing a small Monday.
+
+Got it.
+
+So with this one at least you are now know that it can have an abstract method, right?
+
+And all constants should implement that abstract method.
+
+It can have variable constructor and methods I told you like whenever you create a additional parameter
+
+or additional fields to the constant, you have to define a constructor.
+
+And all right variables.
+
+You also have to define from constructor.
+
+You have to initialize those.
+
+And I have also showed you that you can also create a methods.
+
+Also it can implement an interface.
+
+Okay.
+
+Now let's go back to the first question which we asked.
+
+Right.
+
+What is the benefit of enum class when we can create a constant through static and final.
+
+So let's see the advantage I'll try to clarify.
+
+So let's say I have created a class now No.
+
+And inside this let's say v constant I have used static final int.
+
+Monday.
+
+Tuesday.
+
+Wednesday.
+
+Thursday.
+
+Friday.
+
+Saturday.
+
+Sunday.
+
+And the same way I have given a value like 0123456 some constant.
+
+Now this cannot be changed.
+
+Why?
+
+Because it is static final.
+
+These are constants.
+
+So this is one way.
+
+This is one way and another way.
+
+Today we have seen is enums.
+
+So these are also constant.
+
+And internally 0123456 ordinal has been assigned.
+
+Right.
+
+So these are also constant.
+
+And internally they are static final only.
+
+So this is another way second way.
+
+Now we know.
+
+Do we need to know that why enum is required and why they are better than this.
+
+Let's see this within this example.
+
+So now I have created this first method.
+
+for the class for this class.
+
+Right.
+
+So what this method is, is weakened.
+
+Very simple method.
+
+If it is a weakened Saturday or Sunday I have to return true.
+
+Otherwise false.
+
+So.
+
+So these are these constants are integer.
+
+Integer Monday.
+
+Integer.
+
+Tuesday 0123.
+
+So I am getting a parameter int day.
+
+So client will pass me certain integer.
+
+And based upon this integer I will compare it with the constant.
+
+Hey, if v constant dot Saturday equals to the day it is Saturday or Sunday, then return true as false.
+
+Very simple method, right?
+
+So this method is for the class constant.
+
+And this method I have created for enum constant.
+
+So the same method same functionality if it is Saturday or Sunday.
+
+Return true.
+
+Else false.
+
+Only thing is is this method is for enum sample.
+
+This is accepting enum.
+
+This is accepting the day integer.
+
+Now let's see the how the enum is providing an advantage.
+
+So here if you see I am calling first method is weakened and I'm passing integer two.
+
+So two is what Wednesday generally right.
+
+So here it got two.
+
+Now I'm checking weak constant dot Saturday equals to equals to two dot Saturday is weak constant dot
+
+Saturday it is five.
+
+So five equals to equals to two.
+
+No six equals to equals to two.
+
+No.
+
+So it will return false.
+
+So first one is uh it will return false because it is not a weekday weekend.
+
+Then I am returning.
+
+Then I am sending six Okay, so six is what six is Sunday, six is Sunday.
+
+So now you are getting here six.
+
+So Sunday is six equals to equals to the day is again a six.
+
+So it will return true.
+
+Now here if you see is there any control if I pass 100.
+
+So here if you see that I never had a intention to write a code like any, any unidentified value come
+
+all I code is in the perceptive from okay.
+
+From Monday to Sunday I should get either 0123456.
+
+But here, because of day integer, I even can pass 100001.
+
+There is no control so currently it will return false, but there is a chance that it might.
+
+This method might work unexpectedly because you can't have control what value can come.
+
+Now let's check with enum right.
+
+So I am passing first of all enum sample dot Wednesday right.
+
+So I got a Wednesday enum sample is my Wednesday.
+
+I am just comparing that okay.
+
+Is this equals to Saturday or Sunday?
+
+No it will return false.
+
+Similarly I'm passing enum sample dot Sunday.
+
+So it will match it up and it will return true.
+
+So one thing difference I think it is very very much visible to is readability.
+
+So if you read the static final one here you see that two 600 is weekend.
+
+But here if you see the code is self readable, is weakened and you are passing enum sample dot Wednesday
+
+dot Sunday.
+
+I don't have to put like okay this two is for Wednesday.
+
+This six is for Sunday.
+
+No this is provide much more readability to the code.
+
+Second thing is it is like if I want.
+
+You can only pass between this either Monday or Tuesday.
+
+Wednesday because my parameters is accepting enum sample variable.
+
+Right.
+
+And this enum sample can only possible either Monday.
+
+Tuesday.
+
+Wednesday.
+
+Thursday.
+
+Friday Saturday Sunday.
+
+Out of this, can you send.
+
+No.
+
+Not possible.
+
+If you send something that is weekend and you pass, try to pass 1001.
+
+It will say compilation error.
+
+Hey, I want this kind of variable, not this.
+
+And for this enum sample only this you can define.
+
+So you have much more control over your method how it will behave.
+
+Okay.
+
+So these are the advantage of enum over this static final variables.
+
+You can say that.
+
+So final class is something like if you want certain class that it should not get inherited Then you
+
+should create a class as a final class.
+
+Right.
+
+So final class cannot be inherited.
+
+Final class cannot be inherited.
+
+So here in this example I have created one class test class and created it final.
+
+Now if I try to extend it in some other class.
+
+So I'm creating another class my another class and try to extend this, try to extend this class here
+
+it says that compilation error cannot inherit from the final class.
+
+So this is the final.
+
+You cannot inherit it.
+
+So the purpose of this final class is final keyword is you cannot inherit from this class okay.
+
+So it put a restriction.
+
+Okay guys.
+
+Right.
+
+So do practice it.
+
+And any question any doubt feel free to ping me.
+
+Okay.
+
+Thank you guys.

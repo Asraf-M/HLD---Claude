@@ -1,0 +1,265 @@
+
+Single inheritence
+
+example :
+
+class vehicle{}
+
+class car extends vehicle{}
+
+Car swift = new Car();
+Swift.getEngine()
+
+Vehicle vehicle = new Vehicle();
+Vehicle.getCarType() // Should not work
+
+----------------------------------------------------------------------------------------
+
+INHERITANCE 
+
+Types : 
+
+Single:
+    class vehicle{}
+    class car extends vehicle{}
+multilevel:
+hierarchy:
+multiple:
+     (Not possible due to diamond problem ex:class car{ getEngine()})
+
+
+------------------------------------------------------------------------------------------
+
+
+POLYMORPHISM
+
+run time / static polymorphism / method overloading (same method but diff arguments)
+
+compile time / dynamic polymorphism / method overriding (same method but same arguments)
+    - it can be achieved by single inheritance
+    class A{ int getEngine(int a, int b)};
+    class B{ int getEngine(int a, int b)};
+    B b = new B();
+    b.getEngine();
+    A a = new A();
+    a.getEngine();
+
+
+
+------------------------------------------------------------------------------------------
+
+
+How Java Program Works and 3 Important Components (JVM, JRE & JDK) with example
+
+
+java code is platform independent 
+JDK + JRE + JVM is platform dependent based on OS (windows, linux, macOS)
+
+refer notes
+
+
+------------------------------------------------------------------------------------------
+
+
+Why only 1 Public Class in JAVA file ? 
+    - Main method shold present under public class
+    - public class name and file name must be same 
+
+
+
+------------------------------------------------------------------------------------------
+
+
+Java Variables - Part1 | Primitive Data Types in Depth ? 
+    - not important for interview perspective but needed
+
+How FLOAT and DOUBLE Number Stored in Memory? | IEEE 754 Representation ? 
+    - not important for interview perspective but needed
+
+Java Variables - Part2 | Reference/Non-Primitive Data Types in Depth ? 
+    - important refer notes (autoboxing, unboxing)
+    
+
+------------------------------------------------------------------------------------------
+
+
+8. Java Methods - Part1  Method Definition, System & User ,Defined Method Type etc
+    - Access modifiers
+        - public — Accessible everywhere
+        - private — Same class only
+        - protected — Same package + subclasses in different packages
+        - default (no modifier) — Same package only
+
+
+------------------------------------------------------------------------------------------
+
+
+9. Java Methods - Part2  Static, Final, Abstract Method Type and Varargs in Java
+    - Static Method
+    - Final Method
+    - Abstract Method
+    - Variable Arguments (Varargs)
+
+------------------------------------------------------------------------------------------
+
+
+10. Java Constructor in Depth Different Types of Constructor with Examples
+    - Default Constructor
+    - No-Argument Constructor
+    - Parameterized Constructor
+    - Constructor Overloading
+    - Private Constructor
+    - Constructor Chaining
+        - Chaining with this() (Within Same Class)
+        - Chaining with super() (Parent → Child)
+    - Parameterized super()
+
+
+------------------------------------------------------------------------------------------
+
+11. Java Memory Management and Garbage Collection in Depth
+    - refer .md file
+
+------------------------------------------------------------------------------------------
+
+12. Java Classes - Part1 Nested, Concrete, Abstract, Object, Super & Sub Classes - (not important)
+    - refer .md file 
+    - Concrete Class
+    - Class Access Modifiers
+    - Abstract Class
+    - Super & Sub Class
+    - Object Class
+    - Nested Classes
+        - Static Nested Class
+        - Inner Class (Non-Static Nested)
+        - Local Inner Class
+        - Anonymous Inner Class
+    - Inheritance in Nested Classes
+
+------------------------------------------------------------------------------------------
+
+13. Java Generic Classes  Java Classes in Depth - Part2 - (not important)
+
+    -Why Generics?
+    -Generic Class
+    -Inheritance with Generic Classes
+    -Multiple Type Parameters
+    -Generic Methods
+    -Raw Types
+    -Bounded Generics
+    -Wildcards
+    -Type Erasure
+
+------------------------------------------------------------------------------------------
+
+14. Java Enum, POJO and Final Classes Explained with Examples Java Classes - Part3 - (not important)
+    -POJO Class
+    -Enum Class
+    -Final Class
+
+------------------------------------------------------------------------------------------
+
+15. Java Singleton & Immutable Class Explained with Examples Java Classes - Part4 - (important)
+    -Singleton Class
+        -Eager Initialization
+        -Lazy Initialization
+        -Synchronized Method
+        -Double-Checked Locking
+        -Bill Pugh Solution
+        -Enum Singleton
+    -Immutable Class
+
+------------------------------------------------------------------------------------------
+
+16. Java Interface in Depth - Part1
+    -What is an Interface?
+    -How to Define an Interface
+    -Why We Need Interfaces
+    -Methods in an Interface
+    -Fields in an Interface
+    -Interface Implementation
+    -Nested Interfaces
+    -Interface vs Abstract Class
+
+------------------------------------------------------------------------------------------
+
+17. Default, Static & Private Method in Interface - Java Interface - Part2
+    -Default Method (Java 8)
+    -Diamond Problem with Default Methods
+    -Extending Interfaces with Default Methods
+    -Static Method (Java 8)
+    -Private Method (Java 9)
+    -Access Rules Summary
+
+------------------------------------------------------------------------------------------
+
+18. Functional Interface and Lambda Expression - Java8  Java Interface Part3
+    -What is a Functional Interface?
+    -Lambda Expression
+    -Three Ways to Implement a Functional Interface
+    -Built-in Functional Interfaces
+    -Functional Interface Inheritance Rules
+
+------------------------------------------------------------------------------------------
+
+
+22. Exception Handling in Java with Examples
+    -What is an Exception?
+    -Exception Object
+    -Exception Hierarchy
+    -Error vs Exception
+    -Checked vs Unchecked Exceptions
+    -5 Keywords: try, catch, finally, throw, throws
+    -try-catch Block
+    -Multiple Catch & Multi-Catch
+    -finally Block
+    -throw & throws
+    -Custom Exceptions
+    -Why Exception Handling?
+
+------------------------------------------------------------------------------------------
+
+27. Collections in Java - Part2 Comparator Vs Comparable PriorityQueue
+    -Queue Interface
+    -PriorityQueue
+    -Comparator
+    -Sorting Primitives vs Objects
+    -Comparable
+    -Comparator vs Comparable
+
+------------------------------------------------------------------------------------------
+
+29. Collections in Java - Part4 HashMap Internal Working in Java
+    - Why Map is Not a Child of Collection
+    - Map Interface Properties
+    - Internal Structure — Node / Entry
+    - How put() Works
+    - How get() Works
+    - hashCode & equals Contract
+    - Load Factor & Rehashing
+    - Treeification (Java 8)
+    - Common Methods
+    - HashMap vs Hashtable
+
+
+------------------------------------------------------------------------------------------
+
+32. Streams in Java8 Collections in Java - Part7
+    - What is a Stream?
+    - Stream vs Collection
+    - Stream Creation
+    - Intermediate Operations
+    - Terminal Operations
+    - Lazy Evaluation
+    - Processing Order
+    - Single Use
+    - Parallel Streams
+
+    Summary : 
+        Stream	            Pipeline:create → intermediate ops → terminal op
+        Intermediate	    Lazy — filter, map, flatMap, sorted, distinct, peek, limit, skip
+        Terminal	        Triggers execution — forEach, collect, reduce, count, min/max, findFirst
+        Lazy evaluation	    Nothing runs until terminal op is invoked
+        Processing order	Element-by-element through pipeline (except stateful ops like sorted)
+        Single use	        Stream consumed after terminal op — create new for reuse
+        Parallel	        parallelStream() — fork-join pool — faster for large data

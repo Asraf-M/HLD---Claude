@@ -1,0 +1,2151 @@
+Hello.
+
+Hey guys.
+
+Welcome to Concept and Coding.
+
+And this is Shreyansh.
+
+In the previous session we have seen Threadpool thread pool executor.
+
+Right.
+
+Very important topic.
+
+Today I am going to cover another very important topic.
+
+And you can see that it's a follow up of thread pool executor.
+
+So future callable and completable future.
+
+So let's start without wasting any time.
+
+So this is the example which I have written here exactly the same which we have seen in the previous
+
+video.
+
+So I have created a thread pool executor.
+
+Right.
+
+And I am submitting a task to the thread pool executor.
+
+Right.
+
+So we know that it will create a new thread and the the main thread or the caller will continue processing
+
+it.
+
+Very simple.
+
+So thread pool executor from its pool of threads will assign one thread, will create one thread.
+
+are not create thread is already created in the pool.
+
+Right.
+
+So it will use one thread and start performing this task.
+
+Right.
+
+So this is our base understanding.
+
+Now one question should comes to your mind that hey Shreyansh, what if caller wants to know the status
+
+of the thread, whether it's completed or it failed or some any output has come.
+
+So here the caller is let's say the main thread.
+
+So this is started and it created a new task which is doing by thread one.
+
+Let's say this is the submitted a new task.
+
+This is an async task which is performing by thread one.
+
+So main thread will continue processing it right?
+
+It will not wait for this thread to complete.
+
+But now let's say that at future if this main thread or you can say that the caller want to know the
+
+status of this task, whether it's completed or it is failed, or is there any exception or is there
+
+it has generated some output.
+
+Then what is the output?
+
+How do we how it will get to know currently here if you see that we are not holding any references.
+
+So there is no way this main thread would be able to know this status, right?
+
+So that's where the future comes into the picture.
+
+So here if you see the submit, what is the return type of the submit is future.
+
+Don't worry about this question mark and all.
+
+I will cover everything.
+
+But whenever we call submit what is the return type future.
+
+So we can create a future object and hold the reference there.
+
+And using that future object we can know the status.
+
+Okay, so now let's now we know that.
+
+What is what?
+
+Why the future is needed.
+
+What actually we wanted.
+
+We wanted to know the status of the thread which is running in async mode by some other thread.
+
+So what does future will do?
+
+So future is an interface which represents the result of the async task.
+
+It allows you to check if computation is completed, get the result, or take care of any exception
+
+if any.
+
+Right.
+
+So now again this is a main thread.
+
+It will create a new thread here performing some task.
+
+But now here I will have future object.
+
+So main has this future object.
+
+Now it is start working it.
+
+This main has also start working concurrently.
+
+But in future it can use this future object.
+
+And there are several methods I Methods.
+
+I will explain you this all this method.
+
+Using this method, it can get to know whether this task which is performing by this another thread
+
+one is it completed or finished or failed or any output comes.
+
+What is that output?
+
+Okay, so that is the purpose of future.
+
+Let's see this example.
+
+So I have created a thread pool executor.
+
+Similar no change.
+
+Now I am submitting a task to a pool.
+
+Again this is how we have done seen already.
+
+Write a new thread would be created which would be not new thread would be created.
+
+It will pick from this pool executor.
+
+So the pool has one thread in the pool, so it will use that thread and start executing it right.
+
+So let's say t one is working on it.
+
+But here this is the difference.
+
+Now I am storing the future object, right?
+
+Again, don't worry about this wild card.
+
+Right.
+
+I will tell you why.
+
+What?
+
+All things we can put here.
+
+But as of now, what?
+
+You have to be clear that whenever we submit a task to a thread pool executor, it returns this future
+
+object reference.
+
+Right?
+
+So we can store it.
+
+Now your main thread later on you.
+
+You can use this future object to know this thread status, whether it is done or not, whether it is
+
+there any exception or not.
+
+What is the output?
+
+Okay.
+
+Now there are so here.
+
+If you see that inside this future right there are five methods one, two, three, four, five.
+
+So very very simple methods are available inside this future object.
+
+What all things we can know about this thread.
+
+So one thing is cancel if main want to cancel the execution of this thread so it can call obj dot cancel
+
+true.
+
+So what it's doing is on this future object.
+
+It has set this put interrupting this execution of this thread.
+
+Right.
+
+So it attempts to cancel the execution of the task.
+
+Async task.
+
+So it can return false.
+
+The output of this method can return false if the task cannot be canceled.
+
+And what is one of the reason task cannot be canceled?
+
+What if task is already completed?
+
+So if task is already completed, then it will return false means it is not able to cancel it.
+
+But if task is in progress or it is waiting and you have called this method, it might get interrupted
+
+and it get canceled.
+
+And once this task get canceled, it might return true.
+
+Okay.
+
+So there is another method called is cancel.
+
+So this will return true or false if this task has been canceled or not.
+
+Right.
+
+So earlier command is to give the command that.
+
+Yes.
+
+Hey.
+
+Cancel it.
+
+This one is just to check whether the particular task is canceled or not.
+
+Okay.
+
+Returns true if the task was canceled before it get completed.
+
+Normally.
+
+Third method is is done.
+
+So is done.
+
+Is returns true if this task completed, completion may be because of anything normal completion.
+
+Right?
+
+Exception comes or it is canceled.
+
+The task is done whether its task is completed through normally or through any exception.
+
+Or is somebody interrupted it or somebody cancel it.
+
+This task is done.
+
+So that's it.
+
+Return true in all these scenarios.
+
+Okay, if the task is in progress, then only it will return false.
+
+Then there is one method called get.
+
+So what would happen is that inside this main method if you are calling get here object dot get.
+
+Now what would happen is now this main thread will block and it will wait for this task to get completed
+
+fully.
+
+So whenever you are using Get method so the caller will wait for the completion of the task.
+
+Which task?
+
+Async task for the completion of the async task.
+
+After the task completed, it retrieves the result if available, right?
+
+So we will see an example I will also show you but in whenever you are using Get means you are blocking
+
+the caller.
+
+Now it will wait for that particular task to get fully completed, and once it is completed, then only
+
+it will try to retrieve the result.
+
+Okay, if there is any result or not, right.
+
+And then it will further process.
+
+So there is another variant called get and time.
+
+Let's say you want, but here in the get method you are waiting indefinitely.
+
+Let's say that async task or by a running by a particular thread is running for, let's say for 20 minutes.
+
+Then you are blocking the main thread for 20 minutes, right?
+
+But that's not what you wanted, right?
+
+You want certain control so you can use this get.
+
+Hey I maximum I can wait is three seconds.
+
+So timeout is three unit I can give is let's say second.
+
+So after three seconds.
+
+So till whenever you are using wait get the caller will wait only for three seconds for that particular
+
+thread to complete.
+
+If in this timeout period task is not completed, it will throw timeout exception.
+
+Then it's upon us whether we have to wait further or we have to log or we can proceed further.
+
+Right.
+
+So let's take a simple example.
+
+So here I have created a thread pool executor.
+
+Right.
+
+Uh, and in the pool I am submitting one task.
+
+So this is your thread one and this is your main thread.
+
+So this is your main thread.
+
+This is your T1 thread.
+
+Let's say right from this pool.
+
+It will create this T1 thread.
+
+Now when I'm submitting it I have also stored the reference of it.
+
+Don't worry about this question mark this wild card, I will tell you why we have to use, but just
+
+see that whenever we are submitting a task to a thread pool executor, it returns the submit returns
+
+this future object.
+
+Now this future object.
+
+Right?
+
+And in this task I am waiting.
+
+I am sleeping the thread seven seconds.
+
+So we can say that this thread will take seven seconds to complete.
+
+Let's say.
+
+Right.
+
+Seven seconds to complete.
+
+It will not just complete as soon as possible.
+
+Okay, now we have the future object.
+
+Okay, so it will created the new thread and the main thread continues.
+
+So this is main thread goes here.
+
+So now main thread is checking on this future object.
+
+Future object dot is done.
+
+So future object is the reference of this task right.
+
+So now it is checking.
+
+Hey this task is completed.
+
+Is it completed?
+
+No, it takes seven seconds.
+
+Right?
+
+So currently this thread might be sleeping.
+
+Right.
+
+So it is is done.
+
+No, it is not done yet.
+
+So it will return.
+
+No.
+
+Here then main thread will come over here.
+
+Main thread will check future object dot get.
+
+Now I am doing get for I am waiting it only for two seconds.
+
+Right?
+
+I am not waiting indefinitely.
+
+I am waiting only for two seconds.
+
+So two seconds I am waiting so in dozen two seconds will this task get completed?
+
+No, it takes some time.
+
+So what it will throw is it will throw timeout exception so I can catch it.
+
+I can print it.
+
+So it will print this timeout exception happen.
+
+So it will print this okay.
+
+Now main will come here.
+
+Now I am doing dot get.
+
+Now dot get means this caller will wait for this task to get completed indefinitely till it is not completed.
+
+So future object is this one.
+
+This is the task associated with it.
+
+So it will wait continuously.
+
+Wait till it is not completed.
+
+So it will wait six, seven, five, six, seven whatever it is required to this task to complete it.
+
+And once it is completed, right again main is checking.
+
+Now is done.
+
+Future object is done.
+
+Yes it will print.
+
+Yes it is done right.
+
+So here, if you see that this is a waiting period, so main will continuously.
+
+So main will only go to the next point after this task is completed now.
+
+So otherwise at this point itself it will wait.
+
+It will not go to the next.
+
+Only after this task is completed, then only it will goes to the next.
+
+And when you are checking, is it done?
+
+Yes, it will done.
+
+Now the main will come here.
+
+Is it cancelled?
+
+No, it is not cancelled.
+
+We haven't cancelled it.
+
+It is completed naturally.
+
+Right.
+
+So this will print like this.
+
+And one more thing will print here is that, uh.
+
+When we do get right.
+
+So this task will get completed.
+
+So this line will also get printed before this one.
+
+So this is the task which thread will execute.
+
+Right.
+
+Because before reaching here it is waiting for thread to complete.
+
+So this thread will print this.
+
+Now let's understand one thing.
+
+So till now I think future might be clear to you okay this is what actually future does.
+
+So now how exactly it works.
+
+So now let's say that.
+
+So now here we have Of pool executor.
+
+Right?
+
+We call submit right this.
+
+Submit what it is doing.
+
+It is creating a new future task.
+
+And whatever the runnable tasks which we are giving.
+
+Right, it will be putting inside this right.
+
+So this is the runnable task right?
+
+For us.
+
+This is this is what we are using lambda expression to put a runnable task.
+
+Right.
+
+We already know the runnable.
+
+So we are giving this runnable.
+
+So what internally when we do submit what it does is it create a new future task.
+
+New future task is so.
+
+Future is an interface.
+
+So this is an interface.
+
+Future task is the child class of it.
+
+So if you see this future class, if you go and check this future class, this is implements runnable
+
+future.
+
+And ultimately this runnable future is extended from this future.
+
+So ultimately it's a child of future only that whenever in the thread pool executor we are submitting
+
+this runnable task, right?
+
+Actually this is not we are wrapping this runnable task into future tasks.
+
+So future task has two parts.
+
+This runnable.
+
+Task runnable task is which one?
+
+This one.
+
+Whatever we are sending here.
+
+Right.
+
+Plus also it has state multiple state I showed you.
+
+Right 01234 multiple states is possible for this task right.
+
+So this is we send to the thread pool executor this future task.
+
+So thread pool executor based upon the thread state, it will keep on updating this state.
+
+Okay, so future is clear right?
+
+What is the purpose of the future?
+
+Right.
+
+Now you might be asking that hey okay, future is clear, but what is this cost?
+
+And Mark and.
+
+All right.
+
+What is this?
+
+So you will get your answer if you understand this callable now.
+
+So there are three flavors of the submit.
+
+What are the three flavors.
+
+One is.
+
+Submit.
+
+Runnable.
+
+Right.
+
+So one is submit.
+
+Runnable.
+
+Another is.
+
+Submit.
+
+Made runnable.
+
+Comma t.
+
+And the third one is submit callable.
+
+Submit callable.
+
+So we have three flavors of submit till now what we are using it till now we were using this this flavor.
+
+So whenever I am you are doing thread pool executor dot submit.
+
+Right.
+
+And inside that we are using lambda expression to submit anything like say to submit anything it.
+
+Yeah right.
+
+System.out.println.
+
+Do something.
+
+So by default this submit we are using it.
+
+This runnable Both, right?
+
+Why?
+
+Why you are saying that?
+
+Hey, you can ask me, right?
+
+Hey, why runnable is used?
+
+Why not callable?
+
+That is also one parameter here.
+
+Here.
+
+How?
+
+We are saying that this is runnable.
+
+Why this cannot be callable.
+
+So that's one difference is that both runnable and callable are same.
+
+Only difference is that runnable do not return anything.
+
+Callable returns a certain value.
+
+So both purpose is the same.
+
+What is the purpose of both runnable and callable.
+
+They represent the tasks which need to be executed just like runnable also does.
+
+Right.
+
+But difference is runnable.
+
+Do not have any return type.
+
+Callable has the capability to return the value.
+
+Okay, this is the thread pool executor.
+
+Now I am doing submit.
+
+Now if I am doing like this.
+
+System dot out dot println something.
+
+So what it will use.
+
+It will call runnable.
+
+Why?
+
+Because here if you see that it is not returning anything.
+
+It's just doing some processing.
+
+But if I do like this right.
+
+Let's say future object one.
+
+Future object two.
+
+Submit.
+
+Do something.
+
+And now I am return ING.
+
+Let's say 45.
+
+I'm returning some value.
+
+Now what value?
+
+Integer.
+
+So now what it will do.
+
+Callable.
+
+So that's the only difference.
+
+Callable has the capability to return value.
+
+Runnable does not have any return type.
+
+See this part.
+
+Now use case one.
+
+I have created a thread pool executor.
+
+I am doing thread pool executor dot submit.
+
+I am creating a runnable.
+
+Right.
+
+I am using a lambda expression and I'm submitting one task.
+
+Task one with runnable not returning anything.
+
+So means it will call which method.
+
+It will call this runnable.
+
+Okay.
+
+Understood.
+
+What is runnable?
+
+But how?
+
+What is this question mark here?
+
+Okay, now I'll tell you why we for runnable.
+
+We have to catch like this.
+
+So here in runnable, there is no return type.
+
+But we need the future object, correct?
+
+We need the future object so that at least we know what is the status of this task, whether it's completed,
+
+or is there any exception or if I have to cancel it.
+
+Right.
+
+So definitely I need the future object.
+
+But only thing is there is no there is no result or there is no output.
+
+Right?
+
+So that's why what it does is internally it put a void like it doesn't know.
+
+Void means nothing.
+
+Void means nothing, right.
+
+So it doesn't know.
+
+So question mark wild card means I don't know what it is.
+
+If you have seen the video wild card one.
+
+What does wild card mean?
+
+It can be anything.
+
+It can be anything.
+
+Right.
+
+So generally how you catch this one.
+
+So I take this object when I do dot get.
+
+So what does Dot get will do on this future object?
+
+It will wait till this task will not complete.
+
+After that it will try to retrieve the result.
+
+So when it try to retrieve the result, this part.
+
+This is the result, right?
+
+Whether it could be a string or integer or so question mark means it can be anything.
+
+I do not know.
+
+So when it can be any.
+
+When it can be anything, you can only catch it into object because object class is the parent of everything,
+
+right?
+
+So object class is parent of everything.
+
+Now it doesn't matter whether it's a string or integer or some other object.
+
+Doesn't matter.
+
+It would be able to take it.
+
+Now if you check it is object equals to equals to null, it will return true because this is a runnable.
+
+And when in the runnable what output value it is setting is null.
+
+Right.
+
+So we when we wrap into future tasks, write future tasks.
+
+So when we have runnable write, we have a state and also we have output.
+
+What is the result?
+
+It comes out of this runnable task.
+
+So we have hard coding it to null here.
+
+Because we know that runnable do not return any value.
+
+So there is it would always be null.
+
+So now when you got this future object with this future object you are doing get.
+
+So now first it will wait this runnable task to get completed.
+
+When this runnable task get completed, it will return the output also.
+
+So this output if you check it will always be null.
+
+Okay so this is the use case one which till now we are doing it.
+
+Now this is the use case two.
+
+Here we are calling a submit.
+
+So here let's say that the submit.
+
+But this one runnable.
+
+And the result I don't want null.
+
+Always an output.
+
+So now let me explain you that part.
+
+So now let's say let me create my own runnable not using lambda so it will clear more.
+
+So I'm creating my own runnable class let's say implements runnable.
+
+So it has to implement the run method.
+
+So implement the run method.
+
+Okay.
+
+So here it has to do some work.
+
+So thread will do some work here.
+
+Now if I do submit I will clear new runnable.
+
+New runnable.
+
+Mineable class.
+
+Right.
+
+And now I want to use this second one.
+
+Not this first one where it always return null.
+
+Now I want to use this one.
+
+So what is the use case we can come up with.
+
+So now let's say that I have one common object let's say list of integer.
+
+So let's say this is the output.
+
+Currently it is empty.
+
+Currently this is empty.
+
+Total empty.
+
+If I can pass this to the constructor of this my runnable so means it is also have a list of integer.
+
+It has a list of integer list and into the constructor.
+
+I will accept this list.
+
+Whatever it is coming, I will update.
+
+This.
+
+Right.
+
+So now what I'm trying to do is that whatever the common object.
+
+So I am trying to use a common object functionality that I created one object here and pass it to the
+
+runnable also.
+
+So now runnable has the same reference of that object.
+
+Now whenever any thread will run this, start running this, it can update this list list dot.
+
+Let's say add 100 or let's say I am adding 300 here.
+
+So now it updated this list.
+
+And ultimately what get updated is this output because they have the same reference right.
+
+So I am calling this and the output result where I want that is here.
+
+This is the output.
+
+Okay.
+
+And the future would be my list of integer.
+
+This is the future object.
+
+Okay, so this would be the future object.
+
+So now which one it is using this runnable task and t result.
+
+This is a generic type.
+
+So t we have set what list of integer.
+
+This is what we have said right.
+
+So the same it will return.
+
+Give us the output.
+
+Also whatever we have provided here the same it would be return back to us.
+
+So now what happen is whatever the object we have passed here, whatever the object we have passed here,
+
+it will go inside this right and it will set it.
+
+Here, here if you see, that goes inside.
+
+So after this run got completed, after this run got completed.
+
+So we have created this my runnable.
+
+Right after this is completed, what it will return, it will return the result.
+
+So whatever you are passing right it will return the same thing.
+
+If you see then you can ask that hey, what is the point?
+
+This is the object.
+
+And here I am passing and it is returning the same, right?
+
+What's the point?
+
+So now when it return this if you print this.
+
+So first we have to wait for this task to complete.
+
+So future object dot get now this get throws exception.
+
+So we have to put in try catch block.
+
+Okay.
+
+So now what did happen is this get will wait right.
+
+It will wait for this task to get completed now.
+
+Main thread will wait for this task to get completed.
+
+After this, if I print System.out.println.
+
+This output whether I have one way.
+
+So this is one way.
+
+First way, if you have access to this common you can do output dot get zero.
+
+Second way is that you don't have access to this output now, but you want like what it has written.
+
+So this get also returns it right.
+
+So it will list off.
+
+Integer.
+
+It will return this result also.
+
+So System.out.println.
+
+Result dot get zero.
+
+So both will print 300.
+
+300 okay so you got it right.
+
+What we are doing is we are just doing some work around.
+
+Even though this runnable doesn't return anything, we are just playing with the common objects that
+
+okay, this is the common object we pass to the runnable and it will update it.
+
+And when the thread finishes, this common object will get updated.
+
+And I can use this sometime it possible that you don't have common object.
+
+Then what we'll do is thread executor says that hey you pass me that object.
+
+Also whenever I will complete this task runnable task, I will throw this object so you can catch it
+
+and do whatever you want.
+
+Okay, so this is the second scenario where the second submit is used.
+
+Runnable comma t object.
+
+Now this is the third one which is a simple of the.
+
+You can say that if you have a scenario use case two.
+
+It is sort of like a workaround.
+
+Right.
+
+But this is more cleaner way.
+
+Callable.
+
+So now here, if you see that I don't want to do all this thing, I can do that a pool executor dot
+
+submit.
+
+Right.
+
+Either I can say that.
+
+Do some task like I can create here.
+
+List of integer output equals to new array list output dot.
+
+Add 300 and return this list itself.
+
+Right.
+
+So now this will be considered as callable because here we are returning right.
+
+So here I have created the list and I can return it, and in the future I can simply catch it.
+
+List of integer.
+
+List of integer.
+
+This is the your future object.
+
+Right now.
+
+This future object you can do get.
+
+And when you do get, you have to put it into try catch block.
+
+Let's say I'm doing try catch block.
+
+Now this get will return you what?
+
+List of integer.
+
+List of integer.
+
+So result.
+
+With this get will come and now you will do System.out.println.
+
+Let's say result dot get zero index.
+
+What is there.
+
+So here if you see this is more cleaner way I can achieve the same thing.
+
+But it's a more cleaner way.
+
+Okay.
+
+So this is the third use case.
+
+So this is mostly you can say that future and callable.
+
+Now this is very important is Completable future.
+
+This is introduced in Java eight.
+
+This is also help in async programming right.
+
+Like how our future and callable is doing right.
+
+It is also helping async programming.
+
+So we can consider this an advanced version of future.
+
+It provides additional capability like chaining.
+
+So you can say that it's just a big brother of future.
+
+Whatever future can do, it can do because future is an interface and its child is completable future.
+
+So what what all capability future has it has those.
+
+Plus it has additional capabilities like chaining, I will tell you.
+
+So let's go to the completablefuture.
+
+So here if you see that it's implements future only.
+
+Okay.
+
+So now you know that okay.
+
+It is also the same thing or how what future does.
+
+So how it is different how to use it.
+
+Now let's see that this is a little slightly syntax is different.
+
+So there are five important uh five important methods in completablefuture.
+
+The first is supply async.
+
+Supply async.
+
+So this is the method signature.
+
+So this is the signature.
+
+So here we call supply async.
+
+This is a static.
+
+So that's why it is called with Completablefuture dot supply a sink and there is a supplier.
+
+So this supply a sink method is used to initiate an async operation.
+
+Right.
+
+What it will do is it internally create one thread and whatever the task.
+
+So this is your task.
+
+So whatever the task you will provide here, that task will be executed by the new thread.
+
+Right.
+
+So till now what we have done is we are using thread pool executor thread pool thread pool executor
+
+is using dot submit.
+
+So submit is creating a new task or it submit is creating a new thread.
+
+Right.
+
+And uh if you are using pool executor right.
+
+It is creating a new thread from this pool and perform the task which we give.
+
+So similarly in Completablefuture we have supply a sink.
+
+So what internally it will do is if you don't pass the executor, then it will use the default default
+
+pool executor which is fork join pool.
+
+This is a fork join pool.
+
+If you don't supply.
+
+If you don't provide any executor it will use fork join pool.
+
+It will take the thread out of it right.
+
+And perform this operation in a separate thread.
+
+Right.
+
+And if you want a specific thread pool executor you want to use, you can pass that thread pool executor
+
+so it will not use fork join.
+
+So whatever the thread pool you have provided it will use that to take out the thread.
+
+So but the supply assing purpose is to initiate an async operation like submit in thread pool executor
+
+The supplier.
+
+This is executed asynchronously in a separate thread.
+
+If you want more control on thread, we can pass executor in the method.
+
+Like if you want more control, we can pass executor in a thread.
+
+So all let's say in the executor you have given five threads for threads.
+
+Minimum pool.
+
+Maximum pool.
+
+So only that many threads will be created.
+
+But if you if you are using this method, you are not providing any executor internally.
+
+It will use fork join pool.
+
+Right.
+
+So now you don't have any control over what is the minimum threads.
+
+Maximum threads right.
+
+So now this is a shared pool right.
+
+And it will dynamically adjust its pool size based upon the processor.
+
+But you don't have any control.
+
+So it will pick a new thread from this pool and perform the task.
+
+So the first method is supply a or sing, which purpose is to initiate the async operation?
+
+Let's see this example.
+
+I have created a thread pool executor like how we are doing it before till now.
+
+Now I am not using thread pool executor dot submit.
+
+Now I am using Completablefuture to initiate an async compression Completablefuture dot supply async
+
+right?
+
+So now in the supply async, what I'm passing is let's see that supplier async.
+
+What what it takes.
+
+So supply async takes a supplier.
+
+So it takes a supplier.
+
+Supplier is nothing but a method which will perform something like simple run method.
+
+Right.
+
+In a runnable like in runnable we have one run method.
+
+Consider this as a simple like this will get executed.
+
+So this task will get executed and it will return one output.
+
+That's what it is doing.
+
+So it's a functional interface which do not accept anything.
+
+So it doesn't accept anything.
+
+And it is performing some task and returning a string.
+
+Right.
+
+It's returning the string.
+
+And also I am passing the pool executor.
+
+So I am using this method.
+
+So there are supply passing with only supplier I am using this supplier comma executor.
+
+So I have passed my executor here because I want full control.
+
+How many pool size I want right.
+
+So this is the supplier which will return the string and Completablefuture is the return type.
+
+So supplier whatever return type would be the completablefuture would be of that only.
+
+So completablefuture, I am returning a string, right?
+
+So completablefuture of string.
+
+Okay, now I can do since Completablefuture is also a child of future, so get method is there.
+
+So if I do get now, it will wait to get this task completed and once the task completed it will try
+
+to fetch the result and fetch the result is what this is the string.
+
+So it will print task completed.
+
+So first method is clear supply async which is used to initiate an async compression.
+
+Second then apply and then apply async.
+
+So there are two methods uh then apply and then apply async.
+
+So there are two methods which are available.
+
+What is the difference.
+
+So what it does is it apply a function to the result of the previous async computation.
+
+I told you, right?
+
+Completablefuture is just an advanced version of future and one of the capabilities which it provides
+
+chaining, right?
+
+So this is one thing.
+
+This is one way of doing it.
+
+Apply a function to the result of the previous async computation.
+
+Return a new compatible future object.
+
+Understand it very very clearly right.
+
+So now let's say this is the main thread.
+
+Main thread is running.
+
+Now main thread calls this Completablefuture.
+
+So it does a supply async.
+
+Then I provided the task which need to be run.
+
+Let's say concept end and then apply is just a function which need to be executed after the supply async
+
+and it would work on top of the output which supply async done returns.
+
+So the first supply Asynch returns the concept and string.
+
+Right?
+
+So it accepts this string and works on top of it and return something.
+
+It could return integer also.
+
+But what I've done is I have added a concept and concept and and added coding and it returns.
+
+So it is again a string.
+
+So ultimately this is completablefuture of string because supply also returns completablefuture only.
+
+So means you can add more.
+
+You can add more than apply.
+
+You can add more supply a thing because this is we are all, all are returning completablefuture it
+
+helps you to do chaining.
+
+Okay, so now you should have asked me one question like if this thing should comes to your mind hey
+
+change.
+
+Okay, main thread worked right?
+
+So main thread initiated this supply async.
+
+So it will create new thread thread one.
+
+And this task has to be doing after the supplier sync and main will continue processing it task.
+
+So which thread will process this then apply.
+
+Is the new thread will be created?
+
+Which thread will create this thread only it will create work on it.
+
+Okay.
+
+So then apply.
+
+It is a synchronous execution.
+
+Synchronous execution means it uses the same thread which completed the previous async task.
+
+So whatever the thread is created here, supplier saying once it completes the supply async, then it
+
+only comes and complete this synchronously.
+
+First complete this and then complete.
+
+Then apply.
+
+But if you say that, hey, I don't want the same thread to use to complete the same itself.
+
+I don't want this thread thread one to continue waiting.
+
+I want this thread to be released after the async is completed.
+
+I don't want this thread to be hold and continue work on this task also.
+
+Then you can use apply async.
+
+When you use apply async it will use a new.
+
+It will create a new thread.
+
+Let's see this by an example.
+
+What would happen is a new thread will be created out of this thread pool executor.
+
+I am keep this thread waited for five seconds.
+
+Let's say some work is done and then it return this string.
+
+Completablefuture write either.
+
+One way is that I can just do a chaining or either in the next line?
+
+Also, we can do like, uh, I will tell you both the way.
+
+Either I can do completablefuture dot, then apply.
+
+Then apply.
+
+So let's also put the.
+
+Thread name.
+
+Thread name of supply.
+
+Async.
+
+Thread dot.
+
+Current.
+
+Thread dot get name.
+
+So what is the thread which is executing this supplier thing?
+
+Okay, so after this supply async is done I want you to then apply on this object whatever the supply
+
+async given.
+
+I can do also like this itself, but it would be better clear than this.
+
+So it will accept a function Which accept one parameter.
+
+So which parameter input parameter it accept this string only which suppliers provided.
+
+So string.
+
+Let's say val and it returns also right.
+
+So let's say it returns if it is a single line I don't have to write return.
+
+Uh but yeah we want to print the thread name.
+
+So I need multiple line.
+
+So let's use this this braces and then put thread name which is doing then apply method.
+
+Okay.
+
+And let's say it is doing return.
+
+It is putting.
+
+And that's all right.
+
+And again output is compatible future only.
+
+This is the output, and when it returns the output, what returns a string only right?
+
+So it is returning the string after this.
+
+Now if I run this.
+
+If I run this what it will print.
+
+So thread name of supply async pool one.
+
+Thread one.
+
+So the thread which is doing is pool one.
+
+Thread one five second completed it returned the concept.
+
+Right.
+
+And after that this will get invoked.
+
+Which one is the thread which is doing it again the same thread pool one thread one.
+
+The same thread is following this stages, right?
+
+You don't need to have like a separate.
+
+You can just do like a chaining here.
+
+Uh like this.
+
+Right.
+
+Like you can do like this also.
+
+It's a chaining.
+
+Right.
+
+So that's what why it is called then applies synchronous.
+
+If I use then apply a sync.
+
+Then the thread it will use is different.
+
+It will not use the same thread which supply async uses it.
+
+Let's run it.
+
+So for supply async it uses thread one waiting for five seconds.
+
+After that it calls this then apply method but uses some other thread.
+
+Now you can say what thread it is.
+
+Use Forkjoin pool.
+
+I told you, right?
+
+If you are not providing the executor, it will use.
+
+If you are not providing the executor, it will use by default.
+
+Which which pull the fork join pool it will use internally.
+
+It will use fork join pool so it from the fork join pool it pick the thread.
+
+But if I want to have full control over the pool executor, I will pass my executor.
+
+Hey, use this executor.
+
+Okay, now it is possible that the same thread will be done because after this thread finish it will
+
+goes back to the same pool.
+
+And it is possible that because this is our executor, right?
+
+It might pick the same thread, but at least you got that different thread generally picks that task.
+
+So supply async is done by thread one.
+
+Okay it picked the thread.
+
+So you got the difference.
+
+Uh then apply and then apply async.
+
+Now the third is Then compose, then compose, and then compose async.
+
+So the major differences that I told you when you have then apply async multiple then apply async.
+
+There is no guarantee of ordering.
+
+If you want an ordering between dependent async operation.
+
+So you have multiple async tasks.
+
+Async task.
+
+One.
+
+Async task two.
+
+Async task three.
+
+And there is dependent that after task one, task two should be started.
+
+After two, three should be started.
+
+If you need a ordering then use then compose right.
+
+So it work is to chain together dependent async operations.
+
+Means when next async operation depend on the result of the previous async operation, we can tied them
+
+together by with by, then compose.
+
+So this we can use to bring some ordering.
+
+Okay, so now let's see that.
+
+Then compose how we will do it with then compose.
+
+So this is the supply async right.
+
+If I used uh then compose here.
+
+Now again it has the same two thing.
+
+Then compose and then compose async you know right.
+
+If I use then compose what would happen.
+
+The same thread which completed the supply async.
+
+The same thread will work on this in.
+
+Then compose async a new thread will be created, but now ordering I don't have to worry about this
+
+method will take care of doing ordering.
+
+If I am putting multiple then compose right, then compose us in multiple, then compose async.
+
+Then also ordering would be maintain it internally maintains a certain kind of ordering.
+
+So now this, then compose.
+
+Let's say I'm using normal then compose.
+
+It is using this function.
+
+Function of what?
+
+This is the wild wild card right.
+
+Super T so means whatever the t and above.
+
+And this one is extends completion completion stage and below.
+
+So this is the functional interface is used.
+
+And it has done certain restriction to us.
+
+What restriction.
+
+What input.
+
+What it can accept.
+
+It can accept this T right.
+
+So this t is like whatever this returns Completablefuture returns.
+
+So here if you for simplicity, if you understand this, Completablefuture object.
+
+Completablefuture object, then.
+
+Come.
+
+Then compose.
+
+So this future object.
+
+If you see that.
+
+What is this t?
+
+This t is this string.
+
+So now here, if you see this method, this t is this string.
+
+So wildcard super T string.
+
+And above you can use it right.
+
+So my parameter would be string or above.
+
+So let's say I'm using string only.
+
+So string value.
+
+So what.
+
+What would come is hello.
+
+Now what is the again.
+
+Second part is r part which is the return type.
+
+What.
+
+Actually the return type it will does is.
+
+Extends wildcard extends Completable stage.
+
+So means Completable stage and below.
+
+Anything.
+
+Anything which is below this completable stage.
+
+So completion stage.
+
+Below.
+
+So generally these are all the Completable future is just below this one.
+
+So we can use that one.
+
+So that's where it past that.
+
+So it returns.
+
+What it returns.
+
+It returns the Completable future.
+
+Another Completable future.
+
+It returns.
+
+So we can do like anything we can pass or we can do another supplier thing because that also returns
+
+the completable future.
+
+Right?
+
+So that we can do we can do supply passing on this one.
+
+So whatever the hello we have.
+
+So let's say I am working that well plus world.
+
+Right.
+
+And I want my executor to use it.
+
+So this one pool executor then compose.
+
+Okay.
+
+So pool executor.
+
+It will be helpful when you do only a sync.
+
+So in sync only executor is there for if a sync is not there, you do not need executor right.
+
+Because the same thread, the same thread which has performed this async task will be used.
+
+Okay.
+
+So only with async this pool executor is required.
+
+If you are using compose then it is not required.
+
+So you got it.
+
+What?
+
+We are doing it here.
+
+So first I am creating a supplier sync.
+
+It has created one async task.
+
+Now on top of it I want to do dependent async operation.
+
+So this will be started only after this.
+
+So I am doing then compose so it will accept one parameter and return one thing and what it accept whatever
+
+like a string and above.
+
+So this is a string and above and what it returns completion stage and below.
+
+So this completion stage and below you might already know this.
+
+We have already covered this.
+
+How to read this question mark extends completion stage and below.
+
+And we know that completion future is the child of completion stage.
+
+So we can it has to return this.
+
+So we can return this.
+
+So we can create one supplier thing because it will generate the one completable future for us.
+
+And ultimately then compose also returns completable future so we can accept it and this object so it
+
+will return ultimately this string itself.
+
+Right.
+
+You So what?
+
+Completable.
+
+Stage you.
+
+So what?
+
+It is returning a string?
+
+Right now.
+
+No matter.
+
+So either you can write like this, or you can do like in a continuation.
+
+Like dot.
+
+Like this.
+
+Like this.
+
+You can also do.
+
+Now no matter how many you can do like this.
+
+Even like this async.
+
+Even if you have this like an async, let's say even you have now multiple this part multiple, then
+
+async ordering is maintained.
+
+First this will get completed, then this will get completed and then this will get completed.
+
+Now ordering is maintained right.
+
+Because internally if you go inside this there is something which it uses.
+
+So here it maintains certain kind of a stack of dependent actions, no matter if you are using async.
+
+So it maintains some dependent actions and only after that it will get run.
+
+Okay.
+
+So now if you want to print output, if you print it hello world all.
+
+So now this will always guarantee that it will always print.
+
+Hello world all hello world all.
+
+There is no way it will come like hello all world.
+
+So is it clear?
+
+Then compose.
+
+Then there is something called.
+
+Then accept and then accept async the same thing.
+
+Now I will.
+
+So now you already know.
+
+Then accept and then accept async async means.
+
+New thread will be created and if async is not there means same thread will be used.
+
+So generally it's an end stage in the chain of async operation.
+
+So here if you see the example here I have created a supply async here.
+
+As usual Completablefuture supply async.
+
+So this is async operation.
+
+I am passing my pool executor, then I am doing then accept.
+
+So if you see the then accept right.
+
+So here.
+
+If I do.
+
+Then accept.
+
+Okay so now this then accept.
+
+It.
+
+It's functional interfaces which accept input parameter but doesn't return anything.
+
+So generally that's why it is considered that as a end part of the chaining.
+
+So it accept one thing.
+
+So it accept is after a supply async right.
+
+So it return.
+
+So let me use that in a separate.
+
+So it would be more understanding that okay.
+
+So on this future object I am calling the next step.
+
+So it return what it has string.
+
+So it will accept this parameter.
+
+Do some task.
+
+Let's say System.out.println.
+
+Printing the value.
+
+Well that's all.
+
+But it is not returning anything so it returns void.
+
+Actually.
+
+Uh Completablefuture object let's say second.
+
+Right.
+
+But it is returning not string.
+
+It's returning void.
+
+Now if you try to let's say that hey I can chain it right.
+
+I can again chain it more.
+
+Let's say I want to apply then uh apply now in then apply.
+
+You have to use T and above the input parameter.
+
+So you have send void.
+
+Now what you will use right.
+
+So generally because this is what you have to use void and above.
+
+So you have to pass void value something that doesn't make sense right.
+
+So now it has said that hey I haven't returned any value on which you can work upon right.
+
+I haven't written anything which you can work upon.
+
+So generally that's why we call say that then except is generally used at the end of the chain.
+
+Okay.
+
+So you got it.
+
+It will just print it and it will not return anything.
+
+Async is you know that the same difference.
+
+I told you that thread only new thread it will create.
+
+The last one is you are then combined actually.
+
+Then combine and then combine async the same thing.
+
+Synchronous, a new thread will be created.
+
+New thread will be created for this and the same thread above which has been used.
+
+The same thread will go and perform this task.
+
+So I will just explain then combine.
+
+Otherwise there is a difference between the thread, so it is used to combine the result of the two
+
+comparable future.
+
+So now let's say this is one comparable future.
+
+I am creating comparable future dot supply async right?
+
+I am passing one task right.
+
+So here you can say that uh, which doesn't accept anything but it start working on this part returning
+
+ten.
+
+And then I created another Completablefuture supply async which doesn't accept anything.
+
+Right.
+
+And perform what it is returning.
+
+Kay.
+
+So there are two completable Completablefuture tasks, so it will create thread one.
+
+It will create thread two.
+
+Both are.
+
+Both will perform and this supply async will return Completablefuture integer.
+
+This will return Completablefuture of string.
+
+Now I want to combine the result so you can do it using.
+
+Then combine.
+
+So let's say I want to combine.
+
+Let's say task one async task one dot.
+
+Then you can do anyway either around.
+
+So I'm using async task one.
+
+This is also a completablefuture right.
+
+So then combine combine it with what task two.
+
+So in now in the parameter I am passing the task two with what Completablefuture you want to merge the
+
+result.
+
+And here we have to pass the.
+
+So this is a functional interface.
+
+So here if we you see.
+
+Then combine.
+
+So in then combine the completion stage.
+
+So I have passed it so we can, uh, this is the complete table.
+
+Uh completable future.
+
+Right.
+
+This we have passed now here.
+
+What?
+
+By function.
+
+So by function is t you are.
+
+Parameter one, parameter two t you and return is the output.
+
+Right.
+
+And that R is ultimately the completable future.
+
+This it will return.
+
+So t you.
+
+So this is your t this is you.
+
+And this is R right.
+
+So in the by function t you is coming as an input parameter.
+
+So t is your this one.
+
+Async task one.
+
+What is it.
+
+Return integer async task two What it is.
+
+Return a string.
+
+So this is you.
+
+And based upon that, I just did concatenate it ten k and return it.
+
+So return is again a string.
+
+This is again a string.
+
+Right.
+
+So ultimately completablefuture of string comes.
+
+So if you do this complete combined combined future object dot, get what you will get ten k which is
+
+a string.
+
+And if you print that string ten k would come.
+
+Okay so I so see like if you don't practice it this will gonna confuse it too much.
+
+I try to be this is very hard topic to explain, but I try to be in depth as much as possible.
+
+Please please please do practice it.
+
+Make your own notes.
+
+Then only you would get clear what's happening Right.
+
+So this mostly are chaining right.
+
+Completablefuture is mostly helps in chaining right.
+
+Otherwise I will tell you that in yes, we do use Completablefuture in almost all Mnx now using it.
+
+But this chaining is hardly you will find it to be used maximum.
+
+We use supply async.
+
+After supply async we do just get and wait for the result right?
+
+Very rarely you will see that we will use, then apply, then combine, then compose.
+
+Right.
+
+But still it's very important from interview perspective.
+
+But you have to practice, think about use cases, try to implement it.
+
+If you have any question let me know.
+
+We will discuss further, but practice with your hand like otherwise it would be a lot of confusion
+
+would be there.
+
+Okay guys.

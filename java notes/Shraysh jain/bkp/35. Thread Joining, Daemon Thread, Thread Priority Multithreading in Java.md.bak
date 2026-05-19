@@ -1,0 +1,1405 @@
+Hey guys.
+
+Welcome to Concept Encoding.
+
+And this is Shreyansh.
+
+And today we are we are trying to do is we will complete this part three of multithreading where I would
+
+be covering the solution for producer consumer problem.
+
+Why stop resume suspended method is deprecated.
+
+Very important.
+
+We need to understand why.
+
+What is thread joining thread priority and the daemon thread.
+
+Right.
+
+So some very important topics.
+
+So we will cover all in today's uh video.
+
+So without wasting time let's start and implement producer consumer problem.
+
+In the previous last video I have asked like can you try this implementing it because the similar type
+
+of uh, question I have shown as an example.
+
+So here what the problem says that we have two thread producer and consumer both wanted to access a
+
+shared resource which is nothing but a queue.
+
+Producer produces an item into the queue.
+
+Consumer consumes an item from the queue.
+
+All we have to do is that if the queue is full.
+
+If the queue is full, then producer has to wait.
+
+And if queue is empty, then consumer has to wait because there is nothing to consume.
+
+Right.
+
+And if it is full, there is no space to add more item.
+
+Okay, so this is the question and I have already explained you how wait notify and your monitor lock
+
+how this three works right.
+
+They are specifically to a particular object right.
+
+So I will just tell you this solution right.
+
+And hope it should be pretty clear with the previous example itself, but still you have any doubt,
+
+let me know.
+
+So here what I have done is I have created one shared resource, right?
+
+Shared resource.
+
+I have put a Q and a buffer size like what is the size of this Q you want it to be.
+
+So this is the simple constructor which I use this Q defined as a linked list.
+
+Right.
+
+So generally linked list is your unbounded right.
+
+It is unbounded collection means there is no size.
+
+So I'm maintaining the size using this buffer size.
+
+So I will keep on tracking.
+
+What is the size of this Q.
+
+And if the size of the q is reached to this buffer size which I'm providing means it is full.
+
+Okay.
+
+So this is my shared Q now here in this I have written one produce method and what it is producing this
+
+item.
+
+So but before producing first it checks that if buffer is full wait for the consumer to consume item.
+
+So now I'm checking buffer is full.
+
+So this queue size is equals to equals to whatever we have provided initially.
+
+So if the size is reached to the max capacity means buffer is full.
+
+It has to wait.
+
+Right.
+
+Otherwise if there is an item in this queue add an item.
+
+Right.
+
+And as soon as you add an item, if any consumer is waiting, we have to call notify.
+
+You know that how notify will work.
+
+Know if any thread which is waiting on this object particular object right.
+
+It will invoke it.
+
+Similarly I have created one consume.
+
+This is also a synchronized similar to produce.
+
+So before consuming it will first check if the queue is empty.
+
+You have to wait.
+
+Consumer has to wait right.
+
+Otherwise it will take one item from the queue.
+
+It will pull it up, and when it pull it up, there will be some space, uh, become free.
+
+Right.
+
+So it there might be a chance that some producer thread is waiting.
+
+So it will call notify.
+
+If any producer thread is waiting, it will invoke it up.
+
+Right.
+
+So this is the produce and consume message or shared resource I have put now here.
+
+If you see that in the main class I have created one thread produce thread producer thread.
+
+Right.
+
+So how I am creating is using this lambda expression.
+
+So I am creating uh thread using runnable interface.
+
+Right.
+
+So runnable interface is a functional interface.
+
+So I am passing it through lambda expression.
+
+So I'm creating one producer thread.
+
+And what I am trying to do here is for it is producing it.
+
+It is calling.
+
+So I created one shared object, this shared object which is of size three, right?
+
+So I am pass the size as three.
+
+This is buffer size is three, right?
+
+So this object is used by both producer and consumer.
+
+And producer is using this to produce item six items.
+
+It will produce it.
+
+Consumer I created one more thread consumer.
+
+Consumer thread is consuming it.
+
+Try to consume six items.
+
+And here I am starting it.
+
+So now what would happen is let's say I add this main first.
+
+Here I created one shared buffer object.
+
+So now let's say I have created one resource.
+
+So in this shared buffer let's say it has a queue of size three right.
+
+So this is your inside a.
+
+Shared buffer object.
+
+Shared buffer object inside has a queue, right?
+
+So this is your queue.
+
+Okay.
+
+Of size three.
+
+Okay.
+
+Then what we have created, we have created one producer thread.
+
+So we have created one.
+
+Producer thread.
+
+Okay.
+
+We have created one consumer thread.
+
+So here we have created one.
+
+Consumer thread.
+
+And now we are starting both.
+
+And when the producer thread is started what it will do it will try to produce.
+
+So it will try to produce.
+
+And what consumer thread is trying to do.
+
+When the consumer thread is started.
+
+So consumer thread what it is trying to do.
+
+It is trying to consume.
+
+It is trying to Consume, right?
+
+And whenever it will produce.
+
+So it will always put a lock.
+
+Synchronize method.
+
+Always put a monitor lock on what?
+
+On the shared buffered object.
+
+Right.
+
+So any one of them will always get a lock whether they are calling produce or consume.
+
+Right.
+
+Because even though they are different method, they are working on a same object, right?
+
+So any one, only one of them can get a lock and either try to do produce or either try to do consume.
+
+Okay.
+
+So now based on this.
+
+So just say that for example consumer thread is started first.
+
+So this is started first right.
+
+So at first is there any data item present into the queue.
+
+It is empty.
+
+There is no data present.
+
+So what it will go.
+
+It will go and wait state.
+
+So it is empty.
+
+So what it will do.
+
+It will wait.
+
+It will wait.
+
+Now let's say second produce item goes inside, right?
+
+Produce item goes inside.
+
+And whenever the thread goes into wait state, it will release all the lock, all the monitor locks.
+
+So this lock will be released which was held by Consumer first and now producer let's say goes inside
+
+producer.
+
+What it will do producer will try to produce it right.
+
+So there is a size.
+
+Yes, it is totally empty.
+
+It will add an item.
+
+So it will add an item and what it will call notify.
+
+So if any thread which is waiting it will come out of it and it would be awake again.
+
+So it will again uh racing for the lock and try to consume.
+
+Okay.
+
+So I think that is uh, should be pretty much clear if you are well understood, the concept of wait
+
+notify monitor lock in the previous video.
+
+If you have any doubt, let me know.
+
+But please, please try to implement it with yourself, then only it will clarify you with much better
+
+understanding.
+
+Okay, so this is how I implemented the producer consumer problem.
+
+Now let's move ahead with the.
+
+So this is just an output.
+
+But you can implement your own and see the output out because threads run can be different.
+
+Right.
+
+So your output could be different.
+
+But please implement it now.
+
+Very very important interview question like in the multithreading can you use stop resume or suspend
+
+method.
+
+We can but it is not.
+
+You can say that promoted that you should use because these are deprecated method.
+
+Why stop resume and suspended method are deprecated.
+
+Very important.
+
+So stop and suspended.
+
+What they do is so stop terminates the thread abruptly, right?
+
+So you know that thread life cycle.
+
+So whenever thread life cycle there is, the last state is called terminate.
+
+And when the last state reached terminate means thread dies.
+
+There is no way thread can be invoked again with wait.
+
+Thread is in wait state and can come back to active state when we call notify right with Thread.sleep
+
+thread is in.
+
+You can say that inactive state for some time and as soon as the timer finished it again goes to active.
+
+But when you call stop on a thread it will terminate the thread abruptly.
+
+Right means the thread dies and when we say abruptly means no lock release, no resource cleanup happen.
+
+That's the problem with the stop.
+
+So you know that when I told you, right?
+
+Whenever a thread goes to wait, whenever you call Wait, it releases all the monitor lock.
+
+So any lock which is acquired by a thread and it is, we are calling wait on it.
+
+It will release that lock so that others can go inside.
+
+Other can acquire the lock.
+
+But when you are calling the stop no lock release happened.
+
+It just dies and that lock remains present.
+
+It can cause a deadlock situation.
+
+Let's say thread one has acquired lock.
+
+Lock on resource one.
+
+Thread two is waiting for resource one to get free.
+
+Now this thread one got suspended or stopped.
+
+Let's say thread one got stopped means it dies.
+
+And when it dies, the lock is not released.
+
+It is terminate the thread abruptly.
+
+So that's the problem.
+
+It could.
+
+So show this thread too.
+
+Will keep on waiting now.
+
+Similarly, problem with the suspend suspend is like a wait.
+
+Generally you can say that.
+
+So suspend is like put the thread on hold, but only difference between wait and suspend is that in
+
+wait it releases the monitor lock.
+
+But here in suspend it, no lock is released.
+
+And that's why suspend method is also deprecated.
+
+And it is always to tell that use wait or notify instead.
+
+Rather than suspend and resume.
+
+Resume method is used to invoke the thread which is in suspended state used to resume the execution
+
+of suspended thread, but since suspended is deprecated, resume has to be deprecated too because it's
+
+like wait notify.
+
+It's like resume suspended.
+
+So since suspend, do not release any lock right.
+
+It could lead to a deadlock situation.
+
+And that's why it is deprecated.
+
+And since resume is used to make the thread active of the suspended thread, it has to be deprecated.
+
+Okay, so now let's see an example of it.
+
+Let's implement this with an example.
+
+So let's say that what I'm trying to let's try to make this scenario.
+
+Let's implement this uh main let's say thread one.
+
+Thread two.
+
+So what say that.
+
+Let's say main started.
+
+So let's say this is thread one th this is thread two.
+
+So at time one main started at time two, thread one and thread two created.
+
+So this is in created.
+
+This is created.
+
+Okay.
+
+Now what we wanted is.
+
+So let's say thread one acquire lock Thread two is required.
+
+Lock on resource one.
+
+Thread two is waiting for resource one and then thread one got suspended.
+
+We want to implement this scenario.
+
+So thread one should take the acquired lock first.
+
+So now at time T3 right.
+
+What we will do first are start.
+
+Thread one and thread two.
+
+So they both will start at T3.
+
+So what it will do is at T3 it will acquire.
+
+Lock.
+
+So this is the shared resource let's say.
+
+This is the resource R1.
+
+Acquired lock R1 at T3.
+
+I will make this sleep for one second so that it will not try to reach this.
+
+So log has been taken by.
+
+Thread one.
+
+Right.
+
+So thread one we will make it at tea time three.
+
+At t four what we will do is after.
+
+Uh this sleep one second finish.
+
+Let's say this will acquire lock.
+
+Now acquire lock.
+
+Try.
+
+Try to acquire lock R1.
+
+Right.
+
+So it will also try to lock.
+
+So it is in.
+
+So in the queue.
+
+You can say that.
+
+Who is waiting now.
+
+Currently waiting for lock to release.
+
+Thread two.
+
+Thread two is waiting for lock to release.
+
+So now it is waiting, right?
+
+Let's make it read that it is waiting.
+
+This is waiting currently because the lock is already acquired to thread one and now it is also wanted
+
+the lock.
+
+So it is now in waiting because the lock is not yet released.
+
+Now what we will do at T5 this main thread will suspend.
+
+T1 thread one so this will get suspended.
+
+This will get suspended but the lock it will not release and thread two will be now in deadlock state.
+
+It will just keep on waiting for the lock right.
+
+So now let's implement this.
+
+Let's try to implement this.
+
+Okay.
+
+So let's create one class call it shared resource.
+
+So in this shared resource, what we can have is like, um, same let's say boolean is.
+
+Available equals to false and I will I'm just creating one method like say public synchronized wise
+
+produce it say is available equals to true.
+
+Let's say this is the method.
+
+This is the method they both want to actually call.
+
+This will use a lock.
+
+Now let's say that whichever acquired a lock.
+
+So I will put
+
+System.out.println lock acquired.
+
+And here I will put that.
+
+Lock released.
+
+And between lock acquired and released let the thread uh sleep or keep the lock for at least eight 10s.
+
+So let's say that I will put thread dot sleep for let's say.
+
+Eight seconds.
+
+So eight seconds thread will sleep.
+
+Sleep.
+
+Handle some exception here okay.
+
+So this class is simple right.
+
+So I have created one method like whichever calls this they will first acquire a lock.
+
+Right.
+
+And when the lock is acquired it will do some of its work.
+
+So let's that's why I have kept it for eight.
+
+Second you hold this lock or sleep because you know that this sleep method do not release the lock,
+
+so it will hold the lock for eight second.
+
+After eight second it will release the lock and comes out of this method.
+
+Now I have to create the threads.
+
+So this is the main method.
+
+So now first let's create an object of the shared resource.
+
+Resource.
+
+Now on this shared resource both to both the threads will work on right.
+
+Both the threads will work on.
+
+So this is currently our main thread which is just started.
+
+So here I'm printing main thread started okay so main thread is started.
+
+So this is started.
+
+Now we have to create two thread.
+
+So I am creating thread thread one new thread.
+
+I'm using a lambda expression to create it.
+
+What it has to call it uh has to acquire the lock.
+
+Right.
+
+So actually it has to call is uh produce method.
+
+Okay.
+
+So here I would uh put System.out.println.
+
+That's it.
+
+Thread one.
+
+Calling produce method.
+
+Right.
+
+So it is calling produce method.
+
+But lock is not acquired.
+
+Lock will be acquired one once only.
+
+It will go inside this.
+
+But it is just calling the method.
+
+Now we are creating another thread.
+
+Thread two new thread.
+
+So what this thread two has to do.
+
+First, it has to wait for some time so that thread one can start.
+
+First can acquire the lock.
+
+So I will make it let's say.
+
+Sleep for one second and after it wake up from the sleep after it wake up from the sleep.
+
+It will call on the same resource.
+
+It will call the same method it wanted the log also.
+
+Right?
+
+So this is also.
+
+Now thread two is calling the produce method.
+
+But thread one has already will acquire the lock first and it will hold it for eight second.
+
+And now thread two is waiting for the lock.
+
+So now thread two will waiting waiting for the lock.
+
+Try to acquire the lock, but it is waiting now.
+
+So now let's start this.
+
+Thread one dot start.
+
+Thread two dot start.
+
+So both will start.
+
+So both will start right.
+
+So both will perform their operations.
+
+But some main has to suspend it also.
+
+Right.
+
+Main has to suspend this thread one.
+
+So I will keep this main at least wait for some time.
+
+Let's say I'll keep it.
+
+Let's say for two second wait and let them.
+
+Thread two comes out of the sleeve and call this method.
+
+Let's say wait for three second.
+
+After three second.
+
+What main will do?
+
+It will call thread one dot suspend.
+
+See here it is deprecated method, but let's call it suspend.
+
+So here I am printing that thread.
+
+One is suspended thread one is suspended right.
+
+And here main is main is finishing main thread.
+
+Is finishing its work.
+
+So main thread will go out of its task.
+
+Okay so let's run this and see this.
+
+Let's running.
+
+Let's see that.
+
+So main thread is started.
+
+So first main thread is started okay.
+
+Then what happened is we created two threads.
+
+And when we call thread one start.
+
+Thread two start.
+
+So let's say thread one start thread one calling produce, thread one calling produce method and thread
+
+two is waiting for one by the time.
+
+And here if you see that lock acquired.
+
+So it acquired the lock but it hasn't released it, it it is now sleeping for eight second.
+
+By the time thread two comes out of one second sleep and it is also calling the produce method thread
+
+two calls produce method thread two calling the produce method.
+
+Now thread two is waiting for monitor lock to release right?
+
+Because currently thread one is inside this sleeping.
+
+It is sleeping right?
+
+It is lock is not yet released.
+
+Now, before the thread one finishes its work, what it does is that thread one is suspended, thread
+
+one is suspended and main thread is finishing its work.
+
+Main thread has completed its work.
+
+But if you see that thread two is in a state where it is calling produce method so it never get acquired
+
+the lock and it never releases the lock.
+
+Also right, because it haven't acquired because it.
+
+Thread two hasn't gone inside this inside this method because the lock is not yet released.
+
+The lock which is hold by thread one, thread one has acquired the lock, now it is suspended.
+
+This lock is not yet released.
+
+So thread two is just inside this waiting.
+
+Okay, so now let's say that, uh.
+
+Here if after.
+
+Thread, let's say wait for another three second.
+
+Now it can call resume.
+
+Resume is also deprecated.
+
+But what resume will do is it will activate the suspended thread.
+
+So now let's say.
+
+So here now let's say that main thread is started thread one calling produce method.
+
+And it will call the produce method.
+
+And it will also acquire the lock also.
+
+Now it is sleeping right.
+
+Lock acquired.
+
+Now thread two comes out of the sleep and it also calling thread two calling produce method.
+
+But here thread one already acquired the lock so it is waiting.
+
+Now thread one is suspended.
+
+Thread one is suspended.
+
+Now a thread.
+
+One is suspended.
+
+What happens is that.
+
+Lock is not released.
+
+So here if you see that the thread two cannot go inside it, thread two cannot go inside it.
+
+So after waiting for three seconds, what means does is resume this and as soon as it resumes it, what
+
+it does is lock release.
+
+So the thread one which acquired the lock first it resumed, it completed its eight second, it releases
+
+its lock, then the thread two, which is waiting for the lock.
+
+Now it is acquired the lock and then it releases the lock also.
+
+So resume is that I told you that resume work is to make activate the suspended thread again.
+
+But now you might have noticed that when if you are not resuming it, if you have just suspended it,
+
+thread two is just keep on waiting.
+
+It never acquired the lock itself.
+
+So here, if you see again, you will get to know that when the thread one is suspended main, just
+
+finish its work, right.
+
+Because we haven't, uh, resume it back.
+
+So thread two is waiting.
+
+If you see that the program is not stopped.
+
+I have to stop it.
+
+I have to manually stop it because thread program is still running.
+
+Thread two is waiting.
+
+So I hope you got it right.
+
+Why?
+
+The stop, suspend and resume is deprecated and I think you can implement it by yourself.
+
+Also to see the it is does not release lock.
+
+Okay now let's see what is thread joining.
+
+So thread joining is like when join method is invoked on a thread object.
+
+Current thread will be blocked and wait for the specific thread to finish.
+
+What does it mean?
+
+So here in the same example if you see that.
+
+Okay, so here if let's say what happening here at this point of time.
+
+Main method the main thread main thread is started right.
+
+So what main thread is.
+
+So let's keep it simple like uh we will keep it simple not thread two.
+
+Right.
+
+So let's keep it very very simple I will explain you with that.
+
+So here I have one main thread this main thread one thread one right.
+
+And it is calling the produce method which is taking eight seconds right to complete its work.
+
+Now here we don't want to suspend.
+
+Now what if does?
+
+Uh, so as soon as the main thread make it a start thread one start main thread can finish his work.
+
+Right.
+
+So it's like this.
+
+Main started it.
+
+Created thread one.
+
+It start thread one and it finishes off.
+
+Now thread one can start working on its own.
+
+Okay.
+
+But what does join?
+
+Does join says that if I make this like hey thread dot join thread one dot join.
+
+So what I'm telling is hey main thread, you should wait for thread one to finish.
+
+Don't terminate before itself, right?
+
+So you should wait for thread one to finish, right?
+
+So no matter how much time thread one takes so it will keep on waiting.
+
+Join.
+
+So main thread is waiting and as soon as thread one completed its work, now main is start working again.
+
+So here before join, let's say if I run it, what you will see main thread is started.
+
+Okay then after that it created the thread and it started.
+
+So it will thread one calling produced method or before that it just after starting itself before thread
+
+one get the control main thread is finished its work right, main thread is finished, it work and now
+
+thread one is running thread one calling produce method.
+
+Then it acquired waited for eight second and then put lock release.
+
+But I don't want main thread to finish.
+
+I want it to wait it for thread one to complete its task.
+
+So I can say that thread one dot join right?
+
+So let it wait for.
+
+So what I'm saying is telling the main thread that whatever current thread it is running, I'm telling
+
+that wait for this thread to complete.
+
+So here let's put a main.
+
+Main thread is waiting.
+
+For thread one to finish now.
+
+So now let's run it again and then see.
+
+Main thread is started and main thread now reads here.
+
+Main thread is now waiting for thread one to finish.
+
+Now here.
+
+If you see that, does it finish its work?
+
+No, it is now waiting for thread one.
+
+Now thread one has called produce method inside produce method it called lock acquired.
+
+Wait for eight second lock release whatever time now thread one is taking after thread one has completed
+
+its work, right?
+
+This joint is like now automatically inside that it makes the main thread activate again and main thread
+
+start working again.
+
+Main thread is finished.
+
+It's working.
+
+Finish its work.
+
+So you got it right.
+
+What this joint does is it makes the current thread wait for any particular thread to finish.
+
+And its advantage is it is helpful when we want to coordinate between threads or to ensure we complete
+
+certain tasks before moving ahead.
+
+So before moving ahead, I want that certain tasks to be completed.
+
+Let's say thread one, thread two, thread three.
+
+I want at least thread one and thread two to complete before I proceed further so I can wait.
+
+Thread one, thread two dot join I am waiting for those two to complete, and as soon as those two threads
+
+will complete, I can proceed further, right so give me more control if you have any dependency on
+
+a particular thread.
+
+Right.
+
+You don't have to worry about wait.
+
+Notify how you would know that the thread is complete or not.
+
+So this join let you code build a coordination between threads that okay, once you finish it up let
+
+me know.
+
+I will start after that.
+
+So you got the join right?
+
+You see the example and try it out.
+
+There is another called thread priority right.
+
+So here if you see that whatever the thread which you which you are creating, let's say thread one
+
+I created so you can set its priority, let's say thread one dot set priority.
+
+So priority is going from 1 to 10.
+
+So one means low priority and ten means high priority.
+
+So you can define that priority there.
+
+Or if you want to define the max priority, there is something called thread dot max priority right.
+
+Minimum priority one norm priority is five.
+
+Max priority is ten.
+
+So what does priority says that here is it is an integer ranging from 1 to 10.
+
+One is the lowest priority.
+
+Ten is the highest priority.
+
+So even if we set the thread priority while creation, it doesn't guarantee to follow any specific order.
+
+Let's say I have created thread one, thread two, thread three, thread four four.
+
+Thread I have created and I have given the priority.
+
+Let's say I've given it's five four, it's given it's ten and it's given as one.
+
+So I've given the priority.
+
+So you might be expecting that okay.
+
+Now highest priority will be picked first.
+
+So T3 will pick first after that T1 after that T2 after that last is T4.
+
+This is the sequencing.
+
+You might be thinking, right, because you have defined the priority.
+
+But no, that's what it says that JVM doesn't guarantee to follow any specific order.
+
+It just a hint to the thread scheduler which to execute.
+
+Net, but is not a strict rule.
+
+Sometimes you might see this order right?
+
+It's just you can say that hint right?
+
+This is a priority.
+
+Try try if you can give more priority to this thread.
+
+Right.
+
+But it never guaranteed.
+
+You might see this sequence.
+
+You might not.
+
+Okay, so never rely on thread priority.
+
+I would say that in production in whenever you are coding right in, you will never see anybody using
+
+the thread priority, right?
+
+And in the interview also if anybody asks you that hey can you rely on thread priority and will you
+
+use it?
+
+No, because it doesn't provide any guarantee to follow any specific order.
+
+It's just a hint to the thread scheduler that okay, if you are thinking that, which one to pick out
+
+of this two thread.
+
+Next, it is a hint that this thread has high priority, but maybe thread scheduler has some other priorities
+
+and it might decide to pick thread four, right?
+
+So it's not in our end, it's just a hint we can provide to thread scheduler, but it doesn't put guarantee
+
+or strict rule on thread scheduler.
+
+So when new thread is created, it inherits the priority of the parent thread.
+
+Right.
+
+So here let's say main main thread has.
+
+Let's say by default priority has five norm.
+
+And if any thread you are creating out of it, it is also has by default five only.
+
+If you want to set a custom priority, you can call this method.
+
+As I mentioned here, set priority.
+
+You can tell any priority, let's say ten for anything.
+
+But I would again say that never rely on thread priority.
+
+It's many times if ten times you will run right, nine times you will see that this sequence is not
+
+even followed.
+
+Maybe one time you can see the sequencing, right?
+
+So avoid using thread priority overall.
+
+Okay then we have daemon thread.
+
+Very very important.
+
+So what is daemon thread now.
+
+So first of all let's understand the word daemon.
+
+So this daemon word is used a lot in the industry.
+
+So we have daemon components.
+
+We have daemon this what does daemon means.
+
+Daemon means something something which is running in a sync manner.
+
+Something which is running a sync asynchronous right behind it is running.
+
+That's known as daemon.
+
+Right.
+
+So what does daemon thread is so now.
+
+So there are two type of thread user thread and daemon thread.
+
+Whatever the thread which we are creating till now that is considered as user thread.
+
+And whenever you want to create a daemon thread, you have to set a variable that.
+
+So there is something called thread one dot is a daemon.
+
+So there is a something called is daemon set daemon.
+
+So we have to make it true.
+
+So then only it would be considered as daemon thread right.
+
+So whatever the thread you want to make it as a daemon, you have to make it true.
+
+Then only it will be considered as daemon, otherwise it will be considered as user thread.
+
+Now what does daemon thread means?
+
+Now let's say you have a main method.
+
+It is and main thread.
+
+So main thread is running now.
+
+From here you created one thread one till now.
+
+Whatever we are creating, right?
+
+I created thread one so this would be considered as your user thread, right?
+
+Now let's say that uh here inside this I am creating another thread.
+
+It is possible or let's say simple example not let's take another level of thread.
+
+Let's say your main thread itself is considered as user thread.
+
+Right.
+
+This main thread is started now I am creating a thread one calling it as a demon demon thread I am setting
+
+for this thread.
+
+I am setting set demon equals to true.
+
+Now what will happen is this demon thread will also start working.
+
+But what is the difference between user thread and demon thread?
+
+Is that so?
+
+Now after starting this your main thread again start working right?
+
+So it just initiate one thread and that thread will also start working.
+
+Your main thread will continue.
+
+Start working as soon as your user thread finished.
+
+Working your thread will also get stopped, right?
+
+So daemon thread is alive till.
+
+Any one user thread.
+
+Is alive.
+
+If all user thread is finished, execution daemon thread will also stop, right?
+
+Generally what happen is that if you have a main method, you create a thread like a user thread, and
+
+if main thread stop working, that's okay.
+
+Thread one will continue working.
+
+It will not stop, right?
+
+But when.
+
+But if you define it as a daemon, if this all user thread finished working, this will also get stopped.
+
+Let's see an example of it.
+
+So here I have.
+
+So this is my main thread started right.
+
+So this is my thread one created.
+
+Now let's say this is the normal thread.
+
+And uh this is the normal thread which is doing some work and waiting for eight seconds.
+
+And I'm starting this thread.
+
+So we don't have to wait for this thread and main thread is finished working off.
+
+So now if you are creating.
+
+So this is also a user thread now.
+
+So our expectation is that even if the main thread is finished working thread one will continue working.
+
+It will not stop.
+
+So we know this.
+
+This is the expected behavior.
+
+Main thread is started.
+
+Main thread is finished working its work.
+
+So main thread gone.
+
+Main thread now have started the thread.
+
+So now thread one will work.
+
+Thread one calling produce method.
+
+Acquire the log waited for eight second release it so thread one will complete take its own time, get
+
+it completed.
+
+But let's say that if I created this thread one set demon to true right now, let's see what happens.
+
+Now.
+
+Uh, let's see that.
+
+Main thread is started.
+
+Main thread is finished working right by the time Parallely.
+
+It also called produce method lock acquired.
+
+Now as soon as uh, this done all user thread finished working also.
+
+So here if you see that it didn't waited for eight seconds and the lock is also not released kind of
+
+thing, so means that demon thread is also get destroyed, right?
+
+All log release.
+
+Everything happened.
+
+Daemon thread is destroyed, right?
+
+So daemon thread is only alive till any one of the user thread is alive, right?
+
+So by the time main thread started, right.
+
+Then it started the thread, right?
+
+So parallelly thread is also started and it also completed its work.
+
+Right?
+
+So it acquired the log and before it finished it off main finish its main thread finishes it.
+
+And that also done daemon thread is also died.
+
+So you got it right.
+
+What is daemon thread and you know that why the daemon thread is useful.
+
+So daemon thread is useful.
+
+So it is useful for couple of tasks.
+
+You know that uh, Java garbage collector one good example.
+
+So if you see the examples right.
+
+Garbage collector is a kind of a daemon.
+
+So JVM has a daemon thread for a garbage collector where your program is running, and while it is running
+
+garbage collector in the background it can go and release and free the memory.
+
+Similarly, you can know that autosave you have autosave right in the editor while you are typing or
+
+while you are working.
+
+This autosave is working as a daemon thread like it will get invoked, right?
+
+And it uh, what it will do is it periodically save it.
+
+But as soon as your program finishes, that daemon will also get done.
+
+Its life is also finished.
+
+So autosave.
+
+Uh, garbage collector.
+
+These are very good examples of, uh, this daemon thread.
+
+And it is important, like, uh, if you also want to do logging while your code is running, while
+
+your program is in running mode, you should be able to do the logging only that time.
+
+Right.
+
+So you can create one daemon thread and it it will take the task of logging it.
+
+Things up.
+
+But as soon as your program finished working, daemon is also stopped working.
+
+Right?
+
+So logging is also one of the tasks which daemon thread can perform.
+
+So here, if you see that daemon thread is very popular and very big or important task is generally
+
+handled by them logging, garbage collector, auto saving, right.
+
+And more.
+
+So yes, this is for the today's topic.
+
+I hope daemon threads thread priority line and this.
+
+Why this top resume suspended method is deprecated and the producer consumer right.
+
+It should be super clear right?
+
+I I hope so.
+
+But if you have any doubt, please let me know.
+
+Uh, we will discuss more.
+
+Thank you guys.

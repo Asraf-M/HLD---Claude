@@ -1,0 +1,891 @@
+Hey guys welcome to Concept in Coding and this is Shreyansh.
+
+So in the first part of the video of the interface we have already covered this right.
+
+So today I will cover this Java eight features and Java nine features.
+
+So today I will cover this.
+
+So this was covered in the first part.
+
+So today I will cover this plus this two.
+
+Functional interface and lambda expression I will cover totally in one video because this is very very
+
+important right.
+
+So I don't want to mix with other topics.
+
+So I'll cover this important topic in a separate video itself.
+
+So today we will see the Java eight features default method, static method and Java nine interface
+
+features, private methods and private static method.
+
+Okay, so let's go ahead to the default method okay.
+
+So now let's understand this.
+
+What is default method now.
+
+So by this time you already know how to create an interface.
+
+And you know one thing that interface can only have.
+
+Abstract method before Java eight.
+
+Before Java eight interface can only have abstract method.
+
+And all the child classes has to provide abstract method implementation.
+
+This is what we have studied till now.
+
+But Java eight has bring this feature of default method.
+
+I will tell you, is this a feature or this is kind of a you can say it's an ah kind of gap filling
+
+or bug fix.
+
+You can say that not a bug fix, but it's mostly a improvement of a long gap which Java has.
+
+I'll tell you how.
+
+So now let's see first with an example, uh, how to define a default method.
+
+So this is what we have known.
+
+We can easily create an interface public interface bird.
+
+It has one abstract method.
+
+So this is you know that it's a by default abstract method.
+
+Even though I haven't written any abstract method here by default, you know that it's an abstract by
+
+default.
+
+Internally it has an abstract method.
+
+So this is an abstract method.
+
+And all the child classes which are implementing this, which are implementing this bird has to implement
+
+this can fly.
+
+So now I have two child classes here.
+
+One is eagle which implement this bird.
+
+So it has to implement the fly method.
+
+Another is Sparrow.
+
+It is also implementing the bird.
+
+It is also has to implement the can fly method.
+
+Now just understand from this perspective.
+
+If in future you got a request that we have to add a new method here, add new method added in the interface
+
+need to change in all of its implementation.
+
+So now let's say earlier it was only can fly and all the classes which implement this interface has
+
+implemented the can fly.
+
+But now request comes and I have to add this method also get minimum fly height of a bird.
+
+So because this is also an abstract if interface can only have an abstract means all the child classes,
+
+all the classes which have implemented this interface has to be changed and implement this method.
+
+So Eagle also has to implement this.
+
+Sparrow also has to implement this even though the code functionality is same, right?
+
+Even though the code functionality is same, they have to implement this one.
+
+So that is one of you can say that disadvantage of an interface, right?
+
+Or you can say that this is one of the gap.
+
+Right.
+
+So you can know that.
+
+Why the default method has been introduced at the first place to resolve this gap.
+
+So now how default method is solving this issue.
+
+So I have a bird I have an abstract method.
+
+Okay I have an abstract method.
+
+So all the classes which implement this bird has implemented the abstract method.
+
+So fly is an abstract method here right.
+
+So Eagle has also implemented the abstract method.
+
+Sparrow has also implemented the abstract method right provided the implementation of the abstract method.
+
+But now a new requirement comes that hey, we need this need to add this new method.
+
+And this new method is common for most of the classes, right?
+
+So now in the Java eight you can add a method and provide its implementation.
+
+Also, you can provide its implementation.
+
+Also.
+
+All you have to put is a default keyword here, right?
+
+With just a default keyword, you can able to implement the method here.
+
+And you see that we don't have to implement a get minimum fly height over here and over here.
+
+Right.
+
+And even with the Eagle the so here now let's say how to use it.
+
+I am creating an eagle object, this class object which implements the bird.
+
+I am creating an eagle object.
+
+Right.
+
+And when I am creating an eagle object with this eagle object itself, I am able to call this method.
+
+So even though we are not adding it here, it's internally been added and it's able to access it, right.
+
+So that's what default is.
+
+You don't have to default method.
+
+You can provide the implementation in the interface itself and you don't have to implement those into
+
+the classes which implement that interface.
+
+That's what default is.
+
+But now you can say that hey, why in Java eight suddenly they get this requirement.
+
+Why not in Java seven and all before that.
+
+Also why in Java eight only they think that okay default method has to be introduced.
+
+I'll tell you why.
+
+So this is my theory.
+
+So in Java eight they have come up with a feature called stream right.
+
+So now here if you see.
+
+Now here if you see.
+
+Our test object dot stream.
+
+So this stream is a Java eight feature right.
+
+So now here if you see that stream is added into which class, this method is added into which class.
+
+it's an added into interface of collection.
+
+Now, since it's an interface or this feature has been stream method has been added into an interface.
+
+See how much implementation are there for this interface?
+
+See how many how many implementation?
+
+If in Java eight they have to add a new method into this interface.
+
+So they have added stream.
+
+If they have added stream and then semicolon, then you know that in how many classes they have to implement
+
+this in how many classes, they have to provide an implementation for this stream.
+
+You know that.
+
+Why now they have thought that okay, how to solve this now.
+
+So I think that's why they have come up with this.
+
+Put a default.
+
+So now they have put the stream as a default so that they now don't have to provide the implementation
+
+is all of those classes.
+
+Okay.
+
+So I would say that default is why they have suddenly introduced in Java eight because stream was introduced
+
+into the collection interface.
+
+And in the collection interface.
+
+There are so many classes which implement this collection interface.
+
+If you are adding a new stream method here, then you have to add touch all the classes, add stream
+
+implementation just to save this.
+
+And to solve this, they have made default so that only this class is touched and provided default implementation
+
+here and everybody can use it.
+
+It's a common functionality.
+
+Okay.
+
+So that's what I understand with it why the default matter was default method was first introduced to
+
+add the functionality in the existing legacy interface, we need to use a default method, for example,
+
+a stream method in collection.
+
+I showed you how.
+
+Okay so basic you understand default method.
+
+Now let's see couple of problems which can come and what all things you can do with default this thing
+
+in an interface.
+
+Now you know that a class can implement many interfaces, right?
+
+A class can implement many interfaces.
+
+So now let's say I have one interface and I have created a default method with name can breathe, a
+
+bird can breathe I have a method can breathe.
+
+And it's a default I have an implementation.
+
+I have created another interface called Living Thing and it also has the same method can breathe.
+
+This is also default.
+
+Now I am creating one class which implements both.
+
+Now you know that what's gonna happen can which default method will get invoked ultimately, when Eagle
+
+object will be called Eagle object equals to new eagle.
+
+So I have created an eagle object.
+
+And object dot can breathe which one it will invoke.
+
+Right.
+
+So this thing will not work out.
+
+So that's why it's an error over here.
+
+So whenever you have a case like this you have implementing have multiple interfaces.
+
+And they have the default method with the same name.
+
+You have to provide an implementation in that case only okay.
+
+So then it's a mandatory to provide the implementation.
+
+You got it.
+
+Now let's see how to extend an interface.
+
+So you know that you have an interface.
+
+And another interface can also extend it.
+
+extended.
+
+So what?
+
+All things can be done if it has default method.
+
+What all this interface can do.
+
+So there are three ways.
+
+So first way let's see the first way.
+
+Simple.
+
+I have an interface living thing and has one default method can breathe.
+
+Simple.
+
+Very simple with just one default method and interface.
+
+Now you know that another interface can extend from the interface parent interface.
+
+So this is the parent now.
+
+And this bird interface extended from the parent interface.
+
+So first way is bird does nothing.
+
+Means it doesn't touch or do anything.
+
+It keep it default method as it is like it doesn't touch anything.
+
+So by default.
+
+When you have another class Eagle, which implements bird.
+
+Right.
+
+So it just.
+
+You can say that all has the capability.
+
+All has this default method.
+
+So now when I created an eagle object Eagle Eagle object equals to new eagle.
+
+I can easily access this method.
+
+Easily access this method.
+
+So one way is the interface.
+
+The child interface do not touch the parent default method.
+
+So it would be just a cascading.
+
+And the ultimate child class will get all the capabilities of it.
+
+It still can access it.
+
+What is the second way?
+
+The second way is so this is the parent interface.
+
+It has one default method.
+
+It has been extended by the child interface.
+
+Now here what it has done is it make it a default.
+
+So it created one.
+
+Sorry.
+
+It created an abstract.
+
+So with the same name, with the same name, it create an abstract method.
+
+It create an abstract method.
+
+So now what ultimately will happen is this method also become abstracted.
+
+Okay.
+
+So now I have created a.
+
+Eagle class which implements the bird.
+
+So now it has to implement this method.
+
+It has to provide the implementation because this is now abstracted.
+
+Even though can breathe is default into the living thing.
+
+But the interface the child interface has made it abstracted.
+
+So any class which is implementing this bird now has to provide an implementation.
+
+So this is the correct.
+
+So now Eagle has to provide the implementation.
+
+Why.
+
+Because the bird has made the same Method as an abstract method, right?
+
+Can breathe.
+
+Even though it is a default into the parent one.
+
+Right?
+
+So this is the second way where the interface has the capability to create a same method as an abstract.
+
+Then all the child classes also has to provide the implementation.
+
+Okay.
+
+What is the third way.
+
+So this is interesting.
+
+So I have a parent interface.
+
+Parent interface has one default method.
+
+Simple.
+
+Now I am creating one child interface.
+
+Now child interface is overriding this.
+
+So means it is also providing the implementation its own implementation.
+
+So can breathe default.
+
+So it is also providing can be default.
+
+It is now overriding it kind of thing.
+
+So this is overriding.
+
+It is doing so it can add its own implementation.
+
+Plus it can also use the implementation of the parent interface also and add certain more functionality.
+
+So I can use this living thing.
+
+The parent interface name dot super dot its method name default method name can breathe.
+
+So with this it will first call.
+
+This.
+
+So means this will get called and whatever.
+
+Now you can add more functionality, add more functionality.
+
+Or if you want to totally add a new functionality, you can totally add a new functionality.
+
+If you don't want to use it, you don't write it.
+
+But if you want to use this code base, also you can use like this the interface name dot super and
+
+the default method name you can access.
+
+So this code will get executed first.
+
+After that you can add more code.
+
+So this is known as overriding.
+
+So these are the three ways, right?
+
+And through which during interface extend you can play with the default method.
+
+Okay.
+
+So I think default method should get clear right.
+
+So do practice once.
+
+So it's very easy but it's a different use cases.
+
+It's better to know all these different use cases right.
+
+So now let's check with another Java eight feature.
+
+So default was one Java eight feature.
+
+Now let's see.
+
+Another is static method.
+
+So with static method also we can provide the implementation of the method in interface through default.
+
+Also you can provide an implementation of a method through static.
+
+Also you can provide an implementation right.
+
+But there are certain constraint constraint like it cannot be overridden by the classes which implement
+
+the interface.
+
+Right now here I am creating a class which implements the bird.
+
+Now it cannot override.
+
+This can breathe.
+
+It's not possible, right?
+
+It can just use this with the interface name because it's a static right.
+
+You know that whenever the method is static, it can be accessed by the class name.
+
+So here in this interface it can be accessed by an interface name.
+
+So now let's say in the class which implementing this interface bird I cannot override this here or
+
+here but I can use it.
+
+So I am just created one method.
+
+And here now see I am using it bird interface name dot method.
+
+You can use it now okay.
+
+So that is one of the constraint that this static method cannot be overridden by classes which implements
+
+the interface.
+
+In this case Eagle cannot override it, Right.
+
+So that's one of the thing.
+
+Another thing is we can access it using interface name itself.
+
+So here, if you see that I am accessing it through bird dot Cambridge name.
+
+Right.
+
+And it is by default public as far as you know till now, whatever we have done everything is public
+
+in till now Java eight everything is public.
+
+So it is by default public.
+
+So it's kind of public static.
+
+Okay.
+
+So you got the static.
+
+So now here if you see that the example which we have seen for stream right.
+
+So you can ask right.
+
+Hey why can't we make it static.
+
+Why we have created it default.
+
+So I told you that static you can't provide an implementation or you can't, it cannot be overridden
+
+by the classes.
+
+So now if you see this stream right.
+
+Many classes which implement this has overridden it.
+
+So now just see that maybe see they have overridden this and they provide their own implementation.
+
+So default methods are possible to do the override.
+
+But static cannot be overridden.
+
+Right.
+
+So it is possible that maybe in some of the class out of 101 of the class, you have to write your own
+
+functionality.
+
+With static.
+
+It is not possible because you cannot override it, but with default it is possible.
+
+Okay, so static method is clear, right?
+
+In Java eight.
+
+Now let's see the Java nine feature which is private method and private static method.
+
+See static method is there in Java eight.
+
+So but by default everything is public.
+
+So it is public static.
+
+Public static is available in Java eight also.
+
+But private static is available in Java nine.
+
+Okay.
+
+So now let's see what it is.
+
+Very very simple.
+
+Very very simple.
+
+Okay.
+
+We can provide the implementation of method.
+
+But as a private access modifier in the interface same.
+
+We can also provide an interface here.
+
+Right.
+
+So here now here if you see that I am creating a I am creating an normal interface bird.
+
+Right.
+
+So this is my.
+
+Abstract method.
+
+Right.
+
+And I told you that void can fly internally.
+
+All methods are public in interface.
+
+So it is equivalent to public.
+
+So public will get added internally.
+
+And also all method in interface also by default abstract.
+
+So it is very equivalent to public abstract void can fly.
+
+Just wanted to showcase that they are equal, right?
+
+So whether you write void can fly or public abstract void can fly.
+
+Both are same.
+
+Okay, so now I have created one interface and I have created one abstract method here.
+
+Now here if you see that I have created one default method.
+
+This is Java eight feature right?
+
+I have created one static method.
+
+This is also Java eight feature.
+
+Now I have created one private method which is Java nine feature and private static which is also Java
+
+nine feature.
+
+Right.
+
+So with all this you can provide an implementation.
+
+Right.
+
+So for only abstract you cannot provide an implementation.
+
+But if you see for default I have provided the implementation static.
+
+I have provided the implementation private.
+
+I have provided the implementation and private static provided the implementation, but only few rules.
+
+You have to identify very simple rules, right?
+
+And I think if you have already check out my previous I think methods where I have covered the private
+
+modifiers, you will know very basic rules.
+
+Now let's check it rule first.
+
+So one thing is you already know that we can provide the implementation of the private and private static,
+
+right?
+
+We can provide it.
+
+But with the as a private modifier.
+
+Now you know one thing that if it is private, means you cannot access this method outside of this interface,
+
+up outside of this interface, you cannot access it means who can access it, then abstract method cannot
+
+access it, then who can access it?
+
+Only default or static can access it, right?
+
+So these are the only methods which can access it which can have implementation.
+
+So private can private method can only be used inside an interface.
+
+Okay.
+
+Why why we need private method.
+
+So one thing is it brings more readability of the code.
+
+For example this is for example if multiple default methods share some code then this can help right?
+
+So now let's say when one more problems comes in Java that you can have default method.
+
+Now let's say you have 2 or 5 default methods.
+
+Let's say you have five default methods.
+
+And they have I think 80% similar code base similar code base.
+
+Right.
+
+So what you will do.
+
+So it would be lot of code duplication.
+
+So now in that case private method can have.
+
+So this 80% code you can take out in a private method now.
+
+Right.
+
+And they they can just simply call this and get this 80% done.
+
+And they can just simply now write their own 20%.
+
+Right.
+
+So now we can do code reusability.
+
+Code readability will increase.
+
+So this is one of the reason why private methods are introduced after because default it becomes a necessity.
+
+Okay.
+
+What else private can be defined as a static non-static.
+
+Yeah it can be defined right.
+
+So once with private if you make it static it become private static right.
+
+Otherwise if you don't make it static it become a normal normal.
+
+So it just you can say that it would be a private private static.
+
+So these are the two flavors right.
+
+You can understand this line with there are two flavors normal private or private static.
+
+And I, I think we have already done this in a method.
+
+You know that from static method you can call only static data.
+
+You can only call static members, either variable or method.
+
+Only static.
+
+Right.
+
+So if you have not seen the previous classes of methods, just check out where we have discussed that.
+
+Why static method can only access static members, right?
+
+Tell me why in the comment and you can know that non-static method.
+
+Non-static method can access both static one also and non static members also both.
+
+So similar rule here also.
+
+Now here if you see that default it is non-static right.
+
+So it can access static method.
+
+It can access here my static public method.
+
+It can access private method and it can even access private static method.
+
+Right?
+
+Second I have static.
+
+So it is a static method.
+
+So you know that static method can only access static members.
+
+So see it can only call private static method this one only private static.
+
+And here you can, uh, know that like you have a private and this one.
+
+So this is the only difference I want to tell from static method we call only private static interface
+
+method.
+
+So this line I have already explained you why this static method.
+
+Only static members can be called non-static method.
+
+Both can be called.
+
+So default is a non-static.
+
+So you can call private also private static also normal static also.
+
+And from static you can only call private static and y y only from static.
+
+We can call a static member.
+
+Please tell me in the comment because I have already explained this in our method video, right?
+
+So this one is I have explained private interface method.
+
+Private interface method cannot be abstract means we have to provide the definition.
+
+So if you you can't create this as a private right.
+
+So all abstract method should be public only because it's a very obvious because since we are making
+
+it abstract, somebody has to provide the implementation right in that class.
+
+If you make it private, private means it cannot be accessed apart from this interface.
+
+So it's a contradict.
+
+So that's why any abstract method, you can't make it private and it can be used inside of a particular
+
+interface only.
+
+It can be used inside a private method.
+
+Can only be used inside this interface.
+
+No.
+
+Apart from this interface.
+
+No other class also which implementing this interface?
+
+No.
+
+Within this interface only.
+
+I hope this.
+
+Is clear.
+
+Default method.
+
+Static.
+
+Private and private.
+
+Static.
+
+And in the interface now only one thing is left functional interface and lambda abstraction, which
+
+is very very important.
+
+And we'll cover separately in one video.
+
+Okay guys thank you.
+
+And do practice with your hand and just don't watch it.
+
+Just do practice also.
+
+Then only you will get doubts.
+
+Then only we can clear ask question.
+
+Otherwise certain doubts or problems will get unresolved.
+
+Okay guys.
+
+See you.
+
+Bye.

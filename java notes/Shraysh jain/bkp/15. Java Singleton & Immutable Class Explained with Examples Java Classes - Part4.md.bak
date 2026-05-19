@@ -1,0 +1,985 @@
+Hey guys.
+
+Welcome to Concept and Coding.
+
+And this is Shreyansh.
+
+And today we are going to cover the final.
+
+The classes will be completed hours with this three topic singleton immutable and wrapper.
+
+Right.
+
+So this is the part four.
+
+And after this our classes would be classes.
+
+Topic would be finished.
+
+So let's start with singleton class.
+
+This is first of all very very important okay.
+
+So what is the purpose of the singleton class.
+
+As you know the singleton with the name itself like this class objective is to create one and only one
+
+object.
+
+Right.
+
+So there are many use cases you will come in life like where you want only one object to be created
+
+like DB connection.
+
+So whatever the class you do, you have a DB connection.
+
+You want only one connection to be set up with the DB, right?
+
+This is your DB and this is your application.
+
+You want only one time connection to be set up.
+
+Then after that you can do as many as query you want.
+
+Select Insert update.
+
+Right.
+
+You don't have to create a connection each time.
+
+So we want to create this class as a singleton that no matter how many times it has been called, no
+
+matter from where it is called only and only one object should be created of this class.
+
+So that is the purpose of singleton class.
+
+So it's a very, very important interview questions.
+
+Because it's not very small topic.
+
+It's a very big topic.
+
+And there are different ways of creating a singleton class.
+
+So these are the popular six ways.
+
+Eager lazy synchronized, block double check lock build solution and enum singleton.
+
+So let's go through each because uh, even if, even if with the understand singleton with 1 or 2 pattern,
+
+uh 1 or 2 methods, then definitely it's not completed.
+
+I would say that.
+
+So we have to understand all, uh, clearly.
+
+So let's go with eager initialization.
+
+As the name says, that eager means something in advance.
+
+So let's say that I take an example of the same.
+
+I created one class public class Dbconnection.
+
+Now first thing I notice is the object creation of this.
+
+So I created an object of this eagerly in advance itself.
+
+So I have make it private static.
+
+So what?
+
+Why I made it private this object.
+
+Because I don't want anybody to access it apart from this class.
+
+Right.
+
+I don't want anybody to access it and change it also.
+
+Right.
+
+So private is, uh, that one that it should, it can be accessed only within this class.
+
+And static means static means only.
+
+So this is not related to object.
+
+Now this is related to class right.
+
+So this object con object is now belongs to a class, not belongs to an object.
+
+So no matter how many hundred objects you will create, this con object will belongs to a class now,
+
+right?
+
+So that's what static means, right?
+
+Something belongs to a class, not belongs to a particular object.
+
+So one thing I have done is here to create a singleton classes.
+
+I have created the object right and made it private static.
+
+Second thing what I've done is I made the constructor private so that nobody is allowed to create a
+
+new object through new keyword new db connection outside of this class, right?
+
+So since it is constructor is private after this class from anywhere, right?
+
+Apart from this class, nobody is allowed to do new DB connection or you can't create a new object.
+
+Okay.
+
+Third, I created a public method now so that others if they wanted an object of this class.
+
+They can call this method and I will just return this object which I have created.
+
+And I have created a static so that they can call with the class name itself.
+
+So this method belongs to a class also.
+
+So whichever want the object of this call this method like this Dbconnection dot get instance I will
+
+always return this only one object I have created and I will always return this right.
+
+Very simple.
+
+So this is a singleton class and this is called as eager initialization because we have as soon as when
+
+you start the application you know that the all the static variables right are preloaded into the memory.
+
+Right.
+
+So that's why it's called eager initialization.
+
+Even though somebody is not using this method, they they haven't called it, but still object has been
+
+created and stored in memory.
+
+So that's what called eager initialization.
+
+And that's what a disadvantage.
+
+Also even though I am not using this something is already created in the memory.
+
+Okay, so to overcome this problem, here we come with the lazy initialization.
+
+In the lazy initialization, if you see that instead of creating an object here new Dbconnection, we
+
+are not initializing now at this part, but the it is still a private static constructor is still a
+
+private here.
+
+Now in this method get instance before creating an object, we are first checking that hey is connection
+
+object is already created or not, it is already a new object has been assigned to it or not.
+
+If it is null so initialize.
+
+Initially it would be null.
+
+So let's say thread one is coming.
+
+So thread one say object is null.
+
+Yes it will go and create a new object and reference has been assigned to it.
+
+So now it will store a reference to a memory object.
+
+Now thread two comes.
+
+It will say that object is null.
+
+A connection object is null.
+
+No memory is already allocated, so it will not create new.
+
+It will return the object itself.
+
+But the disadvantage of this is like what if this is null and two threads comes in parallel.
+
+This is null and two threads comes in parallel.
+
+A connection object equals to equals to null.
+
+Both will find null at the same time.
+
+They will check it's null and two objects will get created.
+
+So that's the disadvantage of lazy initialization.
+
+So to overcome this problem there is a next called synchronized method.
+
+So what it has synchronized has done is it make this method as self as synchronized here.
+
+If you see that I have put a synchronized.
+
+So this synchronized keyword does two things.
+
+It first lock put a lock and also do unlock.
+
+Now this whole method I have put a synchronized.
+
+Now let's say two thread are calling this get instance.
+
+And this is also calling get instance.
+
+Now only one thread will be allowed to go inside this block right.
+
+This method is this complete method itself is synchronized.
+
+Only one thread will go.
+
+So thread one will see hey it is null so it will create a new object of it.
+
+So currently it is null.
+
+Now it will create a new object.
+
+Now after this thread two will go inside this method.
+
+But now object is already created.
+
+So if it is equals to equals to null no it will return it.
+
+So only disadvantage of this is that this we are putting a synchronized at a method level.
+
+So this is becoming a very slow why.
+
+Let's say there are so many places we are calling get instance.
+
+We are we are calling get instance at so many places.
+
+Let's say place one, place two, place three.
+
+Let's say at 100 of places we are calling Getinstance method, not parallel sequential itself.
+
+Just understand that.
+
+So I am calling Getinstance method.
+
+What it will do is put a lock and then unlock.
+
+Then it place two.
+
+Now object is already created.
+
+This object is already been created.
+
+Now place two.
+
+Even though object is already created, I can simply get object equals to equals to null.
+
+Now I can return it, but still.
+
+Since synchronize is present over here, it will again put lock again unlock it.
+
+So now you see that every time this method has been called thousand times lock and unlock would be happen.
+
+So this is very very slow synchronize method.
+
+And that's why we mostly not use it.
+
+Okay.
+
+So to overcome this a double check locking system comes.
+
+Double checked locking system comes.
+
+So in the double check locking system.
+
+So one thing is same.
+
+We have a private static object.
+
+Forget about this one volatile, but remember that I will tell you why this is used, but for now,
+
+just assume that this is not there.
+
+But this is very, very important.
+
+So here second, the same thing.
+
+We are making the constructor private so that we don't want anybody to create a new object outside of
+
+this class.
+
+Third part here is here.
+
+If you see that I have removed the synchronized over the method right now how we are handling this.
+
+So this is check one and this is check two.
+
+So that's why it is known as double checked locking.
+
+So first I am checking here is object is null.
+
+Yes.
+
+By default it would be null.
+
+Yes.
+
+So thread one is coming.
+
+Object is null.
+
+Yes.
+
+Now it will put a lock.
+
+Now it will lock here.
+
+And then go inside and then check one more time.
+
+Hey, it is still a null only, right?
+
+Yes, it is still a null.
+
+It will create an object now it will create an object of it.
+
+Now when thread two comes, it will check.
+
+Hey, connection object equals to equals to none.
+
+No object is already created.
+
+It will return it.
+
+So it will solve the problem of concurrency.
+
+Which will happen is like let's say now this is null, this is null.
+
+And two threads comes at the same time t1 and t2.
+
+So both will find it is null.
+
+Yes.
+
+They will come inside it.
+
+Now because of this synchronize, only one of them will go and one of them will acquire the lock and
+
+go ahead.
+
+So let's say T1 goes ahead.
+
+Now T1 is checking again.
+
+Hey is it is still a null only right?
+
+Yes, it is still a null.
+
+And it will go and create an object.
+
+So it will create an object.
+
+Now after it released the lock.
+
+Now thread two will come here and it will now again a double check.
+
+Hey, it is still null, right?
+
+No, it is not null.
+
+Now object has been created so it will not create new object, it will simply return it.
+
+So that's why it is known as double check locking.
+
+We are checking two times okay.
+
+But there is the disadvantage of this is there is one memory issue.
+
+Okay.
+
+Just understand this one.
+
+Like we have different cores.
+
+So I have already covered this, uh, double check locking system memory issue in the system.
+
+Low level design video.
+
+The bug in double check locking, right.
+
+But I will also cover it here.
+
+Also like to explain why it is an issue when I will explain you volatile in depth.
+
+Because this is an important keyword.
+
+But I will just give you a heads up like what was the actual issue?
+
+There are two issues, but I'll tell you what are the.
+
+At least we will understand what is the issue here.
+
+So understand this.
+
+Each in the CPU there are multiple cores.
+
+Each core has their cash.
+
+Which is generally known as L1 cash.
+
+And then they have access to memory.
+
+Common memory.
+
+Now let's say thread one and thread two is coming parallelly.
+
+Both thread one and thread two is coming parallelly.
+
+So here thread one or let's say even if it is not parallelly, just never.
+
+Let's say first thread one comes here.
+
+So thread one comes here.
+
+It gets a lock.
+
+It created an object.
+
+So thread one is computation is happening in the core one.
+
+So let's say it.
+
+So here correctly connection object value is.
+
+But earlier it was null.
+
+So it is present in null.
+
+Now thread one is going inside and it created a new object.
+
+So now let's say the computation let's say which is happening at core one.
+
+It is for temporary.
+
+It is storing the data here here.
+
+So let's say now con object has a new reference to a memory.
+
+So but it is still in cache.
+
+And you know that, uh, for the performance purpose, all the cores stores the data into the L1 cache,
+
+and periodically they will sync up it to the memory.
+
+Now, let's say that whatever the memory, uh, we have assignment we have done to this object, whatever
+
+the reference of the memory assignment happened, it is still happening in the L1 cache.
+
+It is still present into the L1 cache.
+
+The memory has not been updated yet.
+
+And also understand that the sync up between these two caches not yet happened till now.
+
+Now let's say that thread two is coming now.
+
+Now thread two is coming now.
+
+Thread two says that a connection object equals to equals to null.
+
+So now let's say thread two computation is happening in the core two.
+
+Okay.
+
+Now it will check its cache.
+
+Hey It is connection object is null or it has certain object already reference to it.
+
+So cache two will say that hey, I had I have no knowledge about the conn object because the sync up
+
+doesn't happen.
+
+So it will go and check the memory in memory.
+
+It will find it is null.
+
+So it will return null.
+
+So it says it is null.
+
+It will go inside.
+
+It will take a lock.
+
+It will check again.
+
+It is null.
+
+It is.
+
+Yes.
+
+It is still null.
+
+Still.
+
+Let's say sync up doesn't happen and it hasn't updated the memory.
+
+Also it will go ahead and check.
+
+Hey, it is still null.
+
+Yes, null.
+
+So it will create a new object and put it here.
+
+So now you see that because of this caching the two object has been created.
+
+So this is just one of the memory issue.
+
+There is another memory issue called reordering.
+
+So both this issue has been resolved by volatile.
+
+That's why volatile is used.
+
+So volatile has one purpose.
+
+So we will see this volatile used in detail maybe in the next video.
+
+Uh, but volatile purpose is that if you have created any object volatile, any read and write happening
+
+to this is always happen from memory, not from the cache.
+
+Right.
+
+So now let's say in the first thread one, when it is writing this connection object equals to new database
+
+connection, it will not store it into the cache.
+
+It will directly update the memory.
+
+It will directly update the memory.
+
+Now when thread two comes and it want to see hey connection object equals to equals to null connection
+
+object is volatile.
+
+It won't even check the cache.
+
+It will just check from the memory.
+
+So that's why volatile is used right.
+
+So because to overcome the memory issue I hope you got it right.
+
+So this is very important to use with the double check locking and in the interview it do us right.
+
+Generally, most of the candidates solve double locking without this and in production generally this
+
+is now how not it is used.
+
+It is used with volatile keyword.
+
+Now still this double check locking is slow because we are using volatile which means it is not using
+
+cache.
+
+So definitely it's a little bit slow.
+
+And there is also a synchronized keyword we are using.
+
+So this is also putting lock and lock.
+
+So this is little bit slow.
+
+To overcome this there is one more solution called build solution.
+
+So here if you see that we are not using volatile we are not using synchronize nothing.
+
+It is making use of this eager initialization.
+
+Right.
+
+What does the disadvantage of eager initialization is.
+
+Hey even this class is not even used.
+
+Object is created, right?
+
+Eagerly we have initialized now.
+
+So what this bill has done is resolve that only it the initialization part.
+
+Private static one.
+
+Right.
+
+It just put it inside a nested class.
+
+A static nested class.
+
+Private static nested class.
+
+Why?
+
+Because this nested class do not get loaded at the time of application when it you start the application.
+
+All the nested class do not get loaded into the memory only when they are referred.
+
+When they are used, then only it will loaded.
+
+That's the property, one of the property of the nested classes.
+
+So we have make it private so that this nested class cannot be accessed outside of this class.
+
+Okay.
+
+And second thing is we have put this our private static right inside this.
+
+Okay.
+
+So now here is now you see that we have made the constructor private.
+
+So that object of the main class cannot be done from the outside of this class.
+
+Second is we have created a nested static, this class helper class which is creating this object.
+
+Right.
+
+And it is again a private static so that it can be accessed only within this class.
+
+Right.
+
+Similar to the eager initialization, we were doing right private static and creating.
+
+But instead this we are now creating in a nested.
+
+And the third is whenever it is being used, we are returning it same as eager one.
+
+But only difference is initializing this object inside a static, private static nested class so that
+
+whenever it is used then only it will be loaded.
+
+Nested class will be loaded into memory.
+
+Okay, so that's how Buildpack solves the solution.
+
+And it is very fast.
+
+And this is I think you know, you can tell this is also a popular one.
+
+Then there is another called enum like through you know that in enum.
+
+By default all constructors are private.
+
+I have also showed you before, right?
+
+So all constructors are private and so enum by default only one it's object is created and in the.
+
+So as per JVM, each JVM only one snapshot of enum is present.
+
+So it's by default enums are singleton only right.
+
+So we are creating a class constructor private and all.
+
+So here if you see that in enum everything is happen automatically.
+
+So enum constructors are always by default private only.
+
+So we don't have to write this also.
+
+Second the object of this one right?
+
+It's enum.
+
+Take care that only one instance of exist per JVM.
+
+One instance only exists per JVM, right?
+
+So that's what singleton is, right?
+
+One object per JVM.
+
+Okay, so if you see that enum solve it within two lines itself where we are writing so many method.
+
+Okay.
+
+So that's also you can achieve an through an enum also.
+
+So this is all about singleton.
+
+Now let's see what is immutable classes.
+
+So when I told about immutable one thing should come to your mind that in the variable I told you that
+
+strings are immutable, their value cannot be changed.
+
+And we have also studied about string pool and all.
+
+So similarly immutable class is something which state cannot be changed right.
+
+So I have created, uh, let's say one object of this class.
+
+Now this object state cannot be changed, right?
+
+Now we will see how we can do that.
+
+So first thing is declare the class as final.
+
+So I'm creating an object class here.
+
+So I have created an class as a final because I don't want any subclass to be created and change the
+
+value so no subclass is allowed.
+
+Okay, all class members should be private.
+
+So I have you seen that I have created a private and final means nobody can access these variables outside
+
+of this class, right?
+
+And once the value has been assigned to it, they can't be changed.
+
+That's what final say, right?
+
+Third is the class members are initialized only once using constructor.
+
+So whenever you create an object of it that time, you pass what value you wanted to assign to the variables
+
+that time you can allow.
+
+After that, the value should not be changed.
+
+There should be not be any setter method.
+
+So now here, if you see that I have only created getter method, there is no set setter method to set
+
+the values out of it.
+
+Only one time setting is happen when you create an object and that is happened through constructor.
+
+It should during getter method it should return the copy of the member variable.
+
+This is very important.
+
+Okay, so I see I have taken an example of normal string and the list.
+
+This is very important.
+
+Understand this one okay.
+
+Now see with this an example.
+
+Okay so I am creating an object of this immutable class.
+
+And I'm passing the variables which I wanted to set.
+
+So in the name I am passing a string like my name.
+
+And in the list of object I am passing my list pet name list I have put sj pj.
+
+Okay, so this is the pet name list I have sent and it is has been initialized.
+
+Now let's say if I can I change the name, let's say from my name to can I change it to a no.
+
+Let's say even if you do like okay object obj dot get name, you will get the name.
+
+Will you be allowed to change it?
+
+There is no setter method.
+
+How you will change it?
+
+You can't even access the name directly because it is private.
+
+You can't change it.
+
+But can you change the pet name list?
+
+Yes.
+
+So now let's say in the getter.
+
+If you are just returning this directly, if you are returning directly the pet name list.
+
+Now see understand this.
+
+That's why I have taken the list to make you also tell that.
+
+So now here pet name list pet name list you have make it final.
+
+So this is my final.
+
+And while creating a constructor you have assigned it to one of the values.
+
+So there is already a memory created which has SJ okay.
+
+So this is like has as J and this is also a memory having a reference of PJ.
+
+Okay, so this is how it is currently.
+
+Now here, if you see that this final means it is referring to this memory, this block of memory.
+
+So if you from the getter method, if you are returning pet name list means you are returning this memory
+
+area.
+
+You are still allowed to add more values or delete values out of it.
+
+So what final say here in the collection is that you should always point to the same list.
+
+You should always point to the same list.
+
+Let's say I'm calling it a list one.
+
+You will always point to the same list.
+
+You can't change this and point to the another list.
+
+List two.
+
+No, you will always point to the same memory.
+
+List one, let's say.
+
+But you are allowed to change internally.
+
+The add values.
+
+Delete values, update values.
+
+This can be changed.
+
+Okay.
+
+So this can be changed.
+
+So ultimately inside this it's a list of object right.
+
+So you have created an object where you have let's say s and it will have a reference.
+
+So for this one you are storing an object here.
+
+Object reference here okay.
+
+So what I'm saying is the final says that you can just point to one list.
+
+You can't change it to another list, but within a one list, if you have multiple objects right you
+
+can add it, remove it, delete it.
+
+So that's why I say that during getter method, always make sure that you return the copy right.
+
+So that's why here when I'm returning a get name list, I am returning a copy of it.
+
+I created a new list and then return the and copy it and then send it.
+
+So now let's say I'm doing object dot get name list.
+
+So now I'm getting a copy.
+
+A new list has been created.
+
+Now it has copied the variables from this name list.
+
+So it has sj and pj sj pj okay.
+
+Now um what I'm trying to do is now adding a hallow so it will add.
+
+Hello here.
+
+Okay now I'm doing System.out.println object dot get pet name list.
+
+So I'm doing get again.
+
+So I'm getting again and it will create a new and again copy this thing.
+
+So it will create a new again copy SJ PJ okay so now here if you see that I will always get this value
+
+only because I am not changing the original one.
+
+This hello, which I added, I added in a copy one and who is storing its reference?
+
+Nobody.
+
+So as soon as nobody is using it, it will be collected by the garbage collector, it will be removed.
+
+Okay, so that's why we are saying that always return a copy of the member variable so that these values
+
+should not be changed at all.
+
+Okay, understood.
+
+This one.
+
+Immutable.
+
+Once you have initialized the variables, it states.
+
+Now the class state should not be changed, right?
+
+So few things has to be taken care as a while.
+
+So it should be final.
+
+It should be private.
+
+Uh right.
+
+And this getter methods only, it should have an during getter method.
+
+Always take care of this when you're returning a collection.
+
+Because sometime we got confused that we have created a collection.
+
+Final means we can't even change this.
+
+Also, now we are allowed to.
+
+Only thing is, you are just pointing to one collection.
+
+But inside this collection you can still add more and delete it.
+
+Now let's see the wrapper class and wrapper class I have already covered.
+
+Uh, in depth in.
+
+videos.
+
+Number six.
+
+Java variable, part two.
+
+So there I have told you when we were covering the primitive.
+
+Right.
+
+There are eight primitive types right int long.
+
+And for each primitive type a wrapper class has been initiated like integer long like this.
+
+Right.
+
+So I've also explained Autoboxing and unboxing there also.
+
+So if you go here in our Java so the six video Java variable part two reference non primitive data types
+
+in depth.
+
+So there I have covered the wrapper classes okay.
+
+So please do check out that one there.
+
+The wrapper classes we have already covered I think you might have recalled right with the Autoboxing
+
+unboxing and all.
+
+Okay guys.
+
+So that's pretty much from my side.
+
+And classes is done right.
+
+And I will explain the volatile in depth that is very important to understand about the volatile okay
+
+guys.
+
+Thank you.

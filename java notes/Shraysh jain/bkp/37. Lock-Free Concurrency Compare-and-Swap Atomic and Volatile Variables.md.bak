@@ -1,0 +1,1373 @@
+Hey guys.
+
+Welcome to Concept Encoding.
+
+And this is Shreyansh.
+
+And today in multithreading we are going to cover these two topics atomic variables.
+
+And also we will see the difference with the volatile and also the concurrent collections.
+
+We have already discussed concurrent collection during the collections topics when we were discussing.
+
+Right.
+
+But we will have a quick look at it.
+
+So let's start without wasting any time.
+
+So here if an interview, if anybody asks you, hey, in how many ways you can achieve the concurrency,
+
+right.
+
+What would what would your answer would be.
+
+So there are two ways in which we can achieve concurrency.
+
+One is the lock based mechanism.
+
+Another is lock free mechanism.
+
+So lock based we have already seen so many different ways.
+
+Synchronize reentrant stamp read, write semaphores.
+
+All this we have seen already.
+
+But there is another way.
+
+Lock free mechanism, right?
+
+In this we have put locks right?
+
+To make sure that only one thread comes into the critical section.
+
+But in the lock free mechanism which helps to achieve concurrency but without using any locks.
+
+Lock free.
+
+So definitely which one is faster?
+
+Lock based or lock free?
+
+Definitely this is faster.
+
+But remember that this lock free mechanism is not an alternative to lock based mechanism.
+
+This lock based mechanism can be used at very, uh, different scenarios where we have lot of complexity,
+
+where we have lot of business logics.
+
+This will comes into the picture.
+
+Lock free mechanism is used.
+
+Very specific area very very specific use case, I would say that okay, I will tell you about that
+
+use case slowly when we will go into the further of this video.
+
+But there is very specific use case only in that case you can use lock free mechanism.
+
+And in that case you can achieve faster result than lock log base.
+
+Right.
+
+But apart from this specific use case, log based mechanism is something which helps you.
+
+So that's why I wanted to clarify that it is not an alternative to log base mechanism, but it is one
+
+of the way to achieve the concurrency.
+
+For some specific use case, we will see that okay, so which operation or which technique is help to
+
+achieve lock free mechanism.
+
+That is cache operation.
+
+Compare and swap.
+
+And Java provide these four classes which uses this technique.
+
+Acne, right?
+
+And helps to achieve the concurrency.
+
+But before I tell you about this cache operation.
+
+Before I tell you about the cache operation, I want you to have a just remind quickly about the optimistic
+
+locking.
+
+Right.
+
+So, you know.
+
+Right.
+
+Optimistic locking.
+
+In the previous video I have told you about the optimistic locking or it is uh, it or I would say that
+
+not optimistic locking I would say that optimistic concurrency control.
+
+Optimistic concurrency control because it's also a lock free.
+
+It also a lock free protocol.
+
+And also what happens in the optimistic is remember, let's give one minute to quickly remind you because
+
+this is very, very important to link with cache.
+
+Right.
+
+Because both are lock free protocol.
+
+Right.
+
+So let's say you have one row in a table.
+
+So this is let's say row number One, two, three.
+
+The student is Raj.
+
+Right.
+
+This is name.
+
+And this is row version.
+
+Row version one.
+
+Now let's say there are two thread.
+
+Thread one.
+
+Thread two.
+
+Both read.
+
+Row number 123123.
+
+Both read this same row.
+
+Now they have recorded the row version.
+
+Row version was one at this when it reads row version was one when it reads okay, now what it's done
+
+is it made it modify something let's say from uh age K it has put the change the name to Raj K, and
+
+it has modified to Raj a Raja.
+
+Right.
+
+So they have certain, uh, modification is done on the name.
+
+Right?
+
+And now they are trying to update the DB.
+
+Okay.
+
+Now let's say thread one coming first.
+
+So this is going first right.
+
+So this is going first.
+
+Update the DB.
+
+So it will try to let's say it will run the query update this table.
+
+Right.
+
+You update your table.
+
+What it will do.
+
+It will set your name to let's say Raj K right where roll number is 123.
+
+The roll number is 123.
+
+Change its name from Raj to Raj K and your version row version should be one.
+
+What is the row row version when it read this row one.
+
+So now it will run this update query.
+
+Update this row right?
+
+Change Raj to Raj K Right where roll number is one two, three and the row version is one.
+
+So this will get success.
+
+Yes.
+
+Row version is one.
+
+Row number is one, two, three.
+
+It will change this to.
+
+Raj k.
+
+So here when the first when the first thread updated the successfully this row it also increment the
+
+row version.
+
+It also increment the row version.
+
+So now when the thread to running this update query update the table name Raja roll number is 123 with
+
+row version is one.
+
+So it will say that yes row number is 123.
+
+Does row version is one?
+
+No row version has already been changed.
+
+Who changes thread one.
+
+Change it because when it any update operations it does any update any change modification on this row
+
+happens.
+
+The row version gets incremented.
+
+So now here, when the thread two is trying to update this, it says that hey, still raw version is
+
+one.
+
+No raw version has been changed.
+
+This means that somebody has changed this value in the meantime, when it reads and it when it about
+
+to write it in between mid somebody has changed this value.
+
+Now what it has to do, it has to again read it.
+
+So now when it again read it what would be the read row version value two.
+
+Now it will modify it.
+
+And now it will again run this update query with row version now two.
+
+And when it try to update now it would be able to update that row version is two, row number is 123.
+
+Change it to Raja and also increment the row version by one three.
+
+So you got it.
+
+This is optimistic concurrency control.
+
+Now let's come to this CAS compare and swap.
+
+This technique is also exactly the same as optimistic locking.
+
+But it's a low level operation.
+
+What does it mean?
+
+It's a low level operation means it is supported by CPU.
+
+In all modern CPU, this operation is present.
+
+Cass operation.
+
+Right.
+
+It's atomic.
+
+What does it mean?
+
+That atomic means single unit, no matter how many cores this CPU has one core, two core, three core,
+
+four core CPU, and if multiple threads are running in parallel, then also it provide atomicity of
+
+this operation.
+
+Which operation Cass operation no matter core one, core two, core three multiple threads are running.
+
+This Cass operation is atomic and all modern processors support this operation.
+
+Cass operation compare and swap technique.
+
+Right.
+
+So what actually, this Cass operation is so here this Cass operation has involve three main parameter
+
+memory expected value.
+
+The new value here, let's say this is my memory.
+
+This is my memory M1 right.
+
+And I have variable.
+
+Let's say x value is ten.
+
+Right now let's say that uh this cache operation right.
+
+Accept three parameters.
+
+One is memory.
+
+Second one is expected value.
+
+Third one is new value.
+
+So now what this cache operation does is.
+
+So first this memory it will load the variable data.
+
+Right.
+
+So where the variable is stored.
+
+So from this memory it loads this data variable data.
+
+So it loads load or read.
+
+Variable from memory.
+
+Let's say m one second.
+
+What it will do, it will compare.
+
+Second part is compare.
+
+Compare of what the data stored in this memory and the data which you are expected to be.
+
+Is it same or not.
+
+Compare memory data versus expected value if they are matching or not.
+
+If they are not, matching means something has been changed.
+
+If it if it is matching, then what it has to do is update the new value to this update new value to
+
+this memory.
+
+So this has been changed to whatever the new value you wanted.
+
+So that's why the name compare and swap.
+
+So what it will do is from this memory it will first read the data.
+
+Then it will compare it with the expected value.
+
+What the expectation is if it matches, then only it updates this memory with the new value.
+
+So this is this isn't it very similar to optimistic locking in the optimistic locking itself.
+
+When you run this update query you tell that okay this is the raw version which I am expecting it to
+
+be.
+
+If this raw version is the same, this is my expected right?
+
+And this is the present in the DB.
+
+Or you can say that let's say in memory this is present in the memory.
+
+This is my expected.
+
+If this matches then only update the new value, then only update the new value.
+
+Right.
+
+So you can say that optimistic locking is inspired from this CAS actually.
+
+So CAS compare and swap operation is a low level operation which works inside a CPU.
+
+So it's a CPU operation.
+
+Optimistic locking mostly works with DB.
+
+Optimistic concurrency control works with DB.
+
+But in CPU has this CAS operation right?
+
+And your code like in Java there is a classes like atomic integer, atomic boolean.
+
+It helps you to access this CAS operation.
+
+You should be asking hey what is ABA problem?
+
+ABA problem can happen.
+
+So what does it mean is that let's say this memory has this x value as ten.
+
+And uh, what?
+
+CAS says that.
+
+Okay, this memory M1 expected is ten.
+
+This is your expected.
+
+And this is your new value.
+
+New value.
+
+I wanted to put, let's say 12 this I wanted to put right.
+
+So first read M1, then compare M1 value with expected and then update if matched.
+
+Okay now let's say that thread one wanted to run this right M1 1012.
+
+Now let's say that some operation has changed to 12.
+
+After that some operation has changed back to ten.
+
+And now thread one is running.
+
+But the thread one when it read it was ten.
+
+This value.
+
+But here, if you see that read M1.
+
+Compare the M1 value.
+
+It is again ten.
+
+Does it match with the expected?
+
+Yes.
+
+So it will change it to the new value.
+
+Let's say new value is 13 so it will change it to 13.
+
+But here one issue is that the expected ten is not.
+
+This is actually the this one.
+
+It has changed over the time.
+
+Some threads has changed this value.
+
+But somehow the latest value match with the expected that is known as ABA issue in the cache.
+
+So this is easily resolved with adding a version.
+
+Also version number with the memory.
+
+So that's why this ABA problem is easily resolved using version or timestamp with this memory data also.
+
+So ten when it added it, version was let's say his version was one.
+
+When 12 was added it was version was changed to two when again ten was come.
+
+It was version was three.
+
+So now here this ten with version one was coming.
+
+So.
+
+But now this is ten with version three.
+
+This doesn't match so update will not happen.
+
+So I think you might be relating that hey both are very similar right.
+
+Optimistic concurrency and this.
+
+Okay.
+
+Now we know that how the CAS works.
+
+Now let's say little bit talk more about atomic variables.
+
+Now.
+
+What does atomic means.
+
+Atomic means single.
+
+Or we can say that all or nothing.
+
+Okay.
+
+So now let's say that when I say that uh int counter some variable equals to ten.
+
+This is atomic right?
+
+It is a single operation.
+
+It's a single operation Oppression.
+
+No matter how many threads will execute this, it would be consistent.
+
+But consider this example.
+
+Consider this example I have created a shared resource class.
+
+In this I am creating one variable counter and I have one increment method which does counter plus plus.
+
+Very simple.
+
+And this get method which return this.
+
+So I created an object of this class shared resource.
+
+Now I am calling this increment method 400 times resource dot increment and doing get.
+
+So till now I have only one thread.
+
+This works fine, works fine.
+
+And what would be the output?
+
+Output would be 400, right?
+
+Why?
+
+Because only one thread is running.
+
+Calling it 400 times, right?
+
+But remember this.
+
+This is not atomic.
+
+This is not atomic operation.
+
+Why?
+
+Let's expand this.
+
+Plus.
+
+Plus.
+
+So what?
+
+When you do counter plus, plus, it include three steps first.
+
+Load counter value.
+
+Second.
+
+Increment it by one third.
+
+Assign back.
+
+So it's it's equivalent to like counter equals to counter plus one.
+
+So first load the value.
+
+Then add one to it.
+
+Increment it and then assign back.
+
+So it has this three operations.
+
+And this three operations are not atomic Right.
+
+They are not a single unit.
+
+Now, let's say that what will happen?
+
+I have two threads.
+
+Thread one, thread two.
+
+Right.
+
+So currently let's say counter value is let's say currently counter value is zero.
+
+And let's say thread one.
+
+Thread two both runs in parallel load counter value.
+
+Both runs it.
+
+It will read counter value zero.
+
+It will also read counter value zero.
+
+Both incremented by one.
+
+So counter value is become one one and assign back.
+
+So what would be the counter value now one.
+
+But it should be two actually right.
+
+So that's why I told you that this is not an atomic operation.
+
+This is not thread safe.
+
+So this is the same thing which I did, let's say this 400 times.
+
+I divided into two threads.
+
+So the same example.
+
+Now this 400 I created two thread.
+
+This thread one is running 200 times.
+
+I created another thread which is running 200 times.
+
+So 200 times it is calling this increment method and thread two is calling 200 times this increment
+
+method.
+
+Right.
+
+And I have started both now here because of this issue.
+
+This is not atomic.
+
+This is not a single unit.
+
+This is a problem that two threads, when it load the counter value, they might read the same value
+
+incremented by one and overwrite assign it.
+
+So there might be some loss of data.
+
+And that's what actually happen when I run the output 371 comes instead.
+
+It should have come 400 right.
+
+But why it comes 300 because this is not atomic operation.
+
+It is not one single operation.
+
+There are it is a three steps process.
+
+And they are not atomic.
+
+They are not thread safe.
+
+So we have to make it thread safe.
+
+How?
+
+Two solutions we know.
+
+One is using lock like synchronized.
+
+Let's say if I put a synchronize over this increment method.
+
+It the problem will resolve.
+
+Right.
+
+If I put this synchronized then no matter how many threads would be when thread one, thread two try
+
+to increment right only thread one.
+
+Only one thread will go inside it.
+
+Only one thread will complete its operation, then only another thread will go inside it.
+
+So lock is one of the solution.
+
+But there is another solution which is lock free operation like an atomic integer.
+
+So second solution is using lock log free operation like atomic integer, atomic integer internally
+
+uses what?
+
+CAS.
+
+Now you already know what CAS is.
+
+Compare and swap.
+
+So here I have changed the shared resource this integer to atomic integer.
+
+Now this.
+
+My counter is atomic integer.
+
+I have assigned it with the zero initially.
+
+Now when I am doing increment now I am not doing C++, I am doing like counter plus increment and get.
+
+There is a method increment method present inside this atomic.
+
+Now I am doing increment using that.
+
+Now what would happen now let's see the code.
+
+Okay, now let's say I am changing it to atomic integer.
+
+Let me little bit.
+
+Increase it.
+
+Okay.
+
+Now let's say atomic integer.
+
+Initially I assigned it with zero.
+
+Now instead of doing counter plus plus I want to do counter dot increment and get.
+
+So this increment will increment by one if you have to increment by a specific value.
+
+There is a method which we can assign.
+
+We can add that value add add and get.
+
+It will add that much right.
+
+But if you want to increment only one.
+
+So this method we can use.
+
+But now here if you go inside this method like if you go inside this what it is using compare and swap
+
+it.
+
+Using what compare and swap.
+
+So first this is like your memory.
+
+What is the expected you wanted and what is the value you wanted to update.
+
+So here atomic can be used in which use case.
+
+Read.
+
+Modify update whenever you have this use case simple use case read then modify and then try to update.
+
+You can use atomic okay so here when we did counter plus plus right here.
+
+So counter equals to counter plus one.
+
+So I told you right.
+
+It include three steps.
+
+One is read the value modify it add plus one and then update.
+
+In that case only atomic can be used.
+
+And since there it is lock free it is faster.
+
+Initial atomic integer which I passed is zero right.
+
+So this is a value here.
+
+If you see that this atomic integer.
+
+This is the value which will get set first.
+
+And it's a volatile I will tell you what volatile is.
+
+But first let's understand atomic first.
+
+And then I will come to this volatile understand this.
+
+This value is initially set with this new atomic integer.
+
+So this is an atomic integer class atomic integer.
+
+And the value is set to zero.
+
+And this is my memory.
+
+This is my memory.
+
+It is present zero.
+
+This well is just nothing but a reference to it.
+
+Let's say that this well is reference to this memory.
+
+Okay, let's understand that now what I'm doing is we are doing increment and get right now.
+
+If you go inside this increment and get method.
+
+Let's go inside this increment and get what it is doing.
+
+It is doing.
+
+Do first.
+
+It will get this value.
+
+Get this value.
+
+So what it is doing it first do.
+
+Let's say V or let's say expected.
+
+Read value.
+
+This is our value variable.
+
+It read this value variable.
+
+And since this is marked as volatile it will always goes to a particular memory and then reads it Right?
+
+So just remember that it is reading from memory, not from cache.
+
+Right.
+
+So read value variable.
+
+Okay.
+
+Now it doing while not your compare and swap operation.
+
+This is your memory comma.
+
+This is the expected and the new value it sends.
+
+So this is the memory.
+
+This is your expected.
+
+And this is the new value which you wanted to set till.
+
+This cache operation is not success.
+
+A thread will continue to try doing this.
+
+So now let's say that what would happen is you did increment and get.
+
+So this method increment it get.
+
+What is the delta?
+
+Delta is nothing but a plus one, right?
+
+So here what it is doing is read the value from the memory.
+
+What is the value?
+
+It read what?
+
+The value it read from here zero.
+
+So your expected is here zero.
+
+Now it is calling the cache.
+
+So here if you see that this atomic integer is providing you and a way to access the CPU level, low
+
+level operation cache operation which provide the atomicity.
+
+So it is passing this cache till this memory.
+
+What is the expected is zero.
+
+And the new value is delta is plus one so zero plus one.
+
+So this right.
+
+So that is what is doing right.
+
+Well plus delta delta is it send one increment and get right plus one.
+
+So it send one.
+
+Now internally cache.
+
+You know that how it works.
+
+So it will first CAS will do what CAS will do first.
+
+So CAS will do first load data from this memory.
+
+So what it will load from this memory.
+
+It is currently present zero zero.
+
+Second compare it with expected value expected.
+
+Is this so zero and this zero.
+
+Both match zero equals to equals to zero.
+
+So this is your expected and this is the value read from memory.
+
+If this matches yes it match then it will update the memory with the new value.
+
+Update memory with new value.
+
+So it will update it with one.
+
+It will change it to one.
+
+Right.
+
+But now let's say some scenario.
+
+Let's say that some scenario.
+
+Um.
+
+Okay.
+
+Now let's try to do the same rough work, but with scenario that something has been changed.
+
+Something has been changed in mid.
+
+Okay.
+
+Now let's say that there are two threads.
+
+Thread one.
+
+Thread two.
+
+Okay.
+
+Both threads call this increment method at the same time.
+
+Both threads call this increment method at the same time, right.
+
+So this increment method.
+
+This is actually the increment method.
+
+Now both threads thread one.
+
+Thread two comes over here.
+
+So both will read the value from the memory, right?
+
+What was the value from the memory is that this is zero.
+
+Both will read the zero.
+
+Right.
+
+So both thread one.
+
+Thread two.
+
+Read expected is zero.
+
+Expected is zero.
+
+Okay.
+
+Now they are performing cache operation.
+
+So there is a cache operation.
+
+Now this is cache operation is atomic thread one.
+
+Thread two.
+
+Wanted to access it, but we know that CPU provide the guarantee that this cache operation is atomic.
+
+So only one thread can go inside.
+
+Now let's say thread one is going inside.
+
+So thread one you know that what cache will do.
+
+Cache has three step.
+
+So here in the cache what it will do.
+
+It will first read data from memory.
+
+It which comes at currently zero.
+
+And then it will compare your expected with the memory value.
+
+So expected is what expected is zero.
+
+And in the memory it was also zero.
+
+So it will update.
+
+So it will update it to one.
+
+Now let's say some version.
+
+So let's I'm keeping aside the version.
+
+But let's say value is updated.
+
+Thread one is success.
+
+Now thread two is going inside this cache operation.
+
+Now thread two is doing this cache operation going inside.
+
+Read the data from memory.
+
+What is the data in memory is now one one.
+
+Compare the expected with the memory value.
+
+Expected is zero, but in the memory it is one.
+
+Does it match?
+
+No, it doesn't match.
+
+So what it will do is this will return false.
+
+This will return false.
+
+It fails.
+
+And when it falls, it will go back again.
+
+It will keep on trying till this cache operation is success.
+
+So now it will read the value from the memory again.
+
+So E is now memory is one.
+
+Now it's trying to perform a cache operation again.
+
+So it will read from one.
+
+Expected is also one one equals to equals to one.
+
+Then update increment is now two.
+
+Right.
+
+So you got it right.
+
+How this cache operation is helping.
+
+And this increment and get is internally using nothing but a this compare and swap.
+
+This is a native method which is implemented in C++.
+
+Or maybe C.
+
+We don't have access to that.
+
+But Java provides this functionality through this atomic class that we can access this CPU operation.
+
+Okay.
+
+So there are different.
+
+Uh, you can have like atomic integer for boolean, you can have atomic boolean, atomic long.
+
+And for objects any object you can do atomic reference.
+
+Right.
+
+But again this is it's scenario or it's very very limited.
+
+So whenever you have a scenario like read modify update, only in that scenario go for atomic.
+
+Otherwise you have to go for lock.
+
+Okay.
+
+I think atomic should be clear, right?
+
+Now many engineers get confused with atomic with volatile.
+
+Atomic with volatile.
+
+Okay.
+
+So first of all this is provide thread safe operation.
+
+This is nothing like a no relation with thread safety.
+
+No relation With concurrency.
+
+Or you can say that not thread safe.
+
+So here what volatile actually is.
+
+So see this is your CPU core.
+
+This is your CPU core two.
+
+Each CPU has one L1 cache two internal.
+
+Or let me put it to like this.
+
+Outside L1 cache L1 cache right.
+
+Each CPU core has their individual cache.
+
+Then there can be like L2 cache.
+
+And ultimately there could be a memory your Ram.
+
+Right.
+
+Let's say that okay.
+
+So generally this is the scenario.
+
+So here if you see that volatile when you have let's say that uh this is thread one is running over
+
+here.
+
+Thread two is running over here in this core.
+
+And uh, they are working on a variable x.
+
+X equals to ten.
+
+Now it incremented that x plus plus it incremented like x plus plus.
+
+So now it will update it.
+
+Or let's say that x plus plus it will become 11.
+
+So it will put first into L1 cache x equals to 11 here.
+
+Right.
+
+Or let's say that now after this operation has been done.
+
+Now thread two is coming and it is reading the value of x.
+
+Read x value.
+
+Now it will first check hey does L1 cache.
+
+Hey do you have x value present.
+
+No it will go to L2 cache.
+
+Do you have this L2 cache present?
+
+Uh x value present?
+
+No.
+
+Then it will check in memory and memory.
+
+Currently x is ten.
+
+So now this x equals to ten would be read here.
+
+So here if you see that this issue might come because this is how generally in our CPU structure is
+
+L1 cache.
+
+First store the data.
+
+And periodically this L1 cache gets sync up with each other.
+
+But it might be possible that in one core thread has increment the x value, but it has not yet synced
+
+up.
+
+Let's say this sync have not yet happened, but if in another code another thread try to read this x
+
+value, it will check its L1 cache.
+
+Hey, do you have x value then L2 cache?
+
+Do you have x value?
+
+Then it ultimately goes to memory.
+
+Do you have x value?
+
+Yes ten.
+
+But it has older value.
+
+11 is not there.
+
+So what volatile does is volatile.
+
+Make sure that read and write should happen from memory.
+
+So when the thread one.
+
+When the thread one are trying to do that here let me little bit clear it.
+
+So x is ten internally.
+
+So so let now let's say I created this volatile x.
+
+Now anybody try to read x it will not look into this L1 cache.
+
+Not L2 directly.
+
+It read from memory.
+
+Okay.
+
+It is value is ten.
+
+So it will modify it.
+
+And whenever write happens it will write also happen directly to memory.
+
+So it will not update its L1 cache or L2 cache.
+
+It will write directly to memory 11.
+
+Now CPU has read x value read x value.
+
+Since it is volatile, it will directly read from memory, read from read x value so directly goes to
+
+the memory and read it.
+
+11.
+
+So now what does volatile make sure that any changes which are done by one thread is visible to another
+
+thread.
+
+Also, because the read and write directly happens to the memory, not to the cache, right?
+
+Because there might be some scenario where the data is present only in the L1 cache, but memory and
+
+memory sync have not yet happened, or within the L1 or within the course L1 cache is not yet sync up.
+
+In that case, other CPU core other thread might read the stale value, right?
+
+So you understand that what actually volatile means.
+
+But this is nowhere related to provide a thread safety.
+
+Atomic operations is like provide thread safety.
+
+Multiple threads are like running in separate like they are not interfere between each other.
+
+I hope it is clear.
+
+Don't mix.
+
+Atomic and volatile.
+
+Both volatile is just to make sure that any read or write to a variable happens directly from memory,
+
+so that any change is done by one thread is visible to another thread.
+
+But it doesn't guarantee that the concurrency properly.
+
+Concurrency is guaranteed by atomicity.
+
+Through what?
+
+Through cache operation.
+
+Is it clear?
+
+I think I hope I am able to clarify you the proper cache operation and how this atomicity works, this
+
+atomic integer.
+
+So this if you understand atomic integer, atomic, boolean, atomic long, you can practice it.
+
+It is exactly the same.
+
+Now let's see the concurrent collections.
+
+So see concurrent collections.
+
+I have already explained you that.
+
+So this is, uh.
+
+So you remember, right in the Java concurrency.
+
+During Java, uh, collections video for each when I for each collections when I was, uh, sharing.
+
+I have also told you that.
+
+Okay, let's see this part.
+
+Uh, here I told you, right.
+
+For whatever the collections which we have seen, like priority queue, what is their respective threadsafe
+
+version and its examples also, this is the respective Threadsafe version and its example.
+
+So we have already covered this right.
+
+But I just wanted to show you that for each of this we have already seen what are the Threadsafe version.
+
+These are already threadsafe so there is no Threadsafe.
+
+These are already threadsafe for rest of them.
+
+I have already shared in the collection part what are the Threadsafe version?
+
+But here I just wanted to pinpoint that.
+
+So this all collections, these are their concurrent collections.
+
+Alternative priority queue.
+
+Priority blocking queue like this.
+
+Right.
+
+If you understand priority queue linked list, this is also exactly working the same.
+
+But here I want to show you.
+
+Show you that what actually they are using to make sure that it is concurrent.
+
+So priority blocking queue.
+
+Let's see that priority blocking queue.
+
+So priority blocking queue when you are trying to add any item internally what is using reentrant law.
+
+So it is using lock linked list uses concurrent linked dequeue.
+
+So concurrent linked dequeue right.
+
+So here when we are trying to add an item what it is doing is it here.
+
+Here.
+
+If you say there is no lock, then here you say that cash next.
+
+So here it goes.
+
+Inside it uses compare and swap.
+
+So it uses compare and swap operation to bring the atomicity.
+
+So this is lock free.
+
+This is cash and operation.
+
+This is a reentrant lock.
+
+So you got it right.
+
+So different collections.
+
+There are concurrent collections.
+
+Some uses lock free some uses some lock like synchronized reentrant lock.
+
+But I think when you now look back and go in deep and try to practice, you will make sense.
+
+Okay.
+
+What is reentrant.
+
+What is compare and swap operation.
+
+Right.
+
+How it helps to achieve us.
+
+The concurrency even though there are not lock right.
+
+So do practice it.
+
+If you have any doubt, let me know.
+
+Okay guys.
+
+Thank you.

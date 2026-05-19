@@ -1,0 +1,1613 @@
+Hey guys.
+
+Welcome to Concept and Coding.
+
+And this is Shreyansh.
+
+So today we are going to very very important topic in Java Java memory management.
+
+Right.
+
+And before we start so I want to say that please excuse my voice I have a little bit cold.
+
+So I'm sorry for that.
+
+So here if you see that till now we have covered a basics like how to create a class, how to create
+
+a primitive data types, how to create an object right.
+
+How to call a method.
+
+So this thing should comes to your mind right here.
+
+How do we manage.
+
+How do we the memories are allocated to them right.
+
+So let's understand this today because this is very very important interview questions.
+
+And plus when you start working in the company you will see that how much importance is given to this
+
+okay.
+
+So now let's start this.
+
+So there are two types of memory.
+
+When I'm saying memory it's I'm talking about Ram right.
+
+So there are two types of memory which Java creates stack and heap.
+
+And when we are talking about memory management who manages this memory JVM?
+
+JVM is the one which manages this memory, right?
+
+And it create it divides the memory into two parts stack and heap.
+
+And it stores different type of data inside it.
+
+So let's see first what kind of data stored in a stack and what kind of data stored in heap.
+
+So let's say this this is your.
+
+Stack.
+
+Now here, if you see that I am creating multiple copies of it, I'll tell you why.
+
+And let's say this is your heap.
+
+So generally heap has more memory than stack.
+
+Okay.
+
+And it only have one copy.
+
+Now what kind of data is stored inside a stack.
+
+So first of all, it stored temporary variables, right?
+
+So let's say you have created a method inside a block and you created a variable int a equals to ten.
+
+So it's life is very temporary with that within this open bracket and closing bracket.
+
+After that it got destroyed.
+
+So this is known as temporary variables right.
+
+So all temporary variables are stored inside this stack.
+
+Okay.
+
+Then separate memory block for method.
+
+So whenever a method is being created.
+
+So let's say this is inside of one particular method public get something.
+
+So for each method there is a block of memory frame you can say that stores.
+
+And inside that method, whatever the variables, whatever the reference it's created, it will store
+
+inside this memory frame.
+
+Okay.
+
+So I'll tell you an example with this one.
+
+But first let's go through this.
+
+What kind of data is stored and we will see the example.
+
+It will clarify you more okay.
+
+But let's see this store primitive data type.
+
+So this is also nothing but a primitive data type.
+
+So primitive data type is stored within a stack store reference of the heap object.
+
+Whenever you create an object like new with the new keyword, whenever you create an object it stored
+
+inside a heap its memory.
+
+But it's reference reference of object is stored in the stack.
+
+So these type of reference I will tell you later, but first understand what kind of data we stored.
+
+So but there are different type of reference.
+
+Strong reference.
+
+Weak reference soft reference phantom references.
+
+Right.
+
+So I will tell you later.
+
+But first understand what kind of data we stored.
+
+Each thread has its own stack memory.
+
+So now you know that.
+
+That's why I've created multiple copies of stack because each thread.
+
+So this is let's say thread one has its own stack memory.
+
+This is thread two has its own stack memory.
+
+Thread three has own stack memory.
+
+Thread four has its own.
+
+But if you see that all the threads share a common heap memory, okay, variables within a scope is
+
+only visible, and as soon as variables goes out of scope, it gets deleted from the stack in the LIFO
+
+order.
+
+So what I mean to say is that everything is here in the stack is within scope.
+
+Everything has a scope.
+
+I will tell you how.
+
+So just wait for it.
+
+For an example.
+
+You will get to know how this leaf order is performed and what is mean by the scope.
+
+When the stack memory goes full you will get this error.
+
+Stack overflow error okay, now let's understand this with the example, right?
+
+This is very simple class.
+
+If you see I have created a class memory management and I have one public static void main.
+
+So it's one method okay.
+
+So this method has one primitive data type one object one string literal right.
+
+One object I created to invoke this another method.
+
+And I'm doing an invoking of this method.
+
+And then you can say that this has invoked this.
+
+And inside this I have another reference to an object, another string literal and another string object.
+
+This is not a string literal.
+
+So this is a string object using new keyword.
+
+So it's a very very simple class.
+
+We have covered methods variables.
+
+Right.
+
+So you should be easily understanding this what I have written.
+
+But now let's understand this how memory is stored for this one.
+
+So now let's create a stack.
+
+So let's say this is our stack.
+
+And let's say this is our.
+
+Heap memory.
+
+Heap memory is always larger than stack.
+
+And so here let's see this.
+
+First of all main method is invoked whenever the main method is invoked.
+
+I told you for each method a block of memory is stored.
+
+So let's say I have stored this block memory.
+
+This is for main.
+
+So this is one scope for the main.
+
+This frame.
+
+You can call this as one frame of memory for which method main and all the variables which are created
+
+inside this main method it would be stored in its block Okay.
+
+So this is its scope.
+
+So now let's say main method is called.
+
+We have created its memory.
+
+Now I have created a primitive variable.
+
+Primitive variable 110.
+
+So I have stored it here.
+
+Primitive variable ten.
+
+So as you know that primitive variable doesn't hold any reference.
+
+It store the value itself.
+
+So it is stored into the this memory of this scope.
+
+The second is I am creating a new object new person.
+
+So one memory is created here let's say.
+
+This is your object person object.
+
+And this person object has a reference who is storing the reference person object, so it has one person
+
+or obj.
+
+So this holds a reference to this memory.
+
+Okay now I am creating one string literal.
+
+So as you already know from the previous variable class that string literals stores the data into the
+
+string pool and where does string pool?
+
+Stores?
+
+String pool is saved inside the heap only.
+
+So there is something called string pool.
+
+So whenever you are creating a literal string literal so it would be stored here 24 okay.
+
+And what is the reference string literal.
+
+So it will create a reference variable string literal.
+
+And it is storing a reference to this 24.
+
+Okay.
+
+Now the third line is new memory management.
+
+So see, I am creating one more object now.
+
+So let's create one more object here.
+
+I have created one more object.
+
+What is the object memory management.
+
+Memory management object and its references inside mem obj in the same main one right.
+
+So it would be inside this only mem obj.
+
+So currently if you see that all are within our scope.
+
+So scope is still going on.
+
+Scope is not yet finished okay.
+
+So within a scope you can access all the variables right within a scope.
+
+So this is a scope.
+
+Within a scope you have access to all the variables.
+
+So now object storing a reference to memory or memory management object.
+
+Now I am invoking a method memory management test and passing this reference.
+
+So now you see that I'm creating an another method.
+
+So for each method it will create a new reference.
+
+So I am creating an another frame.
+
+So this frame is for.
+
+Which method.
+
+Memory management test method.
+
+So this scope is for memory management test method.
+
+This scope is for main.
+
+And now this is for this one.
+
+So this is it's this method frame memory frame.
+
+So first of all it has this person obj.
+
+It has this person obj.
+
+And what reference it has.
+
+So we pass the reference of this one new person.
+
+So new person is here.
+
+So this has reference to this one only.
+
+Okay.
+
+Now see I have created uh, another reference which is pointing to which object, whatever the person
+
+object is pointing to.
+
+So I have created another reference person obj two.
+
+Person obj two.
+
+And it is pointing to the same memory.
+
+Which person obj was pointing person obj was pointing to this.
+
+So it was also pointing to this one.
+
+Same.
+
+Okay, now I have created one more string literal 24.
+
+So whenever I, as you know from the previous class, whenever you created a string literal first it
+
+will check into the string pool.
+
+So is this literal present?
+
+24 is present.
+
+If yes, it will not create new.
+
+It will use the same.
+
+So it will create string literal two, reference string literal two, and it point to the same from
+
+the string pool itself 24.
+
+Then it's create a string literal three and it's a not a literal.
+
+It's a new object because I'm using a new keyword.
+
+So it create a new object which is string object and has the value 24, but it is inside a new this
+
+one string literal three.
+
+And it's storing this reference here.
+
+Now if you see that I have got a closing bracket, whenever you get a closing bracket means scope is
+
+finished whenever the scope is finished, you have to delete all the variables or references created
+
+within that scope.
+
+So now this scope is finished for the memory management test.
+
+When the memory management scope is finished, it will delete this scope.
+
+It will delete this scope.
+
+Right.
+
+So now if you see that it's going in the left manner last in first out.
+
+So this one was the added last after main.
+
+But it is the first one to get deleted when this scope is get deleted.
+
+So all this will also get removed.
+
+So now this is removed.
+
+So this reference no more exists.
+
+After that this get removed.
+
+So this reference will also get removed.
+
+Okay.
+
+Now after that this will get removed inside this.
+
+This will get removed, right?
+
+So this reference will also get removed.
+
+After that this will get also removed.
+
+So its reference will also be removed.
+
+So now you see that it has done remove this memory management test method frame and all the variables
+
+we have created.
+
+We have removed in a LIFO manner.
+
+We have cleaned up.
+
+Okay, now it moved to here.
+
+Now the control come back to here.
+
+This method is completed now.
+
+Main method closing bracket has been reached now main method closing bracket has been reached means
+
+main method scope is also finished.
+
+So we are removing this also when we are removing this.
+
+So what we are doing is we have to remove this memo BJ when memo BJ is removed we have to delete this
+
+reference.
+
+So this reference is removed.
+
+Then we remove string literal and this reference will be deleted.
+
+Okay.
+
+Then person obj reference is deleted.
+
+Its reference will also be deleted.
+
+Then this value will be deleted.
+
+So now if you see that the method execution is completed right.
+
+Stack is empty and everything is done.
+
+But now you have noticed one thing here Shreyansh.
+
+What?
+
+We have deleted the references which was pointing.
+
+But what about this objects which now created in the heap?
+
+How we will delete those because their reference when their references were deleted.
+
+So whatever was pointing that we have deleted that reference.
+
+But now these objects are left in the heap.
+
+Who will clean this up?
+
+That's where the garbage collector comes into the picture.
+
+Garbage collector is used to delete the unreferenced object from the heap.
+
+So now for this object.
+
+Is there any reference from the stack?
+
+No, there is no reference.
+
+So garbage collector will remove this.
+
+Now it will check.
+
+Hey, is there any reference?
+
+Is anybody referencing.
+
+No, nobody is referencing.
+
+This will also be freed up.
+
+Hey, for person object, is there anybody referencing?
+
+No, nobody is referencing.
+
+This will also be freed up.
+
+Okay.
+
+Similarly for the string pool, if it is not used after all, it would be removed, right?
+
+So this all will be done by garbage collector.
+
+Garbage collector runs periodically, right?
+
+JVM controls JVM controls when to run the garbage collector.
+
+So see there is a command called system dot GC.
+
+So in your application code if you write this command?
+
+You are telling that.
+
+Hey, run!
+
+The garbage collector and garbage collector will try to scan the heap.
+
+Hey, what?
+
+All object?
+
+There is no reference.
+
+If it find any object for which there is no reference, it will delete it.
+
+But JVM says that there is no guarantee that even if you type this, I will run the GC.
+
+So running the garbage collector is totally depend upon JVM.
+
+So JVM has full control over garbage collector whether I should run it or when to run it.
+
+Okay, so even though you write it, there is no guarantee that garbage collector will run.
+
+And that's why it is called as automatic memory management.
+
+Right?
+
+So you don't have to worry about freeing up the memory.
+
+JVM takes care of it automatically.
+
+It periodically it keeps on checking the heap memory.
+
+And if it seems that okay, heap memory is filling up fast, so it will run the garbage collector more
+
+periodically, more faster.
+
+If it seems that.
+
+Okay, We have.
+
+I have sufficient space.
+
+No need to worry.
+
+JVM may run, uh, garbage collector.
+
+Very less.
+
+Okay, so you understand that?
+
+So now you have understood this stack memory, how it stores the block, how it stores the variable,
+
+how it store, the primitive data type, how it is stored, the references.
+
+Now I'll tell you about this strong reference.
+
+Weak reference.
+
+Okay.
+
+And also you have already know about how each thread its own stack memory variables within a scope is
+
+only visible, and as soon as the variable goes out of scope, it gets deleted in leaf order.
+
+I think you get it by the scope, right?
+
+So this variable is not visible inside this scope, right?
+
+So each variable is visible within its own scope.
+
+And when stack memory goes full it's throw stack overflow error okay.
+
+So now let's understand this.
+
+What are the different type of references?
+
+So in a simple way, I have told you this way that for a stack this is a heap.
+
+This is a stack.
+
+This is heave heap stores the object.
+
+This stores the reference of object.
+
+Reference of object.
+
+So now let's say this example I have created here.
+
+Person.
+
+Person object equals to new person.
+
+Okay.
+
+So I have created an object of person.
+
+And p object is the reference to it.
+
+So this is p obj is a reference to this.
+
+This is known as strong reference right.
+
+So this is known as strong reference like how we are using it as of today mostly.
+
+This is known as strong reference.
+
+So when garbage collector invokes now garbage collector runs.
+
+Now it says that hey, is there anyone who is referencing to this object?
+
+It will see that yes, there is a strong reference.
+
+So it will not delete this.
+
+It will survive.
+
+Okay.
+
+Second is weak reference.
+
+Weak reference.
+
+How you create a weak reference.
+
+There is a class called weak reference.
+
+You want to create a weak reference of person.
+
+Now you are saying that okay this is weak p obj equals to new weak reference.
+
+Of person and you are creating a new object.
+
+New person object.
+
+Okay, now see this?
+
+Whenever you create an object like this, so you are creating a new person object.
+
+Let's say you are creating another new person object okay.
+
+So this is another person object.
+
+But you are making a weak reference, right?
+
+You are creating it a weak reference.
+
+So now here you are creating a one more week.
+
+P obj.
+
+Weak p obj.
+
+So there is a reference but it's a weak.
+
+What does it weak mean.
+
+Weak means that as soon as the garbage collector runs, as soon as garbage collector gets invoked,
+
+it will freed up this space, right?
+
+So it's not like a strong.
+
+A strong says that, hey, garbage collector, don't delete my object because I have a strong reference.
+
+Somebody is using it, but weak reference is that garbage collector is not run.
+
+I am able to access it, but let's say garbage collector runs.
+
+It is not mandating the garbage collector that you cannot free it up.
+
+Hey, if you run, freed it up, right?
+
+And if you try to access what object, what value, it will get null.
+
+Okay, so that's the difference between strong and weak.
+
+Strong tells the garbage collector that do not delete this.
+
+I have a reference, but weak says that I have a reference.
+
+I can access the value, but if you run, you can feed it up right?
+
+As soon as you run, you can feel free.
+
+You can make it free.
+
+And if I try to access it after that, I might get null value.
+
+So that's weak.
+
+And there is something called self-reference.
+
+Self-reference is a type of weak reference, right?
+
+What it tells is, hey garbage collector, you are allowed to free it up, even though I have a soft
+
+reference.
+
+But only do it when it is very very, very urgent.
+
+Very, very urgent means that there is no more space and you have to create a space.
+
+Then go ahead.
+
+You can remove it, no problem.
+
+Okay, so only difference between a weak and soft is like weak is like as soon as garbage collector
+
+will run, it will feed this.
+
+It will remove this object.
+
+Soft reference tells that that.
+
+Yes.
+
+Garbage collector.
+
+You are allowed to free this, but do it if it is very, very urgent and you need the space very urgent.
+
+Okay, so that's the only difference.
+
+Okay, so generally we hardly use this in the company.
+
+We are mostly using a strong reference part.
+
+Okay, but it's good to know this.
+
+We have this type of references also weak reference, soft reference a strong reference.
+
+If there is a strong reference present to an object, this object will never get deleted.
+
+Till a strong reference is present.
+
+A weak reference is present.
+
+As soon as garbage collector will run, it will remove this.
+
+No matter weak reference is present or not and if we try to access it, it will get null value.
+
+If it is a soft reference, GC might decide that okay, I have sufficient space, let's keep it alive.
+
+So it's GC totally.
+
+It is allowed to remove it if it want, but GC will say that okay, I have sufficient space, let it
+
+live for some more time, right?
+
+So soft is just this.
+
+But totally GC is allowed to free it up, but only do if there is a very shortage of space.
+
+Okay, understood this one.
+
+References.
+
+Different type of references.
+
+Now before we jump into the heap.
+
+Very, very important.
+
+I just want to tell you that how the reference can be changed.
+
+So this is a heap.
+
+This is a stack.
+
+Let's say I created this one, uh person obj equals to new person.
+
+So what will happen in this case a person object will be created obj reference will be there in the
+
+stack.
+
+It will pointing to this.
+
+So first if I do this obj equals to null means what I am doing is I am making this removing this reference
+
+and storing obj null value.
+
+So now garbage collector can invoke and remove this.
+
+Okay.
+
+Another way is let's say I.
+
+So this is one object.
+
+And currently it is pointing to this one.
+
+Okay.
+
+So currently it is pointing to this one.
+
+Now I am creating another object person obj two equals to new person.
+
+Okay.
+
+So what I'm doing is I'm creating another object.
+
+So this is a person object one.
+
+This is person object two I am creating a new object and obj two is the one.
+
+So this obj one let's say this obj two.
+
+This is storing reference to this one.
+
+If I do this obj one or this is let's say one obj one obj two.
+
+So means what I'm doing is obj one is now storing the reference of this one one obj one obj two.
+
+So this one.
+
+So now here, if you see that garbage collector, when garbage collector invokes it will freed up this
+
+because there is no reference to this one.
+
+So there are different ways like garbage collector can get invoked.
+
+Right?
+
+So there is no reference to this one.
+
+It get invokes and you can manage the references through which.
+
+And if heap is getting full also, then garbage collector get also invoked.
+
+Okay, so whenever object is not present, no reference is present.
+
+It is allowed to freed up the memory by the garbage collector.
+
+Okay, so now we know how the what kind of data stack store, what kind of data heap stores.
+
+Now get little bit more into the heap memory, right.
+
+Now let's go into the heap memory.
+
+I hope you are finding this topic very, very interesting guys.
+
+So heap memory is divided into two parts, which is young generation.
+
+And old generation.
+
+And there is one more part which is generally known as non heap.
+
+Meta space.
+
+Okay.
+
+In the previous version of Java I think before Java seven it is called pram gen pram gem.
+
+But now it is no more used.
+
+It is used a meta space.
+
+It is called as meta space.
+
+Okay, so this is not a part of heap memory.
+
+So heap is generally so.
+
+This is your heap memory which is divided into two part young generation and old generation.
+
+So young generation is further divided into three parts.
+
+Eden.
+
+S0 s1.
+
+This is known as.
+
+Survivors.
+
+Survivor.
+
+Survivor.
+
+Space.
+
+And this is Eden.
+
+Okay.
+
+Now let's understand this.
+
+Very, very simple.
+
+Right?
+
+But very, very interesting.
+
+Now let's see.
+
+How when you create an object where it stores first.
+
+So this is let's say you are.
+
+Young generation.
+
+This is your old generation.
+
+This is your.
+
+Eden.
+
+This is your S0.
+
+Survivor one.
+
+Survivor, sir.
+
+S0 s1.
+
+Okay.
+
+Now I am creating an object one.
+
+I am creating a new object one.
+
+So first of all, whenever you created a new object, it goes inside Edirne.
+
+Okay.
+
+This is your object one I am writing oh one to save a space.
+
+So it is object one.
+
+Let's say I created another object.
+
+Object two.
+
+Object three.
+
+Object four.
+
+Object five.
+
+So I have created five object.
+
+So currently everything was empty.
+
+So I created five object object two object three object four object five.
+
+So five objects are created inside a Edirne.
+
+Now let's say after a periodic time, after some time garbage collector got invoked.
+
+So first time garbage collector invokes.
+
+Now garbage collector do two things.
+
+So there is a something called an algorithm called mark and sweep algorithm Them Mark and sweep algorithm.
+
+So what it will do is as a part of first step mark, it will mark all the objects, which is no more
+
+reference and it is allowed to delete.
+
+So let's say object two and object five is something.
+
+There is no reference.
+
+There is no reference like this.
+
+And it is allowed to be deleted.
+
+There is no reference let's say object two.
+
+So it mark it like okay, object two and object five are allowed to be deleted.
+
+There is no reference.
+
+Then there is something called sweep algo.
+
+Now what this sweep algo will do.
+
+Is it do two things.
+
+It will first remove this it remove this from the memory.
+
+And what it will do is it will sweep this other the surviving objects into one of this survivor stack.
+
+Or you can say that memory place.
+
+So now here.
+
+This
+
+010304
+
+will come into S0 okay.
+
+And it will be removed from here.
+
+And this two will get deleted and it will age will be added.
+
+So age is its one.
+
+Its age is one.
+
+Its age is one.
+
+Age is one.
+
+So means their age is increasing.
+
+Right?
+
+So this process is called minor GC minor GC minor garbage collector because it's very fast.
+
+It happens very periodically.
+
+Now let's say second time.
+
+Now let's say uh, another objects created before any garbage collector runs, another object created
+
+let's say obj six obj seven.
+
+So where does obj six and obj seven will be created, let's say here obj six obj seven okay.
+
+Because every time a new object is created, it is created inside a hidden only.
+
+Now let's say garbage collector got invoked after this.
+
+So first it will do Mark.
+
+So now it will do a mark into all Eden s0 s1 like whatever the objects.
+
+Hey which one?
+
+There is no reference.
+
+So let's say obj seven.
+
+There is no reference.
+
+So it marking it obj four there is no reference.
+
+It is marking it.
+
+Now they are eligible for deleting.
+
+Now sweep will happen.
+
+So what sweep will do is it will delete this remove from the memory.
+
+And what it will do is that in the other.
+
+So alternatively first it put into S0 nine.
+
+Now it will put it to S1.
+
+So obj six.
+
+So object six is put here.
+
+Now its age is one.
+
+Object one is put here.
+
+Its age was one, now its got age.
+
+Increase to two.
+
+OB three.
+
+Its age was one.
+
+Now its age is two again plus one.
+
+And this will get remove obj.
+
+Object six is already there with age one.
+
+So this is Eden.
+
+Get freed up.
+
+This got removed and this got freed up.
+
+So if you see that at a point Eden would be free after the garbage collector and one of the S0 and S1
+
+would be free.
+
+Okay.
+
+And alternatively we put the data into S0 as one and we increase their age.
+
+Now let's say I have set my threshold.
+
+Threshold value has like age three.
+
+Whenever age three is reached I have to promote them.
+
+I will tell you what does it mean.
+
+So now let's see.
+
+I have created one more object, let's say object eight.
+
+So in which memory object will be created newly here.
+
+Object eight.
+
+Okay I have created let's say object nine.
+
+Now third time.
+
+Garbage collector runs now garbage collector runs.
+
+What it will do.
+
+It will first.
+
+Mark the objects which there is no reference.
+
+So now let's say it's marking that okay I have to delete this one.
+
+I have to delete this one.
+
+Okay.
+
+Now the sweep will happen.
+
+And what sweep will do is it will delete this.
+
+It will delete this.
+
+Freed up the space.
+
+And what it will do is it will put object nine from Eden to this age one.
+
+And from S2 it will bring object six.
+
+Age Is one here, then it will to object one age was two, now age will become three.
+
+Now here if you see that one thing.
+
+So let's first clean up this object nine is there.
+
+Object six has been moved to S0 this freed up and object one has been moved to S0 this one.
+
+Now here, if you see that I have defined a threshold age of three, and after three I have to do promotion.
+
+So what does it.
+
+So now here, if you see that object one has reached its age, it has survived this much time.
+
+So whenever it survive a particular threshold it has to do a promotion.
+
+And what promotion means is this object has will be now moved to old generation.
+
+This object one will be now moved to old generation.
+
+Okay.
+
+So now in the old generation.
+
+Only difference is that here it is called minor GC.
+
+Here it is called major GC.
+
+Whenever GC run.
+
+Why?
+
+Because it first of all, whenever the GC runs here it don't run to periodically like maybe let's say
+
+here it is run every one time in ten second.
+
+Let's say I'm just saying it right.
+
+But let's say in old generation it might be running one time only in half an hour.
+
+I'm just saying that theoretically that here the GC runs very less periodically, very, very less as
+
+compared to the young.
+
+And also whatever the objects are present into old generation, there is kind of a big objects, right?
+
+They are used to frequently.
+
+Right.
+
+So it takes a lot of time.
+
+So these are like faster as your young generation.
+
+Right.
+
+So you can say that objects created deleted created deleted.
+
+So it's very fast.
+
+But old generation generally happen is like there are lot of references because they are alive from
+
+so long, they're alive from so long.
+
+So there could be so many references pointing to them and all right.
+
+And they might also have a further references to them.
+
+So generally this process is, uh, garbage collection is little bit time taking than young generation,
+
+but it's uh, it has it do the same thing.
+
+It first do Mark if there is no reference and then delete it.
+
+But here the garbage collection process is called major GC.
+
+Here it was called minor GC.
+
+You understood that young how heap memory is divided into young generation and old generation and gen
+
+generation.
+
+We have Eden and Survivor space.
+
+Now there is something called meta space right.
+
+So this is a outside of the heap.
+
+What data it is.
+
+Store your class variables.
+
+I think you have seen the Uh, variable.
+
+Uh, topic.
+
+Right.
+
+You have no.
+
+What is class variables?
+
+Every, uh, object which you create through static.
+
+That is class variable.
+
+So it store class variables, it store class metadata.
+
+Class metadata means store information about the class from which objects can be created.
+
+Right.
+
+It store constants.
+
+Right.
+
+Uh, you define right.
+
+Static final.
+
+So these are constant.
+
+So all this kind of data, metadata information constant class variables are stored into the meta space.
+
+Right.
+
+So as soon as like Java JVM needs need to load certain class, it will load it here as soon as JVM doesn't
+
+need any class.
+
+So it will remove it from here, right?
+
+But this is important.
+
+Now we have understood about the heap, right?
+
+Young Eden survivor.
+
+Old.
+
+Old generation is also known as tenured.
+
+Permanent generation.
+
+So that is, uh.
+
+Pam.
+
+Pam.
+
+Jim.
+
+It is used to be earlier one.
+
+Now we call this meta space.
+
+I have already told you.
+
+Right?
+
+So this was in the old, old Java versions.
+
+I think before, uh, before Java seven.
+
+I think you can check it once.
+
+I think it is before Java seven.
+
+It is a prime gem.
+
+And the major difference between prem gem and meta space.
+
+Meta space, I think from, uh, from Java seven or Java eight, we are using beta space, right?
+
+But here the major difference between them is like, uh, prem gem was a part of heap.
+
+Was a part of.
+
+So you have young, you have old, then you have Prem gem.
+
+So it's a part of a heap memory and it is not expandable.
+
+So as soon as it will get filled up, you will get out of memory error.
+
+But here Metaspace is out of this heap is now only young and old.
+
+And Metaspace is separate.
+
+That's why it is called as non heap.
+
+And it is expanded.
+
+Expandable as you require.
+
+Okay, so that's the major difference.
+
+But the kind of data they stored is kind of same.
+
+Now let's understand about the garbage collector algorithm which is we are kind of uh our last topic
+
+here today.
+
+Garbage collector.
+
+So I think you already know by here what is garbage collector?
+
+How it get invoked.
+
+Like, what is the purpose of using the garbage collector?
+
+And one of the algorithm I have already told you the mark and sweep algorithm.
+
+So as a part of first phase mark, it will identify what all objects need to be deleted and the sweep
+
+it will just remove those objects from the memory.
+
+Right.
+
+So there is something called mark and sweep with compact compact memory.
+
+So what is the difference here is simple.
+
+Nothing much.
+
+So here if you see that uh, let's say this space memory space heap.
+
+So here you have one object which is identified that it can be deleted.
+
+There are objects here, let's say.
+
+And during the mark I have identified what all objects need to be deleted.
+
+Let's say I have identified this.
+
+Identify this.
+
+Identify this.
+
+And as part of sweep, I deleted it.
+
+So I have deleted this.
+
+Now here, if you see that how our memory is generally would be like this.
+
+So one data is here, one data is here, one data is here.
+
+But there are certain memory segments which are freed up here.
+
+There are certain memory segments which are freed up here.
+
+So with compaction, what happen is it will bring the objects into sequential.
+
+Write it compacted so that we have a memory fragment in a sequential form later, so that any new object,
+
+it can be added later.
+
+Otherwise it would be very difficult to put an object in this fragments.
+
+Right?
+
+So what it will do, is it compact the remaining objects which survive, and so that we have a freed
+
+free of space at the last.
+
+And it would be used to put an object there.
+
+Okay.
+
+This is known as mark and sweep with compaction.
+
+Now there are different versions of GC.
+
+First is serial GC, second is parallel GC, third is.
+
+Concurrent mark and sweep.
+
+This is C.m.s.
+
+And fourth is G1 garbage collector.
+
+This is the default.
+
+Default version of garbage collector in Java eight.
+
+Okay, now I'll tell you this is very, very important to understand this serial GC.
+
+Now you know that garbage collector is used to remove up the memory from the heap.
+
+From young and old.
+
+Both, right?
+
+So serial GC is that only one thread?
+
+Only one thread is used and this thread will work.
+
+Let's say garbage collector initiated.
+
+And this will work and freed up the space.
+
+Only one thread.
+
+One thread let's say.
+
+So this is called minor GC and it is called major GC.
+
+So when the minor GC will get invoked, only one thread would be working.
+
+When major GC will invoke only one thread would be working only one GC thread.
+
+So what is the disadvantages?
+
+First of all, whenever you are only one thread is working, it definitely work would be slow.
+
+So it would be little bit slow.
+
+Second thing is GC is very very expensive.
+
+Why?
+
+GC is very expensive.
+
+Because whenever the GC work starts, whenever the GC work start, all application threads will get
+
+paused.
+
+So that's why we call that the world stop when the garbage collector runs.
+
+So let's say your application is running.
+
+As soon as the garbage collector runs, your application will become paused.
+
+Now garbage collector will complete its work and after that it will resume.
+
+So if GC is slow, then definitely your application would become slow because they are pausing too many
+
+times.
+
+So that's why GC is very expensive task, because when the GC work starts, all application thread will
+
+pause.
+
+So this is one of the disadvantage of GC that only one thread doing the work of cleanup.
+
+So in the Java eight the parallel GC is used in this depending upon the core.
+
+Let's say if you have two core CPU four core.
+
+So this many threads got initiated for the garbage collector and they work parallelly, right?
+
+So when there are more threads, definitely it would be little bit fast and there would be less pause
+
+time.
+
+But still there is a pause time, right?
+
+But only thing is multiple threads are working to freed up the space.
+
+So you will get a little bit less pause time because the far the work of cleanup would be done a little
+
+bit faster.
+
+But still, this is you can say that in the latest.
+
+Uh j17.
+
+And all there has been work has been done to further improve this through concurrent mark and sweep.
+
+Concurrent mark and sweep is says that okay, while your application threads are working, this is your
+
+application thread.
+
+Concurrently GC threads are also working.
+
+So it's a concurrent GC thread.
+
+So your application thread is working and in parallel GC thread is also working.
+
+No one is stopping.
+
+So application threads are not stopping because of GC threads right.
+
+But it's not 100% guarantee, right?
+
+JVM doesn't guarantee that your application thread will not stop.
+
+Only it says that I will try my best that your application threads will not stop.
+
+I will try to do concurrent mark and sweep concurrent cleanup.
+
+I will try to do.
+
+But I don't guarantee 100%.
+
+And also there is no memory compaction happens.
+
+So whatever the memory got freed up.
+
+So let's say there is some segment freed up.
+
+There is certain memory segment.
+
+So no compaction happens in this.
+
+So then there is a further improvement is like G1.
+
+So G1 you can say that the better version of this where it says that okay try to give you 100% that
+
+okay, your application thread will not stop.
+
+And also it brings a compaction that all the memory is bring together and all the freedom.
+
+Memory is added at last so that they can be used.
+
+So you got it.
+
+Currently Java eight is using parallel GC and there is a further in the latest version of Java.
+
+There is a further chance that the post time can be reduced to a very minimal so that your throughput
+
+Increase and latency decrease.
+
+When your throughput increase means earlier your application can process 1000 requests per minute.
+
+Let's say now, because there is less pause time, you can process, let's say, 1500 requests per minute.
+
+So your throughput will increase.
+
+Definitely.
+
+When what will happen is when your throughput increases means you have, uh, threads are not pausing.
+
+So pause time has been removed.
+
+So definitely your latency will go down.
+
+You will see the advantage.
+
+Okay.
+
+So that's pretty much I have for you in memory management and garbage collector.
+
+Very very important topic.
+
+Please go through one more time.
+
+You will understand it better right?
+
+And yeah I think that's it.
+
+If any doubt, please feel free to ping me in the comment section.
+
+I will try to resolve your doubt as soon as possible.
+
+Thank you guys.

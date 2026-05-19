@@ -1,0 +1,1125 @@
+Hey guys.
+
+Welcome to Concept Encoding.
+
+And this is Shreyansh.
+
+So in the interface or topic this is the last topic functional interface and lambda expression.
+
+This is a Java eight feature and asked a lot in the interview.
+
+Right.
+
+So this is very very important.
+
+Just a heads up okay.
+
+So now let's start with this.
+
+Let's see what we are going to cover today.
+
+What is functional interface.
+
+What is lambda expression.
+
+How to use functional interface with lambda expression.
+
+Advantages of functional interface.
+
+And this is one of the use case because you know that interface can do a nesting from another.
+
+Not nesting.
+
+The function interface can extend from another interface.
+
+So what are the different use cases can come okay.
+
+So now let's start with what is functional interface.
+
+So if an interface contains only one abstract method then it is known as functional interface.
+
+You know that whenever we create an interface, right?
+
+And if we don't define anything by default, what it is, it is public and abstract, right?
+
+Even if you don't write into an interface, then you know that public and abstract will be added automatically,
+
+right?
+
+So this is if you can provide only the signature.
+
+This is known as abstract method.
+
+This is already we are clear.
+
+So if an interface contain only one abstract method, only one abstract method that is known as functional
+
+interface okay.
+
+It is also known as Sam interface Sam is single abstract method.
+
+The same thing.
+
+Single abstract method okay.
+
+So at the functional interface keyword can be used, but it is optional.
+
+So here if you see that I have created an interface bird and created one abstract method, I haven't
+
+written abstract.
+
+You know that interface.
+
+It will be added.
+
+Public abstract automatically.
+
+So this is an abstract method and I have provided only the signature are right.
+
+So this is an abstract.
+
+So I have used the functional interface keyword.
+
+But this is also equivalent to this.
+
+Also you can you don't have to use at the right functional interface.
+
+This is just an optional.
+
+So this will also be known as functional interface because why it has only one abstract method.
+
+Okay.
+
+But what's the difference.
+
+Like if you put functional interface and if you try to add another.
+
+So now here if you see I have used the functional interface keyword.
+
+Now if you try to add another abstract method you will get a compilation error.
+
+See okay.
+
+So functional interface annotation or keyword force you restrict you that you cannot add another abstract
+
+method.
+
+But if you don't use at the functional keyword, if you have only one abstract method, it would be
+
+known as functional interface, but it will not force you.
+
+If you want to add another, you can add it.
+
+Get height then it will not be a functional interface then because now it has two abstract methods.
+
+Okay.
+
+So you know right.
+
+Why functional interface keyword you can use when you have to restrict that.
+
+No other abstract method can be added okay.
+
+Just see this also this example.
+
+So I have put an add functional interface keyword and created one interface board.
+
+And this is my one abstract method.
+
+This is my one abstract method.
+
+Now see this.
+
+What definition says that functional interface contains?
+
+Only one abstract method means you can have other methods like default.
+
+So I can have a default method which has the implementation.
+
+So only one abstract method is there.
+
+I can have the default method.
+
+I can have a static method which has and even the object class method.
+
+So you.
+
+I have already told you in the class topic that each class right is the child of object class.
+
+So in object class has certain method like uh two string equal uh I think hash code.
+
+So these are the methods which are present into object class.
+
+So these methods are not considered as an abstract here.
+
+If you see that see this example.
+
+Normal uh not functional interface.
+
+Just wanted to not show a normal.
+
+Let's say I have created an interface test interface.
+
+And I have defined a method two string.
+
+Right.
+
+This is similar to uh, what we have into an object class.
+
+Right?
+
+Two string.
+
+Also the same is present.
+
+The same.
+
+It would be by default public.
+
+So public string two string method definition is present here.
+
+Now if you create a class which implements this interface, now you see that you don't have to provide
+
+its definition, you don't have to provide it definition.
+
+Why?
+
+Because you know that each class by default extends from the object class itself.
+
+Okay.
+
+So generally that's why we said that.
+
+So in the interface if you define any object class methods you don't have to provide the implementation
+
+for it.
+
+It's not required okay.
+
+So this was just a normal interface here.
+
+If you see that I have created a class which is extended this interface and see no error, I haven't
+
+even implemented this.
+
+Why?
+
+Because this class by default extends this object class and definition is already provided here okay.
+
+So in the functional interface you can have only one abstract method.
+
+But you can have default method.
+
+You can have static method, or you can even have the methods which are present into an object class.
+
+Okay, so these are all allowed.
+
+So this is still a functional interface because it has only one abstract method, even though it has
+
+other methods like default static or objects.
+
+So in functional interface only one abstract method is allowed.
+
+But we can have other methods like default, static or methods inherited from the object class.
+
+Okay.
+
+So this is clear.
+
+So this is what known as functional interface.
+
+Okay.
+
+So this is clear what is functional interface.
+
+Interface which has only one abstract method.
+
+But you can have default static and other methods also.
+
+But only one abstract should be there.
+
+Now the question comes is here.
+
+Then what is lambda expression and why.
+
+It's always comes whenever we discuss about functional interface how they are both related to each other.
+
+This thing should come to a mind, right?
+
+Let me explain you with this.
+
+Uh, just don't see this now.
+
+Let me first explain this.
+
+This.
+
+So what are the different ways to implement the functional interface?
+
+Or you can say the normal interface.
+
+Right.
+
+So first way, as we already know using implements keyword.
+
+So now let's say I have created a functional interface.
+
+It's a very basic interface board and has one abstract method called can fly.
+
+So you know that you we can create one class.
+
+Let's say for the bird I have created one class eagle.
+
+I have implemented this interface using the implement keyword.
+
+Right.
+
+So now it has to provide the definition of this can fly.
+
+So it provided the definition of this.
+
+So this is one of the way.
+
+So now I can create an object of eagle, right?
+
+So new Eagle, I have created an object of eagle, and the object reference is stored by the the bird
+
+interface.
+
+But this is only just a reference.
+
+And you can call this method.
+
+This is we have already seen right.
+
+This is very basic.
+
+So this is one of the way you can implement the functional interface.
+
+Like whatever the method you have use the implement and do it.
+
+What is the second way.
+
+So this was the first way.
+
+What is the second way.
+
+Second way is using anonymous class.
+
+If you have watched the class uh class topic video, I have explained what is anonymous class, right?
+
+A class without a name is called anonymous class.
+
+So let's say this is the interface.
+
+Functional interface I have interface bird same one abstract method.
+
+Right.
+
+And in the main method without even creating class implement and all I can create an anonymous.
+
+This thing so bird an object right?
+
+It will hold the reference of the object which will create.
+
+Now how you will create an anonymous class.
+
+So new bird and provide the implementation here.
+
+Right.
+
+So provide the implementation here.
+
+Override this method can fly and provide this the complete implementation.
+
+So new bird and then the block starts block end here and semicolon.
+
+And within this you have whatever the method you have you have to provide its definition.
+
+Right.
+
+And so this eagle object which holds the reference of the whatever the new internal.
+
+So internally it will create a class, implement it.
+
+But it's an anonymous.
+
+In the example I showed you that it will create some with random name.
+
+Which compiler decides right the name.
+
+So it's an that's why it's known as anonymous class.
+
+So internally what it's doing is nothing but the same.
+
+It will create one class with its own name and implement this bird.
+
+Then write a method.
+
+This implement this method and using this eagle object you can access.
+
+This can fly vertical or not okay.
+
+So this is we have already seen that how you can implement the anonymous.
+
+This is known as anonymous class right.
+
+So we have already covered that one.
+
+So if you are totally not recalling it so I will suggest that please check what is anonymous class.
+
+Because there we have explained in depth like internally what it does.
+
+It create a new class itself with the name which is decided by the compiler.
+
+But this is the way through anonymous.
+
+Now what is the third way?
+
+So third way is using lambda expression.
+
+So now you know that why While lambda expression is always comes into the picture when we always talk
+
+about the functional interface.
+
+So it's a way of implementing the interface.
+
+Lambda expression is a way to implement the functional interface.
+
+One way is using implement.
+
+Second way is using anonymous.
+
+Third way is now Lambda in Java eight.
+
+Right now you say that hey like why we need lambda expression to implement when we have already two
+
+ways to implement our interface.
+
+So notice one thing in this two.
+
+So let's say this anonymous class.
+
+So here you have to implement this method an interface which has only one abstract method only one right.
+
+So here if you see there are too much verbose.
+
+So only this thing, this line is your.
+
+Which is you required rest is all Java verbose like create a new this block start put override, put
+
+a method can fly and then do this.
+
+So here if you see that in the with the help of lambda expression.
+
+The main intention here is to reduce this verbose right.
+
+So that's why they have used with the functional interface.
+
+Because in functional interface we know that there would be only one only one abstract method.
+
+So why we need to provide this method name.
+
+Right.
+
+Because we know that functional interface will have only one abstract method.
+
+So there is no need to provide the like which method you want to override it, so that it would be only
+
+for the one abstract method.
+
+So it tried to reduce the verbose.
+
+So now let's see how the lambda expression can be used.
+
+So the same thing I have a functional interface basic and the can fly.
+
+One abstract method.
+
+Then the main method.
+
+So instead of anonymous, now I am using a lambda expression.
+
+See how so bird.
+
+And this will holds the reference of the object.
+
+Okay now here if you see that this is what lambda expression is.
+
+So this is you can say that generally the arrow operator or generally the lambda operator.
+
+Generally we can say arrow operator or lambda operator.
+
+So first is this.
+
+Okay.
+
+If your abstract method does not accept any input parameter then it would be empty.
+
+If it accept any input parameter then you can provide that input parameter.
+
+You don't need to give the name and all that is not even required because lambda expression is you have
+
+only one method, one abstract method in an functional interface, so no need to use the name can fly
+
+and all.
+
+So if your method doesn't accept any input parameter, it would be empty.
+
+If it accepts, provide it over here.
+
+So can fly accept one input parameter that is string.
+
+Well, so I have given one string and it can be one.
+
+What is the name of the value then?
+
+This is the arrow operator which says that okay okay we are doing a lambda.
+
+Implementing the functional interface.
+
+Right.
+
+So this is the lambda operator.
+
+And then you can start the block.
+
+Finish the block semicolon at the end.
+
+And you can just provide the implementation.
+
+What we were giving here.
+
+Okay.
+
+If you have more than one one line right.
+
+If you have only one line then this block also not required.
+
+It would simply work like this.
+
+Uh.
+
+System.out.println.
+
+System.out.println.
+
+That's all.
+
+finished.
+
+If you have more than one line, you have to provide the block.
+
+So now you here see that like, lot of verbose has been removed out of this using this lambda expression.
+
+Okay.
+
+So first thing is start this block, provide the arrow operator.
+
+And if it is only one line you don't need this blocks.
+
+If you have more than one line then you need this blocks.
+
+You need to provide this block.
+
+And inside this provide the implementation.
+
+And we can similarly access this like eagle object dot can fly.
+
+So you got it.
+
+What is the use of lambda expression.
+
+Right.
+
+Why it is always used with function interface.
+
+Okay.
+
+So just don't worry about this lambda expression.
+
+Like it will get more clear with the different examples which I'm going to give you.
+
+So now let's see the type of functional interface.
+
+There are four types Right, which is already inbuilt.
+
+You can say that this is already inbuilt, right?
+
+Sometimes you don't have to.
+
+Right.
+
+Function interface.
+
+You can use it.
+
+What is already existing.
+
+So first type is consumer.
+
+So if you see this package Java dot util dot function inside this package you will see this all for
+
+consumer supplier function and predicate.
+
+Okay.
+
+So let's see one by one what is consumer function interface.
+
+So here what would happen is represent an operation that accepts a single input parameter and return
+
+no result.
+
+So it's function interface looks like this.
+
+It has at the functional interface.
+
+Then an interface with name consumer right with the name consumer.
+
+And it's a generic type.
+
+So I think you already know we have already covered generic classes.
+
+Right.
+
+You already know how this has been handled?
+
+Right.
+
+So this is the generic interface.
+
+Right.
+
+But it's then functional means only one abstract would be there.
+
+One abstract method would be there.
+
+So what is the name of the abstract method here except.
+
+Okay.
+
+So what this consumer says that this functional interface, whatever the abstract method it has, it
+
+will accept only one accept a single input parameter, only single input parameter and returns no result.
+
+Returns no result.
+
+Okay.
+
+Let's see.
+
+Supplier.
+
+What supplier says that represent the supplier of the result.
+
+Accept no input parameter but produces a result so very similar to this one I have created a functional
+
+interface supplier.
+
+It is already there in this package okay.
+
+Again it's a generic one means you can return anything string boolean, integer whatever you want right.
+
+So here, if you see that what this definition says that accept no input parameter, so no input parameter
+
+and produces a result.
+
+So it produces the result.
+
+Okay.
+
+Now let's see one by one I think you got the gist.
+
+Like what is the types of functional interface like.
+
+So consumer we already know that this functional interface already exist and which accept one input
+
+parameter but returns no output okay.
+
+And how you can use it.
+
+So let's say I have created one main class main method.
+
+Right.
+
+And I have creating a variable reference where a object reference where I will store the object whatever
+
+it's going to create.
+
+Right.
+
+And in this one I want to let's say pass integer.
+
+So I am passing an integer one right.
+
+So it accept one parameter right.
+
+So I it's a generic right.
+
+So either you can pass integer or string boolean whatever you wanted.
+
+So I am implementing it with an integer.
+
+So it accepts one input parameter.
+
+So this is not empty.
+
+I am passing one integer variable here.
+
+Okay then arrow.
+
+That means it's a lambda expression.
+
+And we are implementing the function interface.
+
+And I have more than one line.
+
+So I am using the block.
+
+Block start block and semicolon.
+
+And inside this you can do anything.
+
+You don't have to return anything.
+
+You just process it.
+
+So I'm getting a value.
+
+So I'm just processing it.
+
+Hey value is greater than ten.
+
+I'm just putting a print logging.
+
+Do something.
+
+Okay.
+
+So some processing.
+
+And whatever the object's reference, it hold logging object.
+
+You can call this accept method.
+
+Right.
+
+And you pass the value 11.
+
+So it will internally invoke this one.
+
+It will pass 11 here, 11 greater than ten.
+
+It will print lodging.
+
+Right.
+
+Very, very similar to anonymous, but only thing is certain.
+
+Verbose has been reduced similarly when to use supplier.
+
+Now if you you can use supplier when you don't want to pass any input parameter, but you want to get
+
+certain out of it.
+
+Okay.
+
+So now let's see here I am passing.
+
+So this is the function interface.
+
+Now I am implementing supplier.
+
+This is my object reference.
+
+And this is the generic.
+
+So I have to tell like what type of whether string integer or any.
+
+I have to give the type okay.
+
+So here I have given the type.
+
+Now here.
+
+Is it accepting anything.
+
+No.
+
+So that's why I have created an empty one.
+
+And I don't want to create a block.
+
+I have only one line.
+
+So here if you see that I haven't started or ended the block, I just simply this is the data I am returning,
+
+so it will simply return it.
+
+Okay.
+
+And this is very equivalent to this what we have seen till now.
+
+Supplier.
+
+What is the generic type A string.
+
+This is the object reference.
+
+No input.
+
+So it is just like this arrow parameter lambda parameter.
+
+You can even start the block and the block even for one line also.
+
+But now you can like this return.
+
+This is the data I am returning.
+
+Right.
+
+So this is the two way for one line.
+
+You don't need a block and this don't have to write a return.
+
+It will simply return.
+
+But when you're creating a block it would be like a normal.
+
+You have to return this like this way right.
+
+And how you can call whatever this object reference you have created dot get.
+
+So this is supplier no input but there is a return.
+
+Similarly, there is a function.
+
+Function says that except one argument parameter and produces a result.
+
+So means it accepts.
+
+Also it returns also.
+
+Okay, so the function interface is looks like this.
+
+It's a function interface.
+
+Only one abstract method.
+
+And then the generic type it accepts two types t and r.
+
+So t is the your argument.
+
+What type it is going to be R is your return type.
+
+So see how I am implementing function this one.
+
+So it accepts two generic types.
+
+So I pass integer.
+
+So this would be your integer argument.
+
+It will accept return type would be of string okay.
+
+And the object reference.
+
+Now it accepts one parameter.
+
+So you have to provide the integer.
+
+So integer certain data okay.
+
+Then argument starts.
+
+Uh lambda expression starts, provide the implementation and you can process it like so.
+
+Whatever the number I'm getting, I'm just converting it to a string.
+
+So num dot two string and return this output.
+
+So what I'm returning I'm returning a string.
+
+Okay.
+
+So you can use this functional interface whenever you accept and return also.
+
+So there is one more type of predicate.
+
+Predicate is like accept but always return boolean accept but always return boolean.
+
+Represent function that accept one argument and returns the boolean.
+
+Okay, so I think now can you implement it without even looking right.
+
+Uh, it's a very simple right.
+
+So pause it here.
+
+Just try to implement this.
+
+Right.
+
+So here it accept an integer.
+
+So you it would be like integer Any value implemented.
+
+Lambda expression.
+
+Let's say if you have more than one line, it block, start block and semicolon.
+
+Now whatever you have processed it and it should return the boolean ultimately true or false whatever
+
+it would be.
+
+So predicate are whatever the type generic.
+
+So let's say I whatever the input parameter, let's say I want to pass the integer is even or not.
+
+So I am passing one argument here.
+
+Now lambda expression start my block.
+
+I'm just checking whether, whatever the value I have entered, is it an integer or not.
+
+So a basic method, if it's a equals to equals to zero, return true, else false.
+
+That's all okay.
+
+And how you can call it is even whatever the object reference you have created called dot test method.
+
+Right.
+
+So you know right why we are not writing test here.
+
+That's what lambda expression resolve internally does.
+
+It knows that this functional interface has only one abstract method.
+
+We don't have to write test over here.
+
+It is very, very similar to anonymous only very very similar to anonymous only.
+
+But in anonymous we have to provide the method name.
+
+But lambda expression says that I work only on functional interface, I work only lambda expression
+
+can only work with functional interface.
+
+Functional interface has only one abstract method.
+
+So that's where we don't have to provide the method name.
+
+Otherwise it is very very similar to anonymous implementation.
+
+You got this one.
+
+So these are the four types consumer supplier function predicate right.
+
+So if you think that apart from this four you have certain other requirement then you can write your
+
+own functional interface.
+
+But if you think that your requirement gets satisfied with this input or return type, you can use already
+
+existing whatever it is available.
+
+Okay.
+
+If you think that.
+
+No, no, I have a total different requirement.
+
+I have 4 or 5 parameters to be entered and need to return or not return.
+
+So then you can write your own function interface.
+
+Okay.
+
+Now let's see.
+
+You know that interface can extend each other.
+
+So we just need to see that how to handle that use case.
+
+So let's say use case one functional interface.
+
+Extended non functional interface.
+
+So this is my non-functional interface.
+
+Basic living thing interface.
+
+It has only one abstract method can breathe.
+
+It is extended by a functional interface interface.
+
+Bird extends living thing.
+
+And it also put one abstract method.
+
+So now here if you see that one abstract method here one abstract method is here.
+
+So generally all the parent abstract method is also carry forward.
+
+Right.
+
+So this that's why it show compilation error because functional interface should have only one abstract
+
+method.
+
+But because of this extend any abstract method which is present into the parent interface that also
+
+get added to here.
+
+So that's why it's a compilation error.
+
+This is wrong but this is right.
+
+So now let's say interface has living thing has default right.
+
+And now I have a functional interface which extends this living thing.
+
+This works fine because it has only one abstract method.
+
+This is nothing but a default.
+
+So it can have a default method okay.
+
+Second use case interface extending functional interface.
+
+So now I have a functional interface.
+
+First living thing which is a functional interface means only one abstract method should be there.
+
+It has only one abstract method.
+
+Now I have an interface, but it is not a functional interface.
+
+It is a normal interface.
+
+It extends living thing.
+
+It also have one abstract method, but since it extends, this abstract also comes to it.
+
+But this is fine because since we haven't put at the functional interface above bird, so we are not
+
+restricting that, you should have only one abstract method.
+
+So you have one, and one is coming from your parent extend.
+
+So even though you can have two but now you are not a functional interface right.
+
+So this will work fine because this is we haven't put the at the rate keyword so it can have more than
+
+one abstract method.
+
+So this will work fine.
+
+Third use case functional interface.
+
+Extending other functional interface.
+
+So see this I have a functional interface living thing have one abstract method.
+
+I have another functional interface.
+
+But extending from this it is also have another abstract method.
+
+See?
+
+It has can breathe.
+
+It has can fly.
+
+Different method.
+
+So means this is one abstract method for this one.
+
+And from parent also this is also coming to it.
+
+So it has two abstract method which is wrong.
+
+But see this one if both the functional interface.
+
+So this is your parent living thing.
+
+This is your child.
+
+This extends the living thing if both have the same method.
+
+Public boolean can breathe public or sorry.
+
+Yeah by default is public only public boolean can breathe.
+
+Both has the same method right?
+
+Then this is allowed.
+
+This is just like you overrided it, right?
+
+So this is allowed but different is not allowed even when the same signature is allowed and how you
+
+can implement it.
+
+I think you can do it right.
+
+So now let's say bird interface I have to implement.
+
+So you have to create a bird reference object.
+
+Any object where you will hold it.
+
+It is taking empty.
+
+So empty I don't have to pass the parameter Lambda expression.
+
+Start can breathe returns boolean.
+
+Right.
+
+So let's say I don't have to write a block, I just need to return true.
+
+So just put true finish right.
+
+And with this object you can call this method can breathe object dot can breathe right.
+
+So I have this object is my eagle Lambda.
+
+This is start no input parameter lambda expression start simply returns true can breathe.
+
+So this is clear right.
+
+So this is so generally when the two end functional interface or one is extended from other.
+
+If they both have the same method then there is no issue because you can easily implement it will override
+
+it.
+
+But if it is different then it's an issue.
+
+So this is pretty much of our functional interface and lambda expression.
+
+I think you are just practice it once and I think you should be now clear, like why lambda expression
+
+is always, always comes and used with functional interface.
+
+Because one simple answer before we going Lambda expression is a way to implement a functional interface.
+
+It is minimizing the verbose which is there in the, let's say in the previous ways.
+
+You don't have to because functional interface only has one method abstract method.
+
+It don't have to write a method name and all.
+
+So that's how it is able to reduce the verbose write.
+
+Okay guys.
+
+So just try to implement it once and see.
+
+Is this all getting properly clear to you and any doubt?
+
+Please feel free to ping me in the comment.
+
+Okay guys, see you.

@@ -1,0 +1,2629 @@
+High Java thread pool.
+
+Very, very important topic we are going to cover today.
+
+And this topic is very important both from the interview perspective and your day to day work perspective
+
+also.
+
+So this is one of the interview question which has been shared by one of the engineer that in a thread
+
+pool, why you have taken core pool size as two.
+
+Why not 10 or 15 or another number?
+
+What is the logic?
+
+So I will tell you the complete question, right?
+
+Uh, the candidate has been asked to create a thread pool, and this core pool size is the number which
+
+we have to, uh, define in the thread pool executor.
+
+So I'll tell you the complete question also.
+
+And my solution also.
+
+Right.
+
+But before telling you the answer, we have to first understand what is thread pool.
+
+And that's where today we are going to cover that from very basics.
+
+Don't worry about that.
+
+This questions will come back later.
+
+Right at the end of this video.
+
+You will I will solve that question.
+
+So what is thread pool?
+
+So understand let's see this three points.
+
+It is a collection of threads also known as workers or known as worker thread, which are available
+
+to perform the submitted tasks.
+
+Right.
+
+So what is first is that it is a collection of thread.
+
+So this is let's say I have created a collection of threads thread one, thread two.
+
+Let's say n threads.
+
+Right?
+
+How many number of thread you can configure whether five, ten, 21, how many threads you wanted in
+
+a pool you can configure, but it's a collection of threads which are available to perform the submitted
+
+task.
+
+Once the task completed, worker thread gets back to the thread pool and wait for the new task to assign.
+
+So what happens is whenever any task.
+
+So these are the tasks, right?
+
+Whenever any new task comes, a worker or thread has been assigned to that task.
+
+So let's say that task one is going to be done by thread one.
+
+Task five.
+
+It's assigned to thread two.
+
+So this is now busy.
+
+This is now busy, right?
+
+As soon as thread five is busy, thread one.
+
+Thread five is busy.
+
+Now, as soon as this thread completes its task, they will again available in the thread pool, right?
+
+So now thread one and thread five again available and waiting to pick a new task.
+
+Okay, so what we are doing is means we are reusing the threads.
+
+Threads can be reused.
+
+So what generally happen is you know that till now what we have seen is we have to create thread.
+
+We have created thread, thread one, thread two, thread three.
+
+Whatever the how many number of threads we wanted, we have to create our own threads by like we are
+
+creating a new thread.
+
+So we were creating the threads and you know that thread creation takes time while Why thread creation
+
+takes time.
+
+Because you know that certain memory space need to be allocated to thread.
+
+Let's say that stack thread stack which is given for each thread.
+
+So there are certain work, right, which need to be done when we create a thread.
+
+So this is little time.
+
+You can say that it takes some time, but with the thread pool you can say that the advantage is that
+
+the threads can be reused like we have already created the threads, we have already created the threads
+
+and we are just reusing it.
+
+We are not creating new threads every time.
+
+So I have already created this, let's say five threads.
+
+I have already created this five threads.
+
+Now any task is coming.
+
+I don't have to create new thread, I just simply assign the thread one.
+
+You do this task.
+
+Hey, thread two you do this task.
+
+So now you see that I can save some time.
+
+Which time I can save thread creation time, right?
+
+So means we are reusing the threads.
+
+So this example here, if you see that when application submitting new tasks.
+
+Right.
+
+What would happen is.
+
+So first it will see that is there any thread which can process this new task?
+
+Is thread available.
+
+Is thread available?
+
+If yes.
+
+If yes if thread is available then what would happen is whatever the task is there, it will assign
+
+to that particular thread.
+
+Let's say task one assigned to thread one.
+
+Task two assigned to thread two.
+
+Let now let's say task three is coming.
+
+Now when task three is coming, let's say all the threads are busy.
+
+We have, let's say only two threads, thread one and thread two.
+
+We have only two threads and both the threads are now busy.
+
+This is also busy.
+
+This is also busy performing task one and task two.
+
+Now task three is coming and there is no thread available.
+
+What it will do is we will put into this queue.
+
+Right.
+
+So we will put the task three into the queue.
+
+That.
+
+So this is uh already been picked up by this thread.
+
+So task three would be present into the queue.
+
+Now as soon as any thread completed its task, it will come back to the pool.
+
+So now thread one is available.
+
+It's completed its task.
+
+It will come back to the pool.
+
+Now it will check in this queue.
+
+Any task is pending.
+
+Yes.
+
+Task three is available in the queue.
+
+So it will pick it up and start performing on that thread.
+
+One is picking it up right.
+
+So you got it in the queue.
+
+Also involved in the thread pool which plays an important role.
+
+So what is the advantage of thread pool?
+
+You have till now seen that how we use to create thread and each thread has has a life cycle, you know.
+
+Right.
+
+We have created a we have understood the thread life cycle.
+
+We have created new, then we have runnable running, then wait right and then like exit like end.
+
+So each thread has a life cycle also.
+
+Right.
+
+So what are the advantages?
+
+First of all thread creation time can be saved.
+
+I told you that whenever we use to create a thread earlier.
+
+Each time there, it takes some time to create this thread because there are certain operations need
+
+to be done to create a thread like allocation of space.
+
+What space like stack program counter.
+
+These are specific for thread particular thread, right?
+
+So you have to create memory for the stack.
+
+You have to create a memory for the program counter.
+
+You might have to define something.
+
+So when each thread is created, space is allocated to it.
+
+And this takes time.
+
+With thread pool.
+
+With thread pool this can be avoided by reusing the thread.
+
+So this part, this advantage I think we have already discussed that in the thread pool.
+
+You have already created the thread.
+
+Now you don't have to with every request.
+
+You don't have to create a new thread, you just simply use it.
+
+So little bit performance increase by saving the thread creation time.
+
+The second advantage is that overhead of managing the thread lifecycle can be removed if you are not
+
+using thread pool on its framework.
+
+I told you right, each thread has its own lifecycle.
+
+Currently it's a new state.
+
+Then it goes to runnable running state.
+
+It might has to go to the wait and then come back to running.
+
+And when everything is done you have to finish this thread.
+
+So currently if you are not using any framework, you have to manage the thread.
+
+You have to manage its lifecycle.
+
+But with the thread pool and its framework, this is abstracted to you.
+
+You don't have to do this.
+
+Management executor framework will do for you.
+
+So thread has different lifecycle like running, waiting, terminate, etc. and managing thread state
+
+include complexity.
+
+Like you have to make sure that this thread I have to terminate.
+
+Now I have to wait it now.
+
+But with thread pool all this management is abstracted to you, right?
+
+So this is another advantage.
+
+It comes.
+
+And the third is that increase the performance right.
+
+How it will increase the performance.
+
+If you see that let's say you are not using thread pool and executor framework whenever any task coming.
+
+Task one.
+
+Task two.
+
+Task 100.
+
+What your code does is your code will create a new thread.
+
+Thread one.
+
+New thread.
+
+Thread two.
+
+New thread thread 100.
+
+So now you don't have control over the thread, right?
+
+Every time a task is coming you are creating a new thread.
+
+So what would happen is you know that I have already explained that if there are more threads, means
+
+context switching will happen because let's say there are only two CPU core CPU core one, CPU core
+
+two.
+
+So only these two CPU core have to process this all 100 threads.
+
+So right.
+
+So it's not like all 100 threads are running parallelly.
+
+It's seems like a parallel but ultimately internally CPU.
+
+What it does is context switching.
+
+So first thread one.
+
+Thread two is running.
+
+Then it do context switch, then thread one, thread two is waiting and it is running.
+
+Thread three.
+
+Thread four.
+
+So this is known as context switching.
+
+So if more threads are there and you don't have control over the creation of thread.
+
+Then it is possible that more context switching will happen, and you know that whenever the context
+
+switch happen means CPU is idle that time.
+
+Because context switching means you are saving the old data, bringing the new threads into the CPU,
+
+and then start processing.
+
+So during this context, switching CPU is idle.
+
+So if you are creating more and more and more threads, it is a chance that more context switching time
+
+get increased and there would be a wastage of CPU time and CPU instead of doing processing it, just
+
+keep on doing context switching.
+
+So we thread pool helps us to control the number of threads which we can create, which help us to make
+
+sure that the context switching would be very less.
+
+Or we can say that less as much as possible, which helps in more Processing time and less context switching
+
+time.
+
+Okay, so there is a framework available in Java in this package, Java.util dot concurrent package,
+
+you will see a framework available.
+
+So this is an interface top interface executor.
+
+It has one method execute right.
+
+So this is the interface.
+
+This is again an interface which extend from this.
+
+And it has more methods right.
+
+So it manage.
+
+So this has only execute method right okay.
+
+You execute your task executor service has more methods like stop shutdown etc. like managing the thread
+
+pool more better.
+
+There can be more functionalities on a thread pool right.
+
+So this executor service interface expose more methods here if you open.
+
+Executor service.
+
+It's a child of executor.
+
+So executor has only one execute.
+
+Right.
+
+So it will just execute whatever the task.
+
+Runnable task which you are assigning.
+
+Then executor service provide some other functionalities apart from execute whatever it is extending
+
+from the executor like shut down right.
+
+Shut down now is shut down is terminated.
+
+So there are lot of operations.
+
+You can say that functionality has been added to this executor service to it and all the thread pool
+
+executor.
+
+These are the child classes.
+
+These are not these are not interfaces.
+
+These are classes.
+
+Now this implements this executor service.
+
+Then we have fork join pool.
+
+This implements executor service.
+
+Then there is another interface scheduled executor service.
+
+This extended this provide a functionality of like running running a thread on a particular time scheduled.
+
+We will come to this so we will see each one of them separately.
+
+So today I will cover the thread pool executor.
+
+Very very important.
+
+Right.
+
+Thread pool executor.
+
+It helps to create a customizable thread pool.
+
+How so.
+
+Now let's first understand the process.
+
+Or you can say that the flow.
+
+Let's first understand the flow.
+
+So let's say these are the tasks which is coming.
+
+Let's say task one.
+
+Task two.
+
+Task three.
+
+Task four.
+
+Task five.
+
+These are the tasks which are coming.
+
+Two.
+
+Our executor.
+
+Which executor thread pool executor.
+
+Thread pool executor.
+
+So what?
+
+First it will do.
+
+First it will do.
+
+Is it check?
+
+Any thread is free in thread pool.
+
+Any thread is free in thread pool.
+
+So now let's say that there is a pool here right?
+
+Thread one, thread two.
+
+Thread three.
+
+Only three threads are there.
+
+Five tasks are coming right?
+
+So check any thread is free in thread pool.
+
+So let's say task one is coming and there is a queue also.
+
+Okay so task one is coming.
+
+So this is coming first at T1 it check any thread is free in the thread pool.
+
+Yes all three are free.
+
+So let's say thread one is assigned to task one.
+
+So currently this is not available.
+
+Then task two is coming at time two.
+
+Then it check any thread is free in the thread pool.
+
+Yes.
+
+So thread two is assigned the task two.
+
+This is also now busy.
+
+Then thread two is coming at time three.
+
+Any thread is free in the thread pool.
+
+Yes.
+
+So thread three is assigned task three.
+
+This is also got busy right?
+
+So this is the let's say minimum number of thread.
+
+I have put three.
+
+So three threads would always be available right.
+
+So now when the three task comes this three thread is assigned to this task.
+
+Now task four is coming.
+
+Now task four is coming at time four it check.
+
+Hey any thread is free in the thread pool.
+
+No, no thread is free in the thread pool.
+
+What it will do, it will put into the queue.
+
+So task four is put into the this one.
+
+Now let's say task five is coming.
+
+Hey any thread is free in this thread pool.
+
+No?
+
+Then task five is put here.
+
+Similarly, let's say task six.
+
+Task seven.
+
+Task eight.
+
+So this is the size I have given to queue 123.
+
+12345.
+
+So I have given the queue size five.
+
+So all.
+
+Now it is filled because no thread is available now.
+
+45678.
+
+Now let's say that task nine is coming.
+
+Now it says that hey, any thread is free in the thread pool.
+
+No.
+
+All are busy.
+
+Any space in the queue?
+
+No.
+
+All queue is also filled up.
+
+Now, what should we do here?
+
+Should we reject it?
+
+No.
+
+So now there is one more feature into the threadpool that.
+
+So first feature I tell you that minimum number of thread.
+
+So let's say minimum minimum thread number I have given three.
+
+So that's why three was there initially.
+
+There is one more field like maximum thread.
+
+Maximum thread.
+
+Let's say I have given five.
+
+What does it mean that what is the maximum number of thread can be present in a pool at a time, right?
+
+So now when this comes into the picture, when all the minimum threads which are present into the thread
+
+pool first all are busy, they are still processing queue queue size.
+
+Queue size was 512345.
+
+This is also full.
+
+Now when a task is coming it is not finding any free thread.
+
+It is not finding any space in the queue.
+
+What this executor framework will do.
+
+It will see that hey, maximum thread is five and only three thread has been used, right?
+
+So means I can create one more thread.
+
+So what it will do is at it time it will create another thread.
+
+Thread four and thread four would be assign this task nine right.
+
+So this will not get rejected.
+
+So thread four has been given task nine.
+
+So this is also busy.
+
+Now let's say task ten is coming.
+
+What it will do first check any thread is free in the thread pool.
+
+No.
+
+All four threads are busy.
+
+Can I put into a queue?
+
+No.
+
+Queue is also full now it will check what is the maximum thread I can have in a pool five.
+
+And what is the number of pool threads I have in a pool right now?
+
+Four so means I can create one more thread.
+
+So it created a one more thread in a pool.
+
+Thread five and that thread five will take care of task ten right now.
+
+This is also get busy now.
+
+Now what would happen is let's say task 11 is coming.
+
+Now it will say that okay, all pools, all thread in a pool is busy.
+
+What it will do.
+
+Hey, can I put this task 11 in a queue?
+
+No.
+
+Queue is also full.
+
+Then it checked.
+
+Hey, what is the maximum thread size?
+
+Thread pool size.
+
+You have given five so means maximum.
+
+I can have five threads in a pool.
+
+How many?
+
+I have 12345.
+
+Hey means I have already created the five number of threads, which is the maximum number allowed in
+
+a pool.
+
+Means now I can't do anything.
+
+I have to reject this task.
+
+Reject the task here.
+
+Okay.
+
+Now what would happen is let's say thread three has finished.
+
+This thread three has finished its task.
+
+So thread three is now available.
+
+So now thread three is available now.
+
+So now as soon as thread three is available what it will do is it will check the queue.
+
+Hey any task is pending in the queue.
+
+Yes.
+
+So it will pick one task from here.
+
+Let's say thread three is now doing task four.
+
+So this task has been removed from the queue and this is now busy again.
+
+So this is how it does.
+
+Okay I'll tell you.
+
+I'll explain you more with this parameters, but wanted to show you the functionality of the thread
+
+executor.
+
+How the sequence of thread pool and the queue comes into the picture.
+
+Okay, so we'll see one more time.
+
+But first let's understand with this functionality.
+
+Understand the thread pool executor.
+
+Now I hope I am going slow not running fast right?
+
+Okay, with the basic understanding of this, now let's see the thread pool executor constructor.
+
+So here in the thread pool executor here if we see this is the constructor right.
+
+So this is the constructor.
+
+If you see that it has lot of parameters right.
+
+So we will see what is the meaning or purpose of each parameter which we have to be clear very thoroughly.
+
+Because this only these are the mostly the configuration which help us to create a thread pool.
+
+So this is the thread pool executor.
+
+If you create an object of this, this will help us to create a thread pool also.
+
+So what is the first parameter we have is core pool size.
+
+Core pool size means the number of threads are initially created and keep in the pool even if they are
+
+idle.
+
+So means if you have given this core pool size as three means in a thread pool you will always find
+
+three thread thread one, thread two.
+
+Thread three.
+
+It creates three threads and put it into this thread pool.
+
+Because this is the minimum, threads should be available in a thread pool and even if they are idle,
+
+they are not processing anything.
+
+They will keep on waiting here in the thread pool.
+
+Right?
+
+So this is core pool size.
+
+Then there is another thing called this is not a parameter.
+
+This is a you can say that a property which has been set on this object, I will tell you.
+
+But there is something called a core thread timeout.
+
+I will tell you that I told you that this whatever the core pool size you have tell, it will create
+
+that thread into the pool.
+
+And even if they are idle.
+
+But if your requirement is that hey, if they are idle, let's say for a specific Pacific time.
+
+Then remove them, then delete those.
+
+Or you can say that terminate those thread.
+
+Right.
+
+So how we can tell this with this true false Boolean flag.
+
+Allow core thread timeout.
+
+If this property is set to true, then idle thread kept alive till time specified by keepalive time.
+
+So there is a parameter called Keepalive time.
+
+So this is only being used when this is set to true.
+
+If this is set to true then it will check the keepalive time.
+
+Right.
+
+And any thread, any thread which is idle for this much of time.
+
+After this much of time, that thread will get removed.
+
+Let's say keepalive time I have given, let's say five second.
+
+So any thread which is idle for five second till five second, it will be alive.
+
+But if a thread is idle for more than five second, this will get terminated.
+
+Only and only if this is set to true.
+
+Even if you have set this five second.
+
+But this is by default is false.
+
+And if you are haven't, make it true.
+
+This parameter is of no use.
+
+All three threads will remain active even if they are idle, right?
+
+Even if you have defined Keepalive time as five second, even if they are idle for 52nd one minute,
+
+it will not get eliminated.
+
+Why?
+
+Because you haven't made this field to true and by default this is false.
+
+So whatever the object you will create it.
+
+So on that object you have to set this parameter to true.
+
+If you want that only this much time a thread which are idle should be alive.
+
+After that it should get eliminated.
+
+So keep alive time.
+
+You know that thread which are idle, get terminated after this time, and this will be only used if
+
+this is set to true.
+
+Then we have this unit time unit.
+
+So here this keep alive time you are giving like long.
+
+It's like you can give 510.
+
+Now what does it mean five second five five hours five minutes.
+
+What does it.
+
+So in the time unit we can tell.
+
+Right.
+
+So here the time unit is for the keep alive time.
+
+Whether it's a millisecond you are selling whether second or hours or etc..
+
+What.
+
+Okay.
+
+So if you're telling keep alive time is five because it's a long then time unit will say that okay.
+
+You can tell minute okay five minute.
+
+So after five minute if any thread is idle and if this property is set to true that thread will be eliminated.
+
+Okay.
+
+So time unit is also clear.
+
+now comes to the maximum pool size.
+
+So maximum pool size.
+
+I think with the above this one, you already know that when the maximum pool size comes into the picture,
+
+right?
+
+Just for a quick overview, again let's say you have a.
+
+Queue of size four right.
+
+And you have a thread pool with like minimum three and let's say maximum maximum pool size I am telling
+
+five okay.
+
+So I have already told you the flow that uh, first let's say when I tell minimum three means thread
+
+pool will already keep three threads into here into thread pool, the whatever the minimum number you
+
+will get this many threads will already active, present, already created and present.
+
+So generally what happens is whenever any task is coming.
+
+Task one what it will do is it will first check.
+
+Hey, any thread is free.
+
+It will yes assign to it.
+
+So task one, thread one like this.
+
+Then task two is coming.
+
+Assign.
+
+Task three is coming assigned.
+
+So all threads are busy.
+
+Now.
+
+When task four is coming it won't just go and create new thread.
+
+First it go and first.
+
+If queue is empty it will put here.
+
+Task four.
+
+Task five is coming.
+
+All threads are busy.
+
+It won't create new thread.
+
+First we we can create two more threads in a thread pool, right?
+
+Because maximum we can create five threads in a pool.
+
+But first it don't create.
+
+It will first utilize.
+
+Try to put in a queue thread five thread, task five, task six, task seven.
+
+And when task eight is coming now it say that all three threads are busy.
+
+All queue is also full Now it can't accommodate task eight now at that time only it will check.
+
+Okay, maximum.
+
+I can have five threads in a pool.
+
+I have only three.
+
+Let's create another thread and assign this task to it.
+
+Right.
+
+If task nine is coming, all threads are busy.
+
+No space in the queue.
+
+Then only it goes at okay.
+
+Maximum five I can have in a thread pool I have four.
+
+Let's create thread five and assign that thread to this one.
+
+Now task ten is coming.
+
+All five threads are busy, all queue is full.
+
+It will check what is the maximum thread I can have in a pool five okay already five are there then
+
+I can't do anything.
+
+Reject it.
+
+So this is generally the flow.
+
+But now one question you can ask.
+
+To me, that is why we first put into the queue.
+
+Why not We like when the task four is coming.
+
+Why we first put into the queue when all three are busy?
+
+Why not?
+
+We first create a four?
+
+Because it is allowed, right?
+
+Maximum we can have five.
+
+So we can easily create it and assign to that.
+
+Why we have to put into queue.
+
+Otherwise it is just increasing the waiting time, right?
+
+It can be instantly processed.
+
+This task.
+
+Task four can be instantly processed.
+
+We can just create a new thread and start processing it.
+
+Why?
+
+We have to put in queue and when any thread is finished, it will take read it from the queue and then
+
+process it.
+
+So this is how it has been done.
+
+But my reasoning is that why it is done?
+
+Because.
+
+So now let's say that this is I'm telling you why it might have done.
+
+You have thread one, thread two.
+
+Thread three.
+
+Minimum is three.
+
+Maximum is five.
+
+So now let's say thread one is busy.
+
+Thread two is busy.
+
+Thread three is busy.
+
+Thread four is coming.
+
+Uh, no.
+
+Task four is coming now.
+
+When task four is coming, you you.
+
+Let's say that what we wanted is.
+
+Hey, all thread three is busy.
+
+Maximum thread I can have is five.
+
+Instead of putting into the queue, let's create another thread.
+
+Thread four right and assign this task to it.
+
+Right?
+
+And let's say if another task is coming, task five we will see that hey, it's only four thread maximum.
+
+I am allowed five.
+
+Let's create another thread and assign this task to it.
+
+Now I'll tell you like why we don't do this?
+
+Because let's say if thread four and thread five completed its task, it will not get eliminated.
+
+It will come back to this pool and stay.
+
+Keep on waiting for the more tasks.
+
+So now your thread pool will be like kind of a full like you have all the threads created, right?
+
+And whatever the minimum pool size I have created, I have created in a mind that most average on an
+
+average, on an average, this many threads are sufficient to fulfill most of the requests.
+
+And if any peak is coming, then I have defined a queue that okay, if any extra requests are coming,
+
+let me put into the queue.
+
+And with this three thread they will come and process the request from the queue.
+
+But most of the time on an average this three thread is sufficient, right?
+
+But now if we are saying that okay, every time a new request comes, if all are busy, instead of putting
+
+in a queue, if you create a new thread, what we are doing is we created a new thread, but once it
+
+is completed, this thread and thread four will again come back to the thread pool and sit.
+
+Now on an average only your thread is required.
+
+Minimum three thread is sufficient, so thread and thread four is.
+
+Keep on idle is waiting.
+
+Keep on idol.
+
+So that's one of my reasoning, is that that's why we first try to utilize a Q, right?
+
+And with this minimum number itself, minimum thread itself, we will first try to complete all the
+
+requests with the help of Q and this minimum threads.
+
+This is one of the reason why it has been designed that way.
+
+Okay.
+
+First whatever the minimum threads is used, if that is full, try to put in Q because that's where
+
+our most of the use cases get fulfilled.
+
+Only in certain scenario when the sudden peak comes, all our pool size finished, all our Q finished,
+
+then only go and utilize the max thread because we don't want to reject the request.
+
+Okay.
+
+So max pool size is clear, and I have already told you that this is applicable for The whole thread
+
+pool, whatever the threads are there in the thread pool.
+
+If this allow core thread timeout is set to true, then it will check keepalive time.
+
+If keepalive time you have given five minutes, then it will wait for five minutes and after five minutes
+
+it will check.
+
+Any thread is free for more than five minutes.
+
+If yes it will terminate those then worker queue then this work queue are blocking queue, right?
+
+I have already told you this queue is used to hold tasks before they got picked up by the worker thread.
+
+So this is of two type of bounded queue.
+
+Unbounded queue.
+
+Bounded queue means queue with fixed capacity like an array blocking queue like here.
+
+In the above example I have created a queue of size four.
+
+So this is a bounded queue.
+
+Unbounded queue means there is no fixed capacity like linked blocking queue.
+
+Any number of tasks can be put in a queue like a linked list, right.
+
+So that is known as unbounded.
+
+Generally this one is preferred.
+
+Bounded queue.
+
+Right.
+
+Unbounded queue.
+
+It's generally should be avoided.
+
+And bounded queue is mostly preferred because we want full control.
+
+How much request can be put in a queue.
+
+Right.
+
+And here task is capped and your worker thread will pick from this task as soon as they get free.
+
+So the task get picked up by the worker thread from here.
+
+Okay, so this is also clear.
+
+Then we have thread factory.
+
+What does thread factory means?
+
+So thread factory means it gives you a.
+
+You can say that it provide you an interface right where you can give custom thread name, thread priority,
+
+uh, thread priority and the daemon flag.
+
+So let's say you want to give a thread name, because you know that this framework itself will create
+
+the thread pool.
+
+Executor itself will create a thread.
+
+So it will give the thread name of its own.
+
+It gives the thread priority of its own.
+
+And if you want to thread daemon or not, by default it is false.
+
+It will give its on its own.
+
+But if you want to override that property, you can provide your own thread factory, right?
+
+And you can create tell like what is the thread name I want to give?
+
+What is the thread priority?
+
+I want to give whether this thread is a daemon flag daemon or not, you can set those right.
+
+We will see an example.
+
+Rejected execution handler.
+
+This last parameter.
+
+What is this like?
+
+I told you that queue is full.
+
+All queue is full.
+
+Thread pool has full thread one.
+
+Thread two thread.
+
+Three Thread four.
+
+Thread five.
+
+Minimum is three.
+
+Maximum is five.
+
+So all five maximum has been created and it is full.
+
+All are busy.
+
+Now any thread is coming.
+
+New task is coming.
+
+Now it will see that hey, any task any thread can can is free.
+
+No.
+
+Any queue space is there?
+
+No.
+
+Can I create a new task?
+
+Can I create a new thread?
+
+No.
+
+Already five threads are created.
+
+It is maximum.
+
+Then this has to be rejected.
+
+Now what to do?
+
+How to handle this rejected task.
+
+So that's where the handler comes into the picture.
+
+So it is a handler for the task that cannot be accepted by the thread pool.
+
+Generally what we do is we do logging here in this case that this task is rejected.
+
+So we can put a log here for debugging purpose.
+
+But if you have another functionality you can do that.
+
+But there are different.
+
+These are the four types of handler already exist in the Java, which you can use, or we can create
+
+our own.
+
+I will show you how to create our own.
+
+So let's say this is the one a bot policy rejected execution handler.
+
+This is the abort policy.
+
+What it will do is it will simply throw an exception.
+
+Whenever any task is rejected, it will throw an exception that hey rejected execution exception.
+
+This comes then there is something called discard policy.
+
+Let's see this discard policy that silently discard the rejected without throwing any exception.
+
+If you are using this handler here in this, uh, request, and any task is rejected, it is.
+
+You won't know, right?
+
+It just simply discarded it.
+
+Callers run policy.
+
+What it will do is that execute the rejected task in the caller's thread Thread that attempted to submit
+
+the task.
+
+So I told you write task is submitted.
+
+Application.
+
+Submit the task.
+
+Somebody submit the task.
+
+That also might be running in one thread let's say.
+
+By default this main thread.
+
+So some thread is running.
+
+Which submit the task to this thread pool executor.
+
+Right.
+
+So if thread pool executor cannot take this handle this new task.
+
+And if you have defined this rejected execution as a handler, then on this thread it will try to run
+
+this task.
+
+Executed the rejected task in the caller thread.
+
+Thread that attempted to submit the task.
+
+Then we have discard oldest policy.
+
+What does it mean?
+
+Discard the oldest task in the queue.
+
+To accommodate the new task.
+
+So if you have used this, what it will do is that it will see that hey, what is the oldest task in
+
+this queue?
+
+It will discard that and put this new task in it.
+
+So there are different types of you can say that implementation how you want to handle the rejected
+
+task.
+
+Okay.
+
+So this is the thread pool executor.
+
+Mostly you can say that the configuration which is required right.
+
+And you got it right.
+
+What is the flow when it comes.
+
+So this is the life cycle of a thread pool executor.
+
+After that we will see an example.
+
+Right.
+
+That would become more clear.
+
+So first phase of a thread pool executor is running.
+
+So in the running executor is in running state means submit method will be used to add new task means
+
+it can accept new task.
+
+When the thread pool executor is in running state means you can add new tasks.
+
+Task one.
+
+Task two.
+
+Task three.
+
+It can accept, right?
+
+Then there is another phase called shutdown.
+
+Let's say that if on this running, if you have called the shutdown.
+
+So there is a method called shutdown.
+
+What it will do is shutdown is now executed.
+
+Do not accept any new task but continue to process the existing task.
+
+So now let's say that task one.
+
+Task two is already running by thread one.
+
+Thread two.
+
+But when shutdown is called now in thread thread executor, it will not accept any new task.
+
+Let's say task three.
+
+It want to submit now.
+
+It will not accept because now the thread executor is in shutdown mode.
+
+It will not accept any new thread, but it will let this to task to continue to process it.
+
+And once this two task complete, done it slowly move to the terminated state where all the threads
+
+will get eliminated.
+
+Then there is a, uh.
+
+A status called stop.
+
+This is again a life cycle, which is, you can say that the force shut down and there is a method called
+
+shut down.
+
+Now.
+
+So what it will do is it will stop the executor to accept any new task.
+
+Plus, it also makes forcefully stop the existing threads which are running and move to the terminated
+
+state where all threads will get eliminated.
+
+So you got the difference between shut down and stop.
+
+Shut down will only stop accepting the new task, but allow this already tasks which are running let
+
+them complete and then move to terminated after they successfully completed stop will forcefully stop
+
+accepting the new task, plus also stop the existing which are running and then move to the terminated
+
+At once it is terminated.
+
+Done are the life cycle of the thread pool is done.
+
+All the threads are eliminated.
+
+Everything is done right.
+
+There is no way back and there is a method called is terminated, which you can use to check whether
+
+the thread pool executor terminated or not.
+
+Okay, so till now we have seen the thread pool executor and its configuration values.
+
+Now let's implement one example out of it.
+
+Okay I will let's first implement it.
+
+Then I will show you here right.
+
+And our agenda would be to validate our understanding or our understanding would be that.
+
+So this is what we will create.
+
+So this is the thread pool which we wanted with minimum uh let's say we'll create uh two.
+
+Right.
+
+Uh, maximum.
+
+I will create, let's say, uh, three or let's say maximum.
+
+I will create four.
+
+Queue size.
+
+I will create, let's say for example one only or let's say 201.
+
+Right.
+
+And how many tasks?
+
+Task one.
+
+Task one.
+
+Task two.
+
+Task three.
+
+Task four four tasks are coming.
+
+Let's say.
+
+So use case one.
+
+So what should be the expected behavior.
+
+So we will see that one.
+
+So let's first code for this one.
+
+Then we will do the dry run and see the expected behavior and run it.
+
+So let's run this uh let's first create the code.
+
+This is the main method.
+
+Let me zoom it a bit more.
+
+Okay.
+
+Shall I zoom it more?
+
+This is okay, right?
+
+Let me zoom it more in case.
+
+Okay.
+
+So what we wanted, we first want to create a thread pool executor.
+
+Object thread pool executor.
+
+Uh, this is my executor.
+
+Uh, let's create a thread pool executor constructor.
+
+Now, in the constructor, these are all things which we have to design.
+
+Minimum core pool size.
+
+We wanted two.
+
+Maximum pool size for for.
+
+Keep alive.
+
+Uh, let's say yes.
+
+I want to keep alive, uh, for, let's say ten, but it should be.
+
+I want to keep it for minutes.
+
+Let's say that time unit is I want to give minutes.
+
+Then I have to define a blocking queue of size two.
+
+So I am creating new.
+
+Array blocking queue of size two.
+
+Thread factory and rejected execution handler.
+
+So yes I want to define.
+
+So let's have this first define our own thread factory.
+
+Let's first so class my custom.
+
+Thread factory.
+
+Implements thread factory.
+
+So this is an interface.
+
+So I have to implement this method.
+
+Okay.
+
+So either is like I need to define my own custom factory or I can use which is available in this one
+
+default set factory.
+
+But for this demo I am showing a custom thread factory.
+
+So I have to create one thread new thread and write whatever the runnable task.
+
+This thread has to run that.
+
+Thread, but I want to set another properties like thread dot set priority.
+
+I want to set its thread priority as normal priority.
+
+And also I want to make is is daemon uh daemon false?
+
+It is not a daemon.
+
+I just want to show you this is the by default actually even because even in the default, uh, thread
+
+factory, this is it is used.
+
+But I want to showcase that in the custom.
+
+You can change this value and return the thread.
+
+So I have created a thread which will perform whatever the runnable tasks, whatever the tasks it would
+
+be assigned.
+
+But I have you can define the thread dot set name.
+
+You can set the name also for the thread which you wanted.
+
+So I want this custom thread.
+
+Right.
+
+And similarly the last object is rejected execution handler.
+
+So here if you see that there are already existing uh thread pool abort policy, discard oldest discard
+
+policy.
+
+Right.
+
+I can use this one.
+
+This is just like handler.
+
+Reject the task silently.
+
+It just rejected silently.
+
+It doesn't do anything.
+
+If I use.
+
+Discard oldest policy.
+
+What it will do, It will check from the queue.
+
+It will pull it first because at the front, this is the oldest star.
+
+So it will pull it first and then it will execute this one.
+
+It will add it right.
+
+And if you go into the execute part you will see the three step.
+
+First step is if thread is available assign the task to it.
+
+Second is if all threads are busy inside a pool, see if a task can be successfully queued.
+
+If a task cannot be successfully queued, then the third step.
+
+If it cannot queue task, then we try to add a new thread because maximum.
+
+Let's say if there is still a maximum we can create.
+
+If that is also not possible, then only reject.
+
+That's what we have seen till now okay.
+
+So this is the discard orders policy.
+
+But let's say we want to create our own.
+
+So I am creating my own let's say class.
+
+Custom.
+
+Handler implements this.
+
+So this is an interface I have to implement the method.
+
+Let's say I want to log it.
+
+So here I'm doing System.out.println.
+
+Task rejected.
+
+Right.
+
+So I can have this I have a.
+
+This is the task only right.
+
+And this is the executor which try to perform this task which doesn't have.
+
+So I can use this information.
+
+Ah dot two string.
+
+What is the name and all.
+
+You can print that one right.
+
+For your debugging purpose, you can take out the information from this one and use this part thread.
+
+Executor.
+
+What is the executor name?
+
+Group name thread name.
+
+So you can add that right.
+
+So these are all the methods which are available.
+
+So you can put this two string here.
+
+So I want to use my.
+
+New custom reject handler.
+
+So this is the executor which I created.
+
+Okay.
+
+Now I am doing.
+
+I equals to zero I less than.
+
+Or let's say I want to create four tasks right.
+
+I want to create four tasks.
+
+So that's what we are trying to do here.
+
+So threadpool minimum configuration I have.
+
+Tell maximum configuration I have tell the queue size I have tell and I have tell the.
+
+This are the custom factory for the name and this one.
+
+But this I have tell.
+
+Now I have to Submit this.
+
+Right.
+
+Executor dot.
+
+Submit this.
+
+Submit takes the runnable like and you know how to create runnable task.
+
+I can use this lambda expression.
+
+Right.
+
+So now I am creating this, uh, let's say that this is the task which has to be performed by a thread,
+
+uh, let's say system dot out dot println.
+
+Task.
+
+Let's say this is the task.
+
+This is the task which is getting processed.
+
+Task.
+
+Processed by what is the thread.
+
+Which is going to which is processing it.
+
+I'm just printing that.
+
+Let's say this the thread.
+
+And just to simulate that this task takes certain time, I am sleeping this thread for let's say five
+
+second And this I need to put in try catch block.
+
+Okay, so now what I am doing is I am submitting this task.
+
+What is the task?
+
+This you know how already how to create a.
+
+There are two ways to create a task right through implement and through extend.
+
+So I am creating a runnable task here.
+
+So because it accept a runnable task.
+
+So you can create a runnable task using by creating a separate class or through lambda expression itself.
+
+Because this is your functional interface.
+
+That's why you should be already familiar with this.
+
+Now we have already covered this, so I have just make a five second slip to make sure that yes, something
+
+is working.
+
+Right.
+
+Uh, and then printing out that yes task processed by this thread.
+
+Okay.
+
+Now how many threads I have created for how many, uh, how many tasks I have created for.
+
+So for tasks I am submitting.
+
+So task one here.
+
+So task one is submitting.
+
+So now what would happen is you have a thread executor.
+
+Task one.
+
+Task two.
+
+Task three.
+
+Task four.
+
+So for task I have called submit submit submit submit right.
+
+And this thread pool executor have two threads minimum.
+
+So we have told two as a minimum right.
+
+So it will have thread one here, thread two here.
+
+Right.
+
+And what is the queue size two.
+
+Zero one.
+
+This is the queue.
+
+Q and what is the maximum it can create for now we want to verify that what should be the when if I
+
+run it and in the finally and after once everything is completed, we have to make it shut down.
+
+Shut down means thread should also get eliminated after this one.
+
+Now what should be the behavior?
+
+Let's say task one is coming.
+
+So thread one, thread one or let's say this thread zero, thread one.
+
+Like how it generally give thread zero, thread one two threads.
+
+Right.
+
+So thread zero is assigned task one.
+
+Busy.
+
+Now this task is coming.
+
+Thread one is assigned task two.
+
+This is also busy now.
+
+Now task three is coming.
+
+Now what it will do is no, it No, it will not create new thread.
+
+Yeah, I can have four threads in this thread pool, but it will first try to put in queue.
+
+So it will put here thread three.
+
+Because both threads are busy because I have kept five.
+
+Second are sleep right.
+
+So they are still processing then thread four is coming, both the threads are still busy.
+
+It will be put here and after they finished working so they will again goes back to the pool.
+
+Now they are available now the same threads thread zero only will do.
+
+Let's say task three thread one only will do task four.
+
+So only these two threads will take care of all these four requests.
+
+No new thread will be created.
+
+Let's first see that one.
+
+I am running it off.
+
+Task processed by thread one.
+
+Thread zero so two threads has been created.
+
+Thread zero.
+
+Thread one.
+
+So two task has been created.
+
+So this remaining two threads has been put into a pool write queue.
+
+And once this two threads got free they only pick the remaining two tasks from the queue.
+
+See thread zero, thread one only, so only maximum two threads created which was initially set right.
+
+So this code is working as expected.
+
+But what would happen if I add task five here?
+
+Now when the task five is added, what would happen here?
+
+Now?
+
+What should be the behavior now?
+
+So task one is busy.
+
+By thread zero.
+
+Task two is busy by thread one.
+
+Task three is put into the queue.
+
+Task four is put in the queue.
+
+Task five comes when task five comes, can any of the thread pool can be used?
+
+No.
+
+Thread zero is thread one is busy.
+
+Can I put in a queue?
+
+No.
+
+Then it goes and see that hey, can I create a new thread?
+
+Yes for thread can be there.
+
+Thread pool has only two.
+
+You can create new thread.
+
+So new thread would pick tasks your five right?
+
+And then this any of the thread which get completed it will goes back to the pool and do this thread.
+
+Like maybe thread zero will put task three from the queue and thread one goes back and pick four.
+
+But here if you see that this new thread should have been created.
+
+So now let's simulate this and create five tasks.
+
+Run it.
+
+So.
+
+Thread zero.
+
+Thread one.
+
+Thread two.
+
+and so thread zero, thread one, thread two and two tasks are waiting, so any of these two threads
+
+will come back and pick this up.
+
+This is working as expected right.
+
+So our understanding is correct right.
+
+So first it try to use whatever the threads are there in the pool.
+
+If it is all are busy it will first put into the queue.
+
+If that is also full then only it will go and try to create a thread.
+
+If we are allowed, maximum is not reached.
+
+But what if maximum is also reach.
+
+So maximum four and six.
+
+So let.
+
+Let's say if I create seven.
+
+So at max all four thread it will create five six.
+
+So six thread it will do.
+
+And whenever the seventh request will come one will fail, one will be rejected.
+
+And once it rejected it will print this.
+
+Let's do this.
+
+Task rejected.
+
+One is rejected.
+
+And rest is processing.
+
+How?
+
+Let's see that its functionality now okay.
+
+So let's simulated it.
+
+So here initial word two.
+
+Thread one.
+
+Thread two, thread zero, thread zero, thread one and task six.
+
+Task seven I am submitting okay, so first task one comes thread zero.
+
+Pick task one.
+
+This is busy.
+
+Task two coming thread one.
+
+Pick task two this is busy.
+
+Task three is coming it put into here Task four is coming.
+
+It is put over here.
+
+Task five is coming.
+
+This is busy.
+
+Queue is full.
+
+It will create one thread.
+
+So create one thread.
+
+Thread two.
+
+Now doing task five.
+
+This is now busy.
+
+Thread six is coming.
+
+All threads are busy.
+
+Queue is full.
+
+It create one more thread.
+
+Thread three and it is assigned this task six.
+
+This is now busy.
+
+Thread seven is coming.
+
+All four thread is busy.
+
+Queue is full.
+
+Can I create more thread?
+
+No.
+
+123.
+
+All four threads maximum has been reached.
+
+This has been.
+
+Task seven has been rejected.
+
+Right?
+
+And after that any of the thread which come back to the pool, they will pick let's say thread zero.
+
+Go and pick the task three, thread one.
+
+Go and pick the task four.
+
+Right.
+
+So generally what this is one task is rejected.
+
+The task which is rejected is this one right.
+
+And there should be 01234 threads.
+
+Different four threads.
+
+Thread one.
+
+Thread zero.
+
+Thread one, thread two.
+
+Thread three four different threads created and two tasks were there in the queue.
+
+So any two threads which come first into the pool again they will pick it from there.
+
+So thread zero, thread one.
+
+Pick the two tasks from the queue.
+
+Got it.
+
+So this example is here right?
+
+So you understand what is the purpose of pool when the maximum pool size keep alive right.
+
+So here I can to use this keep alive.
+
+You know that it it will only be used when executor dot allow core timeout to true.
+
+Then only this keep alive would be used for after ten minutes.
+
+If any thread which is idle into a thread pool, it will now get eliminated with this.
+
+Okay, so thread pool creation is clear.
+
+If this is clear now let's come to the interview question why you have taken core pool sizes two.
+
+Why not ten?
+
+Why not 15 or any other logic?
+
+Okay, so you now understand that interviewer might have asked the engineer to design a or implement
+
+the thread pool executor.
+
+So engineer might have done the same thing.
+
+It might have created a thread pool executor for the question and they have picked any random number.
+
+Let's say I'm creating a minimum two maximum four.
+
+But now that's where the follow up question comes.
+
+Why four y2?
+
+Why four?
+
+Why not?
+
+I create here 20.
+
+Why not?
+
+I create here ten.
+
+Why you have taken two.
+
+What is the reasoning behind taken certain numbers?
+
+So the question is what is the reasoning behind to decide what core pool size should be minimum and
+
+maximum?
+
+So again this is my theory and my answer.
+
+This is very subjective question.
+
+Lot of different engineers might have different answer.
+
+But I will tell you generally the thread pool minimum and maximum size are depend upon various factors
+
+like CPU core.
+
+Very important factor you know right.
+
+Why CPU core is important.
+
+I told you in a start that if you have only two CPU core, core one, core two, and if you create 100
+
+thread thread one, thread two, thread 100, you know that most of the time they will spend.
+
+Just do context switching.
+
+Right?
+
+because only maximum two threads can be run in parallel.
+
+Right after that, CPU has to do context switching and pick another two threads into here.
+
+Thread three, thread four.
+
+But it has to save the thread one, thread two till where it has run, it has to save it.
+
+So there is a lot of context switching happens.
+
+So we this is become very important CPU core.
+
+We have to consider this.
+
+Second is JVM memory.
+
+You know that everything over program which runs in a JVM memory.
+
+JVM has different memory like heap and the thread is thread.
+
+Get certain memory like stack space.
+
+And there also get certain like a program counter like and other spaces.
+
+So there is a space allocated for each purpose.
+
+So we can't just create as much as thread as possible because JVM lets say if you have given two GB
+
+then you have a limited resource.
+
+Now you even let's say your core of so many cores you can do very fast processing.
+
+Your cores are super fast, but your memory is only two GB.
+
+Then definitely you can't create 100 threads here.
+
+There is no space at all to keep it.
+
+So this also comes into the picture.
+
+Important.
+
+Then you have to consider the task nature, whether it's a CPU intensive or IO intensive.
+
+So you know that there are two types of tasks CPU and IO intensive.
+
+CPU intensive means they want more CPU time, more processing time, and IO means that, uh, let's
+
+say you want to write something into, uh, you want to read something from the DB?
+
+There is a DB call or there is an external call, so thread is idle during the I o call.
+
+So when thread is idle, it is better to have more threads so that CPU should not wait.
+
+CPU can just do contact switch.
+
+Let it wait.
+
+Which thread is waiting for input output operation by the time CPU can process some other thread.
+
+So if it is CPU intensive less thread should be there.
+
+If it is IO intensive, more thread we should be keeping.
+
+Why?
+
+Because all the if it is IO intensive operations means your thread will go idle whenever IO is requested.
+
+I o operation is requested.
+
+So CPU can pick another thread.
+
+So this is generally also has to be considered.
+
+What is the nature of the task, whether it is a CPU intensive?
+
+If it is a CPU intensive, the number of threads should be less.
+
+If it is an IO intensive number of threads can be more concurrency requirement that, yes, I want a
+
+high concurrency, low concurrency, medium concurrency memory required to process a request.
+
+Now let's say that a one post request is coming if that required ten MB to process it, because when
+
+Post request is coming, it loads so many data from DB, so many data from service call let's say,
+
+and it store it into in-memory where heap and heap is also has a limited space, right?
+
+So if one request takes ten MB.
+
+Now let's say that I can have 1000 threads.
+
+If 100 threads accepted this Post request and each request takes ten MB, do you have sufficient memory
+
+here in the heap?
+
+So that also we have to consider that the memory required to process a request that much heap can support
+
+or not?
+
+Right.
+
+So and throughput like how fast you can process the request.
+
+So here if you see that we have to and there could be etc. there could be more.
+
+But these are the major.
+
+You can say that factors on top of my mind, which has to be configured before we comes to this minimum
+
+and maximum size.
+
+Okay.
+
+Now let's say that okay let's consider some estimate for it.
+
+And let's come to this one.
+
+Okay.
+
+Before I consider the estimate like okay these are eight core 32 core 64 core.
+
+And come up with a number I will want to tell you certain formulas.
+
+So there is a formula available here to find out the maximum number of threads.
+
+But again this formula is not full proof.
+
+This doesn't even consider all the factor.
+
+This is just give you what is the maximum you can have, right?
+
+Or what is at least if it will give you a start point, you can say that.
+
+So what does it say?
+
+That the number of CPU core into one plus request waiting time divided by processing time.
+
+Actually, this formula is nothing but focusing on this two task nature and the CPU core, right.
+
+And it also considers throughput.
+
+So let's say that my CPU core is 64 core 64 into one plus.
+
+Now what is actually we are doing here I told you right CPU intensive and IO intensive.
+
+So request waiting time.
+
+So let's say if it is a CPU intensive request, waiting time would be very less and processing time
+
+is more if it is IO intensive.
+
+Request waiting time would be more, processing time would be less.
+
+So you should be clear like what type of operation you are doing.
+
+So let's say I am assuming that my CPU core on my server is let's say 64.
+
+Request waiting time is 50 milliseconds divided by processing time is 100.
+
+So you can say that it is more CPU intensive than IO.
+
+So IO is less, CPU processing time is more.
+
+So you can estimate you can discuss with the interviewer that what should be the.
+
+It is high CPU intensive.
+
+If it is high CPU intensive mean, you can say that this request waiting time divided by process time
+
+would come near to zero, right?
+
+So here, if you see that this ultimately give you around 64 only.
+
+So means since I took as a CPU intensive that 100 millisecond it spent to processor time 50 millisecond
+
+half it spent in IO processing.
+
+So it comes something 64 point something.
+
+So I have taken an express 64.
+
+So number of CPU core which can be required.
+
+Uh is that 64.
+
+Can we can have a maximum number of this threads.
+
+Right.
+
+So let's say you have 64 CPU core.
+
+Core one core two core three core 64, if it is a high CPU intensive task, means it is better to have
+
+this many threads itself so that they can run parallel.
+
+There would be very less context switching or no context switching at all.
+
+Right.
+
+Because it's a high CPU intensive, everybody wants CPU time.
+
+So it's better to have the number of threads equals to what the core you have.
+
+And this formula is also give you the the same thing if the whatever the core you have into one.
+
+Plus if it is high CPU intensive, this is will give you around near to zero.
+
+Let's say waiting time is only two millisecond and processing time is 30 milliseconds.
+
+Out of 32, only two is waiting time, 30 is processing time.
+
+So it is come very equivalent to zero.
+
+So how many threads you can have is number of CPU core.
+
+But is this the correct solution.
+
+Right.
+
+Okay.
+
+We have come up with the number of threads.
+
+But does it considering the memory know this formula.
+
+Do not even consider the memory.
+
+Now we have to go to the step two.
+
+This formula does not consider the memory yet.
+
+Now let's estimate the JVM.
+
+Now let's say that I have given JVM two GB space.
+
+Now in JVM there are multiple things required.
+
+Heap I give one GB.
+
+There is a code cache space where the code has been kept.
+
+128 MB.
+
+Let's say JVM required some other, uh, tasks and they required.
+
+I have kept 256 MB for JVM overhead.
+
+We don't know what task JVM does, right?
+
+Not in our control, but it required a space for that.
+
+Let's give 256 MB out of it.
+
+So how much space left?
+
+Let's see that.
+
+So one GB 1000.
+
+Let's say that 1000 MB plus 128 MB plus 256 MB.
+
+Right.
+
+Plus x equals to two GB JVM space.
+
+Let's say 2000 MB right.
+
+So how much it will come your.
+
+So it would be let's say 300, 400 I think around 1500.
+
+Let's say this is consumed.
+
+So 500 MB left.
+
+So there might be a calculation mistake I'm just taking estimate.
+
+Just guessing.
+
+So this let's say 500 MB left.
+
+So out of this 500 MB, you know that we can now can be accommodate for thread.
+
+Now for each thread you need to create a stack.
+
+You need to create a register.
+
+And there are other things which thread is stored.
+
+So for one thread you need let's say five MB.
+
+Let's say two MB.
+
+You have given for stack, right?
+
+One MB for this.
+
+So let's say one thread takes five MB and we have 500 MB left.
+
+So how many threads we can create maximum here in this space which is left is 100 let's say 100 threads
+
+we can create.
+
+Okay.
+
+So now we got another part like okay.
+
+With this formula we know that 64 thread is good to go.
+
+But this doesn't even consider the memory.
+
+But here we have considered the JVM memory.
+
+JVM tells that okay, maximum 100 threads, we can create this much space.
+
+JVM can create because one thread create five MB.
+
+We have 500 MB left in the JVM, so 100 threads.
+
+Let's say we can create, but can.
+
+Is this again a good number?
+
+Like this.
+
+Many threads actually can work together.
+
+Now we have to consider this memory required for process to request.
+
+Now let's say that one request required ten MB because it has to load data from DB, it has to load
+
+from.
+
+It has to make external call load data.
+
+From there.
+
+Let's say that it want to store certain ten MB of data in at a time, and that where that would be stored
+
+into the heap.
+
+Now, if you are saying that if 100 threads are created, if 100 threads are created, and each thread
+
+process one request and one request.
+
+Take ten MB.
+
+How many space is required?
+
+1000 MB let's say one GB so means it required full heap space.
+
+Your heap would be full.
+
+That is risky again.
+
+So we can say that we can put certain buffer and we can use let's say 60% or 70% of heap because it
+
+might we might need a heap for some other task also.
+
+So let's say we can create 60 thread so 60 into ten MB 600 MB at a time.
+
+This memory can be used of a heap.
+
+It's okay.
+
+We have 1000 MB in heap.
+
+If you create 60 threads 600 MB would be used.
+
+Okay, so this number I can say that yes, it is safe to use 60% of the heap memory for the threads.
+
+So what is the maximum thread I can create is 60 right.
+
+Based on the memory constraint.
+
+And this formula says that okay you can maximum use 64.
+
+So that's where I can say that okay minimum I can give 60.
+
+Maximum I can give 64 or around to it let's say 70.
+
+And then there I can do monitoring.
+
+And there are different tools to monitor like profiling tools are there now.
+
+But what I meant to say now you have to do iterative monitoring, right.
+
+You have to perform load testing with this number and say that yes, this number is fine or not and
+
+optimize this number.
+
+But this is just one way to at least answer that.
+
+Yes, we have to consider all this like we have considered CPU core and the task nature.
+
+And then we have come up with one number.
+
+But this number doesn't even consider memory, right?
+
+So if you consider the memory heap memory and the JVM memory like what is the space is available for
+
+the threads, then based on that you will again get what is the maximum?
+
+What is the maximum you can create.
+
+And based on those number you can define your minimum and maximum.
+
+And then you can tell that I can do iterative and load testing and refine these numbers okay.
+
+So I think today's session is very big and this is very important topic.
+
+It's interesting also.
+
+But these are the next I will cover again an important part.
+
+But do check out this video again.
+
+If it is not clear or ping me we can discuss more and do practice it.
+
+Also man like code it out right and practice this thread pool.
+
+Very very important.
+
+Okay guys.
+
+Thank you.

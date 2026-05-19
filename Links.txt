@@ -1,0 +1,4 @@
+
+https://pagefy.io/designing-data-intensive-applications-by-martin-kleppmann
+
+https://github.com/liquidslr/system-design-notes/

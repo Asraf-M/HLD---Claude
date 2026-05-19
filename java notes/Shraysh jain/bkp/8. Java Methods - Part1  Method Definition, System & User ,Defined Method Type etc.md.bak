@@ -1,0 +1,1079 @@
+Hey guys.
+
+Welcome to Concept and Coding.
+
+And this is Shreyansh.
+
+And today we are going to cover the methods in Java.
+
+And the next set of video would be after method would be constructor.
+
+And after that memory management.
+
+Very very important okay.
+
+So today what I will be covering in the methods is what is method.
+
+I think you might already know it how the method is declared.
+
+I think you already know it, but few things I would tell about access specifiers and all which we might
+
+have not seen yet.
+
+So there is one more thing which I will cover in a separate topic exception handling topic exception
+
+thrown.
+
+So these two orange topics I am going to cover in their respective video itself.
+
+Right?
+
+So we will go into in depth and different types of method.
+
+We have so many different type of method, we will go slowly on each one and the variable arguments
+
+which is also very important.
+
+Okay.
+
+So let's start without wasting any time.
+
+So by the time you.
+
+We have already covered variables and in the fundamentals and all, you might already seen this method.
+
+You already get a flavor of it, right.
+
+So what is method?
+
+Method is used to perform certain tasks.
+
+So you have one method.
+
+So let's say this is method.
+
+You give some input.
+
+It will do some task and return some output right.
+
+So method is used to perform certain tasks.
+
+So what is in a more uh you can say that in a proper definition we can say that it's a collection of
+
+instruction that perform some specific task collection of instruction.
+
+So like one instruction could be, hey, get this thing.
+
+So one instruction could be, hey, some this two things.
+
+So it could be a collection.
+
+So collection of instruction makes a method which allow it to do perform certain tasks.
+
+And what is the advantage of method is it can be used to bring the code readability and reusability.
+
+So I will tell you with this example.
+
+So take this class public class calculation.
+
+Very basic class we have created.
+
+And in that I have created one method.
+
+So this is what our method is.
+
+So this is what method is some okay.
+
+So here what I am doing is inside this some I am passing two arguments variable and variable to.
+
+And what I am doing is just doing a summation and logging some, doing some logging stuff and returning
+
+that.
+
+What would be the total sum.
+
+So this is known as method right.
+
+So this is known as method.
+
+And it is used to perform certain tasks.
+
+So what task it is doing.
+
+It is doing some addition Addition of two numbers.
+
+So you give two numbers, it will add it and return.
+
+So it is doing certain tasks right.
+
+And it's a collection of instruction.
+
+So collection of instruction.
+
+So this is instruction one right.
+
+It add the two values.
+
+It is instruction two.
+
+It is also doing some logging.
+
+So here I'm just printing on the console.
+
+But it is let's say some logging I am doing right.
+
+So consider the instruction two.
+
+There could be many more instruction.
+
+And here I'm finally returning right.
+
+So it's a collection of instructions okay.
+
+So now I also said that this method help you to achieve the reusability.
+
+Right.
+
+How how it will help you to achieve reusability.
+
+So check this thing.
+
+So I have write this method some.
+
+Now let's say this is another method.
+
+Get price of a pen and price of a pen.
+
+Let's say what is the price of a cap is ₹2.
+
+What is the price of a pen body?
+
+Let's say ₹5.
+
+And I now want to do the sum.
+
+So here.
+
+If you see that I have invoked this sum method and pass this two and ₹5.
+
+It will do some two plus five.
+
+It will return seven here.
+
+And total pen price would be here.
+
+Seven now.
+
+And it will return that.
+
+So here what you have seen is instead of doing writing the same code here again I have reused this.
+
+Now let's say if there is another method public int, let's say uh get uh something get age combined
+
+sum I have to get a combined age.
+
+Let's say that sum method and I have let's say uh, younger sister age, younger sister age, let's
+
+say two in older sister age five something and I can still use the same, same method.
+
+So what I'm trying to say is that the same method, the same method can be reused multiple times.
+
+You don't have to write this piece of code again and again inside another method.
+
+You can reuse it.
+
+So it brings the code reusability, right.
+
+And also the readability is become easier because now you know that you by the method name itself,
+
+you will clarify a sum.
+
+So you will get a intention that okay, it might be doing some addition and all its logical relative
+
+stuff we will put inside this method.
+
+Okay.
+
+So you got what is method.
+
+Now let's say how to declare a method.
+
+So see this is the method declaration.
+
+So this line.
+
+So it has certain things which we have.
+
+So what is the first thing?
+
+So first thing which we have is access specifier.
+
+So this is your.
+
+Access specifier this one.
+
+Okay.
+
+So what what is access specifier.
+
+So access specifier can be of four types.
+
+One is public second is private.
+
+Third is protected and fourth is default.
+
+What is public.
+
+What public says public says that a method can be accessed through any class in any package.
+
+Now you must might ask me hey, what is package?
+
+What do you mean by package?
+
+So let me show you here.
+
+So let's say this is a very simple I have created one package sales department.
+
+So what does package means is package is like a Collection of.
+
+Logical.
+
+Or you can say that similar classes.
+
+Right.
+
+You group them together.
+
+So here I have created one package sales department.
+
+Inside that, like all the sales department related classes I have put inside the invoice order and
+
+anything, let's say I want, uh, human resource related classes so I can create one package package.
+
+Let's say I will give it human resource.
+
+Right.
+
+So now this is my another package.
+
+So now inside that I will create uh, certain classes like uh, what does Human Resource might have
+
+like, uh application or say that job portal.
+
+Something.
+
+Right.
+
+So human resource is maintaining the job portal.
+
+So we have certain job portal, right?
+
+We might have another, uh, class can be like in human resource.
+
+They might have certain applications.
+
+So they have a lot of applications which comes in.
+
+So you got it.
+
+Like so I have created one package and now all similar kind of classes I am putting inside that package.
+
+Okay.
+
+So now what does public says that if you have created any method public, if you have created any method
+
+public what it says, a method can be accessed through any class in any package means like a global.
+
+So let's say I have created I'm creating one method here.
+
+So let's say I'm creating with public, with right with public.
+
+And let's say I'm creating uh invoice.
+
+Get invoice.
+
+Let's say get invoice.
+
+And I am doing nothing.
+
+Just printing that.
+
+Inside invoice method.
+
+Right?
+
+So now here I am inside.
+
+Let's say job portal.
+
+In job portal I am creating any method that say get.
+
+Invoice for job get.
+
+Invoice for maintaining job portal.
+
+So let's say they are saying that we are maintaining the job portal and we have to get some invoice
+
+for it.
+
+We have to pay some price.
+
+So now it just some logical name I come with.
+
+Okay.
+
+So now I told you that if you have defined a public method, it can be accessed anywhere in any class,
+
+any package.
+
+So now invoice method in this invoice class, and this method is in which class?
+
+Invoice class.
+
+In which package?
+
+Sales department.
+
+Package.
+
+Now I am trying to access this method inside.
+
+Where in human resource package in job portal class.
+
+Right.
+
+So how I can access it?
+
+I have to create an object of this invoice invoice object.
+
+And now I am calling invoice object dot get invoice.
+
+So here if you see that I am able to access this method okay.
+
+Even in the different package different class it is possible.
+
+What does private means.
+
+Private means that it can be accessed by methods only in the same class.
+
+Now let's say that same example invoice if I change it to private.
+
+What does private says?
+
+That it can only be accessed by the methods in the same class.
+
+So let's say in the same class I have another method.
+
+Let's say uh, get uh let's say print invoice.
+
+Now it has to call this method let's say get invoice.
+
+So here if you see that even get invoice method is private.
+
+Still, uh, since I am in a same class, I am able to invoke it no problem, but will now be able to
+
+invoke this method from outside this class and outside this different package here.
+
+See, it's showing the error.
+
+What error?
+
+It's saying that make invoice public.
+
+Right.
+
+So you got it.
+
+When you create any method private it can only be accessed within a same class Okay, now let's say.
+
+What do you mean by protected?
+
+Protected says that a method can be accessed by other classes in the same package.
+
+Other classes, but in same package, and other subclasses in different package.
+
+Let me tell you.
+
+Now let's say you have created it, now protected.
+
+So now when you have created protected.
+
+So what it is trying to say is that now I can access in other class, but in the same package.
+
+So in the sales department, even if there are any other class, let's say order, I have here some
+
+let's say get order.
+
+Here I can access the invoice object equals to new invoice.
+
+I can access the get invoice.
+
+See, even though it is protected.
+
+Because when you created a protected, this method can be accessed by other class, but in same package.
+
+See order is in the same package as invoice.
+
+I can access it, but can I access in different package in human resource?
+
+Can I access it?
+
+No, you can't access it.
+
+But what protected says that hey, your subclasses in different package can access it.
+
+Subclasses mean child.
+
+So you have your parent class and then your child class.
+
+So child class is known as subclasses.
+
+So even though your subclasses are in different package, they only can access.
+
+It means let's say if job portal is child of invoice.
+
+Let's say if Job portal is your child of invoice then it should be able to access it.
+
+So now what we have done is job portal.
+
+Is your child of this thing?
+
+Now?
+
+Will it be able to access this method?
+
+Let's see.
+
+Now, this is your one method here.
+
+Now I want what is the method in the invoice?
+
+This is the protected method, right?
+
+Get invoice.
+
+So we just need to let's say get invoice here.
+
+See.
+
+So I am able to access the protected.
+
+I am able to access the protected method in different package.
+
+Invoice is in sales department package.
+
+But I am accessing it in job portal.
+
+Why?
+
+How come?
+
+Because it is a child.
+
+Now only in that case.
+
+For protected method, you can only access it in different only if it is child.
+
+Otherwise in same package.
+
+Even it is not a child.
+
+You can access it.
+
+Okay.
+
+Now the fourth one is default.
+
+Default says that.
+
+So let's say sometime you don't give anything.
+
+Now I am not giving anything.
+
+So when you don't give anything by default it considered as default, right?
+
+If you do not mention anything, then default access identifier.
+
+Access specifier is used.
+
+Right.
+
+And what it will use it can only be accessed by classes in same package.
+
+Right.
+
+Now here I haven't defined protected right.
+
+So by default what it will be used access specifier default.
+
+And when default is used means this method can only be invoked from same package.
+
+Different classes in same package.
+
+So order will order be able to call it?
+
+Yes, because it is in same package like sales department.
+
+Sales department has two classes invoice and order.
+
+So order would be able to call it.
+
+But now human resource package will job application.
+
+Job portal would be able to call it even though it is a child.
+
+No it shows error right?
+
+Even though it is a child class again it would won't be able to call it right.
+
+So you understood it.
+
+So very simple.
+
+Just visit it one more time and try to implement it very easy.
+
+Public means kind of global.
+
+You can access it from anywhere.
+
+Private is simple.
+
+Only in the same class you can access it.
+
+Protected is same package and child classes from different package.
+
+Default is simple in the same package all the classes can access it.
+
+Okay, so this access is specifier I think should be clear.
+
+now.
+
+Next is your return type.
+
+This part is your known as.
+
+Return type.
+
+So return type tells like what your method is going to return after doing the computation.
+
+Okay so here in the invoice example what I am returning here I am returning void.
+
+Void means you are not returning anything.
+
+Let's say if I want to return true false so I can give boolean, I can return either true or return
+
+false, right?
+
+So this is known as return type that after computation of your method what ultimately you will return
+
+out of this method okay.
+
+And if you are not returning anything, if your method does not return anything, what it should be
+
+used as.
+
+Void.
+
+Void means returning nothing.
+
+So see?
+
+Even though it is a void, it is not returning anything.
+
+You can use it.
+
+Even if you want to use return, you can use it like this.
+
+Like only return.
+
+Semicolon.
+
+This is also known as nothing.
+
+Do nothing like finish it without returning anything.
+
+Or either you can't even write it, don't write it or write it if you want.
+
+You can also do it like this.
+
+Okay, but it should not return any value like false or 5 or 6.
+
+So let's say three.
+
+It is okay if it is int, but if it is void, either you should not define it anything or it is like
+
+this.
+
+Okay.
+
+Now let's come to the third one is your method name.
+
+So now this is your.
+
+Method name.
+
+So what is the name of the method you should give.
+
+So for everything.
+
+So this is a naming convention.
+
+So I'm telling you the naming convention how you should give a name to a method.
+
+It should be verb.
+
+So you know that.
+
+What is verb.
+
+So what I understand is like you should it should always be kind of an action, right?
+
+Certain this method will do something.
+
+So that's why it's like get uh, get data right.
+
+Print invoice.
+
+So kind of doing something right.
+
+Get age, get ID right.
+
+So some kind of action.
+
+Right.
+
+So this is what generally the method is.
+
+And also the method name.
+
+When you do always start with a small a small letter like your method name should not be like this.
+
+Get employee Details.
+
+It should not be like this.
+
+It should not start from capital.
+
+It should start from small.
+
+Okay.
+
+And if there are more than one word, it should be CamelCase.
+
+So start with the small get then second word should be capital get employee, then details would be
+
+again D capital details okay so that is your how you should define a method name.
+
+And then you have a arguments.
+
+So this is your arguments.
+
+Or you can say that parameter list.
+
+Parameter list.
+
+Okay.
+
+So in the parameter I think as if you have already seen the variable uh video, you might already know
+
+the parameter.
+
+I have covered that in there.
+
+So like whenever you create a method.
+
+So here in this method right here in the invoice or let's say this method Calculation.
+
+This method.
+
+This argument is taking two integer variables, right?
+
+So this is nothing but a arguments.
+
+Or you can say that parameter.
+
+So you can add as many as you want like say I want a string right.
+
+Some data so you can add your what.
+
+So based on this data your method can use it to perform the task okay.
+
+It's a list of variable that will be used in the method.
+
+Right.
+
+So here if you see that variable and variable two is used by the method to compute something.
+
+Parameter list can be blank too as you show in the invoice.
+
+So here if there is no parameter I am I want to use.
+
+It can be empty also.
+
+Okay, then there is something called throw exception.
+
+It generally tells Does your method is going to throw any exception or not?
+
+Right.
+
+So this will I will cover later because this itself it's there is a lot of things to cover in it.
+
+So that's why I kept in orange.
+
+So there is a exception handler video in which I will be covering this.
+
+Okay.
+
+So just assume that there is something kind of throw exception.
+
+You can also.
+
+Right.
+
+So let's say.
+
+Just a quick overview like a highlight so that you have this thing in your back of your mind when let's
+
+say this method get invoice can throw certain exception, I can say that it can throw exception.
+
+Now whichever method is going to invoke this, they should handle it.
+
+Because this when they call invoice it can throw certain exception.
+
+So they should be able to handle it.
+
+So how to handle that I will tell you in a separate video.
+
+But for this we can tell what exception this method can throw.
+
+We can tell this if it can throw.
+
+Arithmetic expression exception.
+
+Let's say divide by zero.
+
+We can tell arithmetic exception.
+
+So there are lot of exceptions kind of happen right.
+
+But don't worry about this I will cover in detail in exception handler video.
+
+Right.
+
+So I think now you should be clear with what is method how to declare a method access.
+
+Access specifier should be clear return type parameters body and all this thing.
+
+Now let's go to the very very important type of method.
+
+Type of method.
+
+So see there are so many types of method.
+
+First one is system defined method.
+
+So system.
+
+So now if you have seen the jdk, jvm jre video, Yo, can you tell me in the comment section that which
+
+part either JDK or JRE or JVM out of this three which part provide the libraries to us?
+
+Okay, so please comment me in the comment section.
+
+So what is system defined method?
+
+So methods which are already defined and ready to use in Java that is known as system design method.
+
+So here let's say in this in this one.
+
+Let's say I want to do a square root of.
+
+So let's say I have integer uh let's say some variable I have is 25.
+
+I want to find its square root.
+
+So there are already a libraries present.
+
+So there is something called math in Java dot long dot square root.
+
+And then you can give variable Okay.
+
+So now here, if you see that this function is already there I haven't wrote it.
+
+This is already present inside a library Java Lang library.
+
+So it's ready to use.
+
+You can use it right.
+
+So these are known as system defined method.
+
+And you have to tell me that this system design method is provided.
+
+By whom.
+
+I have already told in the JVM jre jdk class.
+
+Then there is something called user defined method methods which programmer create based upon the program
+
+necessity.
+
+So like I created this method.
+
+So this method I am creating because I required it.
+
+So this is user defined method.
+
+So that's why this comes under a user defined methods.
+
+Right.
+
+It's just a differentiation.
+
+Then there is something called overloaded method.
+
+What does overloaded method more than one method with same name is created in same class.
+
+So I'll tell you.
+
+So now let's take this class.
+
+So currently we have one method get invoice.
+
+I think you already know this.
+
+I have told this to overloaded and override it in polymorphism.
+
+Polymorphism in the.
+
+Oops.
+
+Fundamental overloaded is your static binding.
+
+And overridden is your dynamic binding.
+
+And it's part of polymorphism.
+
+Okay.
+
+So I think you already know that.
+
+So in the overloaded method what is this.
+
+You have one method.
+
+You can overload it.
+
+Like you can write a same get invoice same method name but different argument.
+
+So now here if you say that get invoice get invoice exactly same name but argument is different.
+
+So here it is nothing.
+
+It is taking nothing.
+
+Zero parameters.
+
+It is taking one.
+
+I can write another void invoice.
+
+Let's say it takes 2NANP.
+
+That is also valid uh int int b.
+
+So here I am taking two parameters.
+
+Here it is taking one.
+
+Here it is empty.
+
+So here if you see that I am overloading and doing some other work.
+
+So here it is doing something.
+
+Here I am doing some other stuff.
+
+Here I am doing something else.
+
+Right.
+
+So you know that overloaded methods are differentiated based upon the arguments, right.
+
+Same name, different argument.
+
+Let's say if it is return type is void and its return type is int.
+
+That's okay because we during overloaded it do not consider Considered return type it.
+
+Do not consider return type.
+
+So this is invalid.
+
+So let's say you are saying hey int get invoice this.
+
+Hey now you can say that hey even though name is same but my return type is different.
+
+Then why it is showing that it is error because overloaded method only get differentiated based on arguments.
+
+Name should be same, argument should be different but return type is not even considered.
+
+Okay, so that's why it is showing an error.
+
+So it should be something else.
+
+Or it can be anything.
+
+It should be something else into the arguments string let's say z.
+
+Now it's okay.
+
+Whether now it is an int or void it doesn't matter because return type do not even consider okay overridden
+
+method.
+
+Subclass has the same method as the parent class.
+
+Same everything.
+
+Same, but in the subclass.
+
+So let's say person.
+
+This is one class person.
+
+It has one method profession.
+
+Okay, now I am creating a child class.
+
+Doctor extends person right?
+
+Now doctor is a.
+
+So here you have a person parent class.
+
+And I created a child class through extends keyword.
+
+So now doctor is a child of parent class person.
+
+So overridden method is if I use the same method exactly same in the child class right.
+
+So here even whether so this is in Java.
+
+You can give this a notation.
+
+Let's say even if I don't give the annotation nutrition.
+
+This is overrided professional is overrided this method.
+
+So here if you check its parent same method return type is also same.
+
+Access specifier is also same argument is also same name is also same.
+
+So see everything is same, no difference even in the return type.
+
+But you can do something else here.
+
+Right.
+
+So this is known as overridden method means subclass has the same method as the parent class right?
+
+So now I think these two I have already covered in polymorphism.
+
+Right.
+
+So how this polymorphism works right.
+
+So now let's see how to invoke.
+
+So till now here let's now see how to invoke these two things.
+
+Let's take one example of how to invoke the overloaded method.
+
+So it's very very simple.
+
+So let's say get invoice.
+
+And this let.
+
+Now let's say I am going to invoke it from let's say order.
+
+I have created an object of invoice.
+
+Now get invoice.
+
+So now see you see so many flavors.
+
+One is taking no argument, one is taking string, one is taking integer.
+
+One is taking two integers.
+
+So now let's say I want to invoke string one get invoice.
+
+So now here say hello I'm passing certain string.
+
+Now I want to call two integer one get invoice and I will pass two integers four and eight.
+
+So this one will call the string one.
+
+This one will call the two integer ones right.
+
+So when you going to call the overloaded method, you can tell what arguments you will pass.
+
+It will call the respective method.
+
+And in the overridden one, let me tell you how it will get invoked.
+
+So now let's say in the main method.
+
+Let's say I have created a person object.
+
+But so you know that person is a.
+
+Parent class.
+
+It can hold the object of a child class.
+
+We have already discussed it right in the previous video variable.
+
+So it can hold the object of child class.
+
+So now when I'm calling object dot profession which one it will call, which one it will invoke.
+
+So now it will do dynamic binding.
+
+Right.
+
+I told you it's a overridden is also known as dynamic binding.
+
+So now at the runtime at runtime it will know hey which profession method to call whether I have to
+
+call doctor one or person one.
+
+So now it will say that okay, this object even though it's a parent, but the instances of doctor.
+
+So it will first go and check inside a doctor that hey professional method is present or not, right.
+
+So it will go inside a doctor and first it will print this one.
+
+Go inside this one.
+
+If let's say doctor doesn't have this method, what it will do is first it will go inside doctor and
+
+check.
+
+Hey profession method is there.
+
+If it is not then it will check this one parent one and call this one.
+
+Okay so this is how you can call a overridden method right?
+
+Based upon the runtime.
+
+Either it can call the method into the doctor or into the person.
+
+Right.
+
+Got it.
+
+So there is something.

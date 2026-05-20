@@ -156,90 +156,369 @@ Divide the entire world into a fixed grid of equal-sized cells. Each cell has an
 
 ## Step 6: Approach 3 — Geohash (Recommended for Interviews)
 
-Geohash is the most popular approach for proximity search. Here's how it works, step by step.
+Geohash converts any (latitude, longitude) on Earth into a **short string like `9q9hvt`**. Nearby locations produce similar strings. This lets you find nearby places using a simple string index — no complex 2D math needed.
+
+---
+
+### The Core Idea: Divide the World Like a Grid, Encode as a String
+
+Think of it like this: you keep folding a map in half, and at each fold you write down which half you're on. After enough folds, the sequence of "left/right, top/bottom" choices uniquely identifies a tiny cell on Earth. That sequence is your geohash.
+
+---
 
 ### Step 1: Split the World in Half Repeatedly
 
 <img src="../../system-design-notes/16. Proximity Service/images/geohash.png" alt="Geohash Step 1" width="320">
 
-Start with the entire Earth:
-- Split vertically (left = longitude < 0, right = longitude ≥ 0)
-- Left half gets bit `0`, right half gets bit `1`
-- Split horizontally (bottom = latitude < 0, top = latitude ≥ 0)
-- Bottom gets bit `0`, top gets bit `1`
+**Round 1 — Longitude split (left/right):**
+```
+Entire Earth longitude range: -180 to +180
+Split at 0:
+  Left  (-180 to 0):  bit = 0  (Western hemisphere — Americas)
+  Right (0 to +180):  bit = 1  (Eastern hemisphere — Europe, Asia)
 
-So after 2 splits, the Earth has 4 quadrants with 2-bit codes:
-- Top-left (Europe/Asia): `01`
-- Top-right (N. America): `11`
-- Bottom-left (Antarctica): `00`
-- Bottom-right (S. America/Australia): `10`
+San Francisco is at longitude -122.4  →  falls in Left half  →  bit = 0
+```
 
-### Step 2: Keep Subdividing
+**Round 2 — Latitude split (top/bottom):**
+```
+Entire Earth latitude range: -90 to +90
+Split at 0:
+  Bottom (-90 to 0):  bit = 0  (Southern hemisphere)
+  Top    (0 to +90):  bit = 1  (Northern hemisphere)
+
+San Francisco is at latitude 37.7  →  falls in Top half  →  bit = 1
+```
+
+After 2 splits, San Francisco is in the `01` quadrant (longitude=0, latitude=1).
+
+**Round 3 — Longitude split again (now within the left half: -180 to 0):**
+```
+Left half splits at -90:
+  Left  (-180 to -90):  bit = 0  (Far west — Hawaii, Alaska edge)
+  Right (-90 to 0):     bit = 1  (Most of Americas)
+
+San Francisco is at -122.4  →  falls in Left (-180 to -90)  →  bit = 0
+```
+
+**Round 4 — Latitude split (now within top half: 0 to 90):**
+```
+Top half splits at 45:
+  Bottom (0 to 45):   bit = 0  (Tropics and mid-latitudes)
+  Top    (45 to 90):  bit = 1  (Northern Europe, Canada, Russia)
+
+San Francisco is at 37.7  →  falls in Bottom (0 to 45)  →  bit = 0
+```
+
+So far San Francisco has bits: `0  1  0  0` — and the cell is already narrowed from the whole Earth to a region of roughly ~2,500 km wide. Keep going for more precision.
+
+---
+
+### Step 2: Keep Subdividing — More Bits = More Precision
 
 <img src="../../system-design-notes/16. Proximity Service/images/geohash-1.png" alt="Geohash Subdivision" width="300">
 
-Keep splitting each cell into 4 smaller cells, alternating between longitude and latitude splits. After each round, add 2 more bits to the code.
+The pattern always alternates: **longitude bit, latitude bit, longitude bit, latitude bit...**
 
-After several rounds, cells are tiny (city blocks, then street-level). The **longer the geohash string, the smaller and more precise the cell.**
-
-### Step 3: Convert Binary to Base32
-
-The binary bit string is converted to a **short alphanumeric string** using base32 encoding:
+Each pair of bits cuts the current cell into 4 smaller cells. After 30 bits (15 pairs), you have a cell about 1 metre wide — precise enough for a front door.
 
 ```
-Binary: 01 11 01 01 01 10 ...
-Base32: 9q9hvt (example geohash for San Francisco)
+Bits so far for San Francisco area:
+  0  1  0  0  1  1  0  1  0  1  1  0  0  1  0  1  ...
+  ^lon ^lat ^lon ^lat ...
+  (continuing splits narrow down to street-level precision)
 ```
+
+The key insight: **every additional bit halves the cell size in one direction**.
+
+---
+
+### Step 3: Convert Binary to Base32 (Readable String)
+
+30 bits of binary is hard to read. Geohash groups the bits into **5-bit chunks** and maps each to one of 32 characters:
+
+```
+Base32 alphabet: 0123456789bcdefghjkmnpqrstuvwxyz
+(note: a, i, l, o are excluded to avoid confusion with 0 and 1)
+
+Binary:  01001  10101  10010  ...
+         ↓      ↓      ↓
+Base32:  9      q      9      ...  → "9q9hvt"
+```
+
+So `9q9hvt` is San Francisco's geohash at precision level 6 (6 characters = 30 bits = cell ~1.2km x 0.6km).
+
+---
 
 ### Key Property: Shared Prefix = Nearby Locations
 
 <img src="../../system-design-notes/16. Proximity Service/images/geohash-radius-mapping.png" alt="Geohash Radius Mapping" width="420">
 
-> The longer the shared prefix between two geohashes, the closer the two locations are.
+Because every character encodes a region subdivision, **locations that share a longer prefix are in the same (smaller) region**.
 
-| Geohash length | Cell size | Use for radius |
-|----------------|-----------|----------------|
-| 4 characters | ~156 km × 156 km | 20 km radius |
-| 5 characters | ~4.9 km × 4.9 km | 1–5 km radius |
-| 6 characters | ~1.2 km × 1.2 km | 0.5–1 km radius |
-
-**Example:**
+**Concrete example — San Francisco restaurants:**
 ```
-You are at:        9q9hvt  (San Francisco street)
-Nearby restaurant: 9q9hvu  (1 block away)
-Shared prefix:     9q9hv   (length 5 = both in same ~5km cell)
+You (standing at Union Square):   9q8yy1
+Starbucks (100m away):            9q8yy3
+In-N-Out Burger (300m away):      9q8yy9
+Restaurant (2km away):            9q8yz4
+Restaurant (10km away):           9q8zxx
+Restaurant in Los Angeles:        9q5c2t
+Restaurant in New York:           dr5reg
 
-Far away:          dqcjq   (New York)
-Shared prefix:     (none)
+Shared prefix length:
+  You vs Starbucks (100m):   9q8yy   → 5 chars shared → same ~5km cell
+  You vs In-N-Out (300m):    9q8yy   → 5 chars shared → same ~5km cell
+  You vs 2km away:           9q8y    → 4 chars shared → same ~40km cell
+  You vs Los Angeles (600km):9q       → 2 chars shared → same ~1200km cell
+  You vs New York (4000km):  (none)  → different macro-region
 ```
 
-### Geohash Indexing in the Database
+**Precision table:**
+| Geohash Length | Cell Width | Cell Height | Use For |
+|---|---|---|---|
+| 1 char | 5,000 km | 5,000 km | Continent-level |
+| 2 chars | 1,250 km | 625 km | Country-level |
+| 3 chars | 156 km | 156 km | State/region |
+| 4 chars | 39 km | 20 km | City-level |
+| **5 chars** | **4.9 km** | **4.9 km** | **Neighbourhood (use for ~5km radius)** |
+| **6 chars** | **1.2 km** | **0.6 km** | **Street-level (use for ~1km radius)** |
+| 7 chars | 152 m | 152 m | Building-level |
 
-Instead of storing `(latitude, longitude)` and doing 2D queries, store the **geohash string** and index it:
+For a "find restaurants within 1km" feature, use **geohash length 6**.
 
+---
+
+### How You Actually Use It — Full Example
+
+**Scenario:** User is at lat=37.7749, lon=-122.4194 (San Francisco). Find all restaurants within 1 km.
+
+**Step 1: Compute the user's geohash**
+```
+lat=37.7749, lon=-122.4194  →  geohash = "9q8yy1"  (length 6)
+```
+
+**Step 2: Find the 8 surrounding neighbour cells**
+```
+Every geohash cell has exactly 8 neighbours (N, NE, E, SE, S, SW, W, NW):
+
+  +--------+--------+--------+
+  | 9q8yxr | 9q8yy2 | 9q8yy3 |   ← NW,  N,  NE
+  +--------+--------+--------+
+  | 9q8yxp | 9q8yy1 | 9q8yy4 |   ← W,  YOU,  E
+  +--------+--------+--------+
+  | 9q8yxj | 9q8yy0 | 9q8yy5 |   ← SW,  S,  SE
+  +--------+--------+--------+
+```
+
+**Step 3: Query the database for all 9 cells**
 ```sql
-CREATE INDEX idx_geohash ON businesses(geohash);
-
--- Fast query: all businesses in cell 9q9hvt and neighbors
-SELECT * FROM businesses WHERE geohash IN ('9q9hvt', '9q9hvu', '9q9hvy', ...);
+SELECT business_id, name, lat, lon
+FROM businesses
+WHERE geohash IN (
+  '9q8yy1',   -- your cell
+  '9q8yy2', '9q8yy4', '9q8yy0', '9q8yxp',  -- N, E, S, W
+  '9q8yy3', '9q8yy5', '9q8yxj', '9q8yxr'   -- NE, SE, SW, NW
+);
 ```
 
-This is a single-column string index — extremely fast.
+This returns all businesses in a ~3.6km x 1.8km area (3x3 grid of 1.2km cells).
 
-### The Boundary Problem
+**Step 4: Filter by exact distance in application code**
+```java
+List<Business> candidates = db.queryGeohashCells(nineGeohashes);
+
+// Filter: keep only those within 1km using Haversine formula
+return candidates.stream()
+    .filter(b -> haversineDistance(userLat, userLon, b.getLat(), b.getLon()) <= 1000)
+    .sorted(Comparator.comparingDouble(b -> haversineDistance(...)))
+    .collect(toList());
+```
+
+The DB does a fast index scan. Your app does the precise distance check on the small candidate set (~50-200 businesses).
+
+---
+
+### The Boundary Problem (Important!)
 
 <img src="../../system-design-notes/16. Proximity Service/images/boundary-issue.png" alt="Boundary Issue" width="320">
 
-> **Problem:** Two restaurants can be 10 meters apart but sit on opposite sides of a geohash boundary — they'd have completely different geohash strings (no shared prefix).
+#### What is the Boundary Problem?
 
-> **Solution:** Always search the target geohash **plus its 8 neighbors** (the surrounding cells). This guarantees you catch businesses near the edges of your cell.
+Every geohash cell has edges — imaginary lines drawn across the map. The boundary problem happens when **two locations are physically very close to each other, but the cell boundary line runs between them**. Because they are in different cells, their geohash strings look different even though they are nearly neighbours.
+
+---
+
+#### Example 1: Two Coffee Shops Separated by a Line
+
+Imagine you are standing on a pavement. The geohash cell boundary (an invisible grid line) happens to run right through the middle of your street.
 
 ```
-Search these 9 geohashes:
-[center_cell, north, south, east, west, NE, NW, SE, SW]
+                  cell boundary
+                       |
+  Cell: 9q8yy1         |       Cell: 9q8yy4
+                       |
+  [YOU]  ----------20m-+--  [Coffee Shop B]
+                       |
+  [Coffee Shop A]      |
+  (inside your cell)   |
 ```
 
-This adds only 8 extra DB lookups — still very fast with caching.
+- **Coffee Shop A** is in cell `9q8yy1` — same cell as you. Distance: 50m.
+- **Coffee Shop B** is in cell `9q8yy4` — different cell. Distance: 20m. **Closer to you!**
+
+Now your app searches only your cell `9q8yy1`:
+
+```sql
+SELECT * FROM businesses WHERE geohash = '9q8yy1';
+-- Returns: Coffee Shop A (50m away)  ✅
+-- MISSES:  Coffee Shop B (20m away)  ❌
+```
+
+Coffee Shop B is **closer** to you but completely invisible to the query. Your app would show the 50m option and miss the 20m option — wrong result.
+
+---
+
+#### Example 2: Corner Case — Four Cells Meet at One Point
+
+The worst case is a **corner**, where four cells all meet at a single point. A location right in your corner is only 1 metre away, but it's in a completely different cell.
+
+```
+  Cell: 9q8yxr  |  Cell: 9q8yy2
+  ───────────────+───────────────
+  Cell: 9q8yxp  |  Cell: 9q8yy1
+                         ↑
+                        YOU are here (bottom-right corner of your cell)
+
+  [Pharmacy] is 1 metre away — at the exact corner — in cell 9q8yxr
+```
+
+Geohashes of the four corners:
+```
+9q8yxr  ←  pharmacy is HERE (1m away, top-left cell)
+9q8yy2  ←  top-right cell
+9q8yxp  ←  bottom-left cell
+9q8yy1  ←  YOU are here
+```
+
+`9q8yxr` and `9q8yy1` share only `9q8y` (4 chars) — they look far apart in the string. But physically they are 1 metre apart.
+
+---
+
+#### Why Does This Happen?
+
+Think of it like ZIP codes. Two houses can be on opposite sides of a ZIP code boundary — one has ZIP 10001, the other has ZIP 10002 — even though they are next-door neighbours. Searching only ZIP 10001 misses the house next door.
+
+Geohash cells have the same issue. The grid is fixed. The real world doesn't care where the lines are drawn.
+
+---
+
+#### The Fix: Always Search 9 Cells (Your Cell + 8 Neighbours)
+
+Instead of querying only your cell, always query your cell **plus all 8 surrounding cells**. This creates a 3×3 grid of cells around you.
+
+```
+  +──────────+──────────+──────────+
+  | 9q8yxr   | 9q8yy2   | 9q8yy3   |  ← NW, N, NE
+  +──────────+──────────+──────────+
+  | 9q8yxp   | 9q8yy1   | 9q8yy4   |  ← W, YOU, E
+  +──────────+──────────+──────────+
+  | 9q8yxj   | 9q8yy0   | 9q8yy5   |  ← SW, S, SE
+  +──────────+──────────+──────────+
+```
+
+Now query all 9:
+
+```sql
+SELECT * FROM businesses
+WHERE geohash IN (
+  '9q8yy1',                              -- your cell
+  '9q8yy2', '9q8yy4', '9q8yy0', '9q8yxp',  -- N, E, S, W
+  '9q8yy3', '9q8yy5', '9q8yxj', '9q8yxr'   -- NE, SE, SW, NW
+);
+```
+
+Now **no matter where the boundary falls**, any business within the 3×3 area is included:
+
+```
+  +──────────+──────────+──────────+
+  |  ☕ A    |          |          |
+  +──────────+──────────+──────────+
+  |          |  [YOU]   | ☕ B     |  ← B is now found ✅
+  +──────────+──────────+──────────+
+  |          |    ☕ C  |          |
+  +──────────+──────────+──────────+
+```
+
+All three coffee shops — A, B, and C — are returned regardless of which cell boundary they sit next to.
+
+---
+
+#### But Doesn't This Return Too Many Results?
+
+Yes — the 3×3 grid is rectangular and larger than the circle you actually want. That is fine. You use the DB to quickly get a **candidate set**, then filter precisely in your application code using the **Haversine formula** (exact straight-line distance):
+
+```
+DB query   →  returns ~200 businesses from 9 cells (fast, index scan)
+     ↓
+App code   →  for each business, calculate exact metres from user
+     ↓
+Filter     →  keep only those within 1000m
+     ↓
+Result     →  20 restaurants, correctly sorted by distance  ✅
+```
+
+The DB does the coarse filter. Your code does the precise filter. Two steps, both fast.
+
+---
+
+#### Summary
+
+| Situation | Without 9-cell search | With 9-cell search |
+|---|---|---|
+| Business in same cell | Found ✅ | Found ✅ |
+| Business just across boundary | **Missed ❌** | Found ✅ |
+| Business at a corner (4 cells meet) | **Missed ❌** | Found ✅ |
+| Business far away | Not returned ✅ | Not returned ✅ |
+
+**Rule to remember:** Always query `your_cell + 8 neighbours`. Never query just your own cell.
+
+---
+
+### Geohash in the Database
+
+Store the geohash as a plain string column and index it:
+
+```sql
+-- Schema
+CREATE TABLE businesses (
+    id          BIGINT PRIMARY KEY,
+    name        VARCHAR(255),
+    lat         DOUBLE,
+    lon         DOUBLE,
+    geohash     VARCHAR(12),   -- store at max precision, query at length 6
+    ...
+);
+
+CREATE INDEX idx_geohash ON businesses(geohash);
+```
+
+The query uses a B-Tree index on a string column — it is as fast as looking up a username. No special spatial index needed. This is why geohash works on any standard SQL or NoSQL database.
+
+---
+
+### Why Geohash is Recommended for Interviews
+
+| Property | Why it matters |
+|---|---|
+| **Simple concept** | "Divide the world in halves, encode as a string" — easy to explain in 2 minutes |
+| **Standard SQL index** | `WHERE geohash IN (...)` — works on MySQL, PostgreSQL, DynamoDB, Cassandra |
+| **Cacheable** | A geohash cell is a fixed region — cache "all restaurants in cell 9q8yy1" by key |
+| **Scalable** | Partition your DB by geohash prefix — all businesses in a region go to one shard |
+| **Predictable cell sizes** | You know exactly what precision level to use for a given radius |
+| **No special infra** | Unlike Quadtree which needs in-memory tree servers, geohash just needs a DB column |
+
+**The one limitation to mention:** geohash cells are rectangles, not circles. A radius search with geohash returns a rectangular region — you post-filter with Haversine to get exact results. Always mention this in interviews.
 
 ---
 
@@ -247,50 +526,283 @@ This adds only 8 extra DB lookups — still very fast with caching.
 
 <img src="../../system-design-notes/16. Proximity Service/images/building-quadtree.png" alt="Building Quadtree" width="480">
 
-A **quadtree** is an in-memory tree data structure that recursively divides 2D space into four quadrants.
+A **quadtree** is an in-memory tree that recursively divides a 2D map into four quadrants. Think of it like zooming into a map — each zoom level splits the view into 4 tiles, and each tile can be split again if it has too many points.
 
-### How It's Built
+---
 
-Start with the entire world as the root. If a region has more than **100 businesses**, split it into 4 quadrants. Keep splitting recursively until every leaf node has ≤ 100 businesses.
+### Part 1: Building the Tree
+
+**The rule:** If a region contains more than **100 businesses**, split it into 4 equal quadrants. Keep splitting until every region has ≤ 100 businesses.
+
+Let's use a simplified city example with just 16 businesses spread unevenly — 12 in the downtown area, 4 in the suburbs:
 
 ```
-World (200M businesses) → too many, split
-  ├── NW quadrant (50M) → too many, split
-  │     ├── NW-NW (12M) → split...
-  │     ├── NW-NE (4M)  → split...
-  │     ├── NW-SW (5M)  → split...
-  │     └── NW-SE (9M)  → split...
-  ├── NE quadrant (30M) → too many, split...
-  ├── SW quadrant (70M) → too many, split...
-  └── SE quadrant (60M) → too many, split...
+The city map (each dot = a business):
+
+  +──────────────────────────+
+  |          |               |
+  |  suburb  |  ● ● ●  CBD  |
+  |    ●     |  ● ● ●       |
+  |          |  ● ● ●       |
+  |──────────|──────────────|
+  |          |  ● ● ●  CBD  |
+  |  suburb  |              |
+  |    ●     |              |
+  |    ●     |              |
+  +──────────────────────────+
 ```
 
-<img src="../../system-design-notes/16. Proximity Service/images/quadtree.png" alt="Quadtree" width="450">
+**Step 1: Root — entire city (16 businesses)**
+16 > 100? No, this is a toy example. Let's say the threshold is **4** for illustration.
+16 > 4 → **SPLIT into NW, NE, SW, SE**
 
-**Result:** Dense cities like NYC get subdivided into tiny cells (many levels deep). Rural areas stop splitting early because each region already has ≤ 100 businesses. The tree **automatically adapts to population density**.
+```
+Root: whole city (16 businesses)
+  ├── NW quadrant: 1 business   ≤ 4 → LEAF (no more splitting)
+  ├── NE quadrant: 9 businesses > 4 → SPLIT again
+  ├── SW quadrant: 2 businesses ≤ 4 → LEAF
+  └── SE quadrant: 4 businesses ≤ 4 → LEAF
+```
 
-### How Searches Work
+**Step 2: Split the NE quadrant (9 businesses > 4)**
 
-To find businesses near (lat, long):
-1. Traverse the tree from root to the leaf containing your coordinates
-2. Return the businesses in that leaf
-3. If fewer than k results, expand to parent and include sibling leaves
+```
+NE quadrant (9 businesses)
+  ├── NE-NW: 2 businesses ≤ 4 → LEAF
+  ├── NE-NE: 3 businesses ≤ 4 → LEAF
+  ├── NE-SW: 3 businesses ≤ 4 → LEAF
+  └── NE-SE: 1 business  ≤ 4 → LEAF
+```
 
-### Real-World Result
+**Final tree structure:**
 
-<img src="../../system-design-notes/16. Proximity Service/images/realworld-quadtree.png" alt="Real World Quadtree" width="420">
+```
+                  ROOT (whole city)
+                 /   |    |    \
+              NW    NE    SW    SE
+            (LEAF) (node)(LEAF)(LEAF)
+              1biz  /|\ \  2biz  4biz
+                   / | \ \
+               NE-NW NE-NE NE-SW NE-SE
+               (LEAF)(LEAF)(LEAF)(LEAF)
+               2biz  3biz  3biz  1biz
+```
 
-Notice how city centers (Denver downtown) have tiny cells (many businesses) while suburbs have large cells (fewer businesses). This is the quadtree adapting automatically.
+Key observation: **the dense downtown area (NE) got subdivided into smaller cells. The sparse suburbs (NW, SW) stayed as large cells.** This is what makes the quadtree density-aware.
+
+---
+
+### Part 2: What Each Node Stores
+
+Every node in the tree stores:
+
+```
+Internal Node (has children):
+  - bounding box:  top-left corner, bottom-right corner
+  - 4 child pointers: NW, NE, SW, SE
+
+Leaf Node (no children):
+  - bounding box:  top-left corner, bottom-right corner
+  - business list: [ business_id_1, business_id_2, ... ]  (max 100)
+```
+
+Example leaf node for the NE-NW quadrant:
+```
+Leaf {
+  boundingBox: { topLeft: (lat=40.75, lon=-74.00), bottomRight: (lat=40.73, lon=-73.98) }
+  businesses: [
+    { id: 101, name: "Joe's Pizza",   lat: 40.748, lon: -73.995 },
+    { id: 102, name: "NYC Pharmacy",  lat: 40.744, lon: -73.991 },
+  ]
+}
+```
+
+---
+
+### Part 3: User Search — Root to Leaf Traversal
+
+**Scenario:** You are standing at **lat=40.748, lon=-73.996** (Midtown Manhattan). You want nearby businesses.
+
+The quadtree is loaded in memory on the server. Here is exactly what happens:
+
+---
+
+**Step 1: Start at the ROOT node**
+
+```
+ROOT bounding box: covers the entire city
+  top-left:     (lat=40.80, lon=-74.10)
+  bottom-right: (lat=40.60, lon=-73.80)
+
+Question: which quadrant does (40.748, -73.996) fall into?
+
+  Midpoint lat = (40.80 + 40.60) / 2 = 40.70
+  Midpoint lon = (-74.10 + -73.80) / 2 = -73.95
+
+  User lat 40.748 > midpoint 40.70  →  NORTH half
+  User lon -73.996 < midpoint -73.95 →  WEST half
+
+  →  Go to NE quadrant  (north + west = NE in this coordinate system)
+     Wait... let me re-clarify:
+     North (lat > midpoint) + West (lon < midpoint) = NW quadrant
+
+  → Go to NW child
+```
+
+Actually let's simplify with clear directional labelling:
+
+```
+ROOT splits at centre point (40.70, -73.95):
+
+  lat > 40.70 AND lon < -73.95  →  NW  (north-west)
+  lat > 40.70 AND lon > -73.95  →  NE  (north-east)
+  lat < 40.70 AND lon < -73.95  →  SW  (south-west)
+  lat < 40.70 AND lon > -73.95  →  SE  (south-east)
+
+User is at (40.748, -73.996):
+  40.748 > 40.70  ✅ north
+  -73.996 < -73.95 ✅ west
+  → Go to NW child  ↓
+```
+
+---
+
+**Step 2: Arrive at NW node — is it a leaf?**
+
+```
+NW node bounding box: (40.70 to 40.80) latitude, (-74.10 to -73.95) longitude
+Children: NW-NW, NW-NE, NW-SW, NW-SE  ← has children, NOT a leaf
+
+NW centre point: (40.75, -74.025)
+
+User (40.748, -73.996):
+  40.748 < 40.75  →  south
+  -73.996 > -74.025 →  east
+  → Go to NW-SE child  ↓
+```
+
+---
+
+**Step 3: Arrive at NW-SE node — is it a leaf?**
+
+```
+NW-SE bounding box: (40.70 to 40.75) latitude, (-74.025 to -73.95) longitude
+No children → THIS IS A LEAF ✅
+
+Businesses stored here:
+  [
+    { id: 101, name: "Joe's Pizza",       lat: 40.748, lon: -73.995 },
+    { id: 102, name: "NYC Pharmacy",      lat: 40.744, lon: -73.991 },
+    { id: 103, name: "Central Park Cafe", lat: 40.742, lon: -74.001 },
+  ]
+```
+
+**Total traversal: 3 comparisons (root → NW → NW-SE). Done in microseconds since it's all in memory.**
+
+---
+
+**Step 4: Return the businesses from this leaf**
+
+The 3 businesses in this leaf are your initial candidates. The server then calculates the exact distance from you to each one:
+
+```
+You are at (40.748, -73.996)
+
+Joe's Pizza       (40.748, -73.995) → distance = 80m   ✅ within 500m
+NYC Pharmacy      (40.744, -73.991) → distance = 450m  ✅ within 500m
+Central Park Cafe (40.742, -74.001) → distance = 680m  ❌ too far
+```
+
+Result returned: Joe's Pizza and NYC Pharmacy.
+
+---
+
+### Part 4: What If the Leaf Has Too Few Results?
+
+Sometimes you land on a leaf with only 2 businesses but the user wants 20 results. In that case, **walk back up to the parent** and include the sibling leaves.
+
+**Example:** You want `k=10` nearest businesses but your leaf only has 3.
+
+```
+Step 1: Land on leaf NW-SE → 3 businesses. Need 10. Not enough.
+Step 2: Go UP to parent node NW.
+        NW has 4 children: NW-NW, NW-NE, NW-SW, NW-SE
+        Collect businesses from ALL 4 children:
+          NW-NW: 2 businesses
+          NW-NE: 4 businesses
+          NW-SW: 1 business
+          NW-SE: 3 businesses  ← you were here
+        Total: 10 businesses ✅ enough!
+
+Step 3: Calculate exact distance to all 10, sort, return top 10.
+```
+
+If still not enough, go up one more level to the root's NW-NE grandchildren, and so on. Keep expanding until you have k results.
+
+```
+Not enough results? → Go to parent → collect all sibling leaves
+Still not enough?   → Go to grandparent → collect all aunt/uncle leaves
+Keep going until k results are found
+```
+
+---
+
+### Part 5: The Real World — NYC vs Rural Wyoming
+
+This is where the quadtree shines over a fixed grid.
+
+```
+Manhattan (dense):
+  Root → NE → NE-NW → NE-NW-SE → NE-NW-SE-NE → ... (many levels deep)
+  Each leaf covers about 1 city block
+  Each leaf has ~80-100 businesses
+
+Rural Wyoming (sparse):
+  Root → SW  ← THIS IS ALREADY A LEAF
+  The entire state is one leaf with 40 businesses
+  No further splitting needed
+```
+
+With geohash, Wyoming would have the same cell precision as Manhattan (wasteful). With quadtree, Wyoming stays as one big cell because there is no reason to split it further.
+
+---
+
+### Part 6: Full Traversal Diagram
+
+```
+You: lat=40.748, lon=-73.996 (Midtown Manhattan)
+
+ROOT (whole city)
+ ├── Is (40.748, -73.996) in this node's bounds? YES
+ ├── Has children? YES
+ ├── Which child? → NW (lat > mid, lon < mid)
+ │
+ └──► NW node
+       ├── Is (40.748, -73.996) in this node's bounds? YES
+       ├── Has children? YES
+       ├── Which child? → NW-SE (lat < mid, lon > mid)
+       │
+       └──► NW-SE node  ← LEAF
+             ├── Has children? NO — stop here
+             └── Return businesses:
+                   Joe's Pizza      80m  ✅
+                   NYC Pharmacy     450m ✅
+                   Central Park Cafe 680m ❌ (filtered out)
+```
+
+**Total: 2 pointer hops, 2 comparisons, all in RAM — takes ~1 microsecond.**
+
+---
 
 ### Quadtree Operational Notes
 
-- The quadtree is **built in memory** on each LBS server at startup — not in a database
-- 200 million businesses → tree builds in a few minutes (O(N log N))
-- **During build, the server can't serve traffic** → roll out new builds gradually (not all servers at once)
-- When a business is added/deleted: easiest to **rebuild the tree incrementally** (or full rebuild nightly)
+- Built **entirely in memory** on the LBS (Location-Based Service) server at startup
+- 200 million businesses → builds in a few minutes, fits in ~a few GB of RAM
+- **During build, the server cannot serve traffic** → roll out new builds gradually (one server at a time)
+- Business added/deleted → easiest to rebuild the tree incrementally or do a full nightly rebuild
 
-> **Question:** Why build it in memory instead of storing it in a database?  
-> **Answer:** The whole point is speed. Traversing a tree in memory takes microseconds. Querying a tree structure stored in a database requires multiple disk reads — too slow for 5,000 QPS. The tree fits comfortably in a few GB of RAM on modern servers.
+> **Why in memory and not in a DB?**  
+> Traversing the tree takes 2–3 pointer hops in RAM = microseconds. If the tree were in a DB, each hop would be a disk read = milliseconds. At 5,000 QPS that difference matters enormously.
 
 ---
 

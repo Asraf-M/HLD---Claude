@@ -146,16 +146,22 @@ User fetches next page with cursor=12345:
 
 The cursor should be **opaque** — clients shouldn't know or manipulate it.
 
-```python
-import base64, json
+```java
+import java.util.Base64;
+import java.util.Map;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-def encode_cursor(last_id, last_created_at):
-    data = json.dumps({"id": last_id, "created_at": str(last_created_at)})
-    return base64.b64encode(data.encode()).decode()
+private static final ObjectMapper mapper = new ObjectMapper();
 
-def decode_cursor(cursor):
-    data = base64.b64decode(cursor.encode()).decode()
-    return json.loads(data)
+public String encodeCursor(long lastId, String lastCreatedAt) throws Exception {
+    String json = mapper.writeValueAsString(Map.of("id", lastId, "created_at", lastCreatedAt));
+    return Base64.getEncoder().encodeToString(json.getBytes());
+}
+
+public Map<String, Object> decodeCursor(String cursor) throws Exception {
+    byte[] decoded = Base64.getDecoder().decode(cursor);
+    return mapper.readValue(decoded, Map.class);
+}
 ```
 
 ### Limitations of Cursor-Based
@@ -255,8 +261,11 @@ LIMIT 50;
 | **20-100** | **Sweet spot for most use cases** |
 
 Allow clients to specify page size but enforce a maximum:
-```python
-size = min(request.params.get("size", 20), 100)  # default 20, max 100
+```java
+int size = Math.min(
+    Integer.parseInt(request.getParam("size", "20")),
+    100  // max 100
+);
 ```
 
 ---

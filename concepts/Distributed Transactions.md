@@ -221,20 +221,22 @@ Compensating transactions are NOT the same as rollback. They are new operations 
 A critical problem: how do you atomically update your DB AND publish an event?
 
 **Naive approach (broken):**
-```python
-db.update_order(order_id, status="created")
-kafka.publish("OrderCreated", order_id)  # what if this fails? DB updated, event never published
+```java
+// Naive approach (broken)
+db.updateOrder(orderId, "created");
+kafka.publish("OrderCreated", orderId);  // what if this fails? DB updated, event never published
 ```
 
 **Outbox pattern (correct):**
-```python
-with db.transaction():
-    db.update_order(order_id, status="created")
-    db.insert_outbox(event_type="OrderCreated", payload=order_id)
-    # Both in ONE local transaction — atomically committed
-
-# Separate process: tail the outbox table and publish to Kafka
-# Use Debezium (CDC) to read DB WAL and publish events
+```java
+// Outbox pattern (correct)
+try (var tx = db.beginTransaction()) {
+    db.updateOrder(orderId, "created");
+    db.insertOutbox("OrderCreated", orderId);  // both in ONE local transaction
+    tx.commit();
+}
+// Separate process: tail the outbox table and publish to Kafka
+// Use Debezium (CDC) to read DB WAL and publish events
 ```
 
 The outbox table is in **the same database** as the order → local ACID transaction guarantees both succeed or both fail. Event publishing is decoupled and retried separately.

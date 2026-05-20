@@ -191,12 +191,18 @@ t=0.1: 1000 concurrent requests → all miss → all query DB
 **Solutions:**
 
 **Mutex/Lock:** First request acquires a lock, fetches from DB, repopulates cache. Other requests wait.
-```python
-if not cache.get(key):
-    with lock(key):
-        if not cache.get(key):  # double-check after acquiring lock
-            data = db.query(key)
-            cache.set(key, data)
+```java
+// Cache Stampede — Double-Checked Locking
+String value = cache.get(key);
+if (value == null) {
+    synchronized (getLock(key)) {
+        value = cache.get(key);  // double-check after acquiring lock
+        if (value == null) {
+            value = db.query(key);
+            cache.set(key, value);
+        }
+    }
+}
 ```
 
 **Probabilistic Early Expiration:** Randomly expire cache slightly before actual TTL for high-traffic keys — smooths out the stampede.
@@ -236,8 +242,8 @@ At midnight: 10,000 cached items all expire (same TTL set at midnight yesterday)
 **Solutions:**
 
 **Add random jitter to TTL:**
-```python
-ttl = 3600 + random.randint(-300, 300)  # 1 hour ± 5 minutes
+```java
+int ttl = 3600 + ThreadLocalRandom.current().nextInt(-300, 301); // 1 hour ± 5 minutes
 ```
 
 **Pre-warm cache:** Load critical data before it expires via background jobs.

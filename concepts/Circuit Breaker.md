@@ -80,39 +80,54 @@ Time 76+: Circuit CLOSES. Normal operation resumes.
 
 ## Implementation: Pseudocode
 
-```python
-class CircuitBreaker:
-    def __init__(self, failure_threshold=5, recovery_timeout=60):
-        self.state = "CLOSED"
-        self.failure_count = 0
-        self.failure_threshold = failure_threshold
-        self.recovery_timeout = recovery_timeout
-        self.last_failure_time = None
-    
-    def call(self, func, *args):
-        if self.state == "OPEN":
-            if time.now() - self.last_failure_time > self.recovery_timeout:
-                self.state = "HALF_OPEN"
-            else:
-                raise CircuitOpenError("Service unavailable")  # fail fast
-        
-        try:
-            result = func(*args)
-            self._on_success()
-            return result
-        except Exception as e:
-            self._on_failure()
-            raise
-    
-    def _on_success(self):
-        self.failure_count = 0
-        self.state = "CLOSED"
-    
-    def _on_failure(self):
-        self.failure_count += 1
-        self.last_failure_time = time.now()
-        if self.failure_count >= self.failure_threshold:
-            self.state = "OPEN"
+```java
+import java.time.Instant;
+import java.util.concurrent.Callable;
+
+public class CircuitBreaker {
+    private enum State { CLOSED, OPEN, HALF_OPEN }
+
+    private State state = State.CLOSED;
+    private int failureCount = 0;
+    private final int failureThreshold;
+    private final long recoveryTimeoutMs;
+    private Instant lastFailureTime;
+
+    public CircuitBreaker(int failureThreshold, long recoveryTimeoutMs) {
+        this.failureThreshold = failureThreshold;
+        this.recoveryTimeoutMs = recoveryTimeoutMs;
+    }
+
+    public <T> T call(Callable<T> func) throws Exception {
+        if (state == State.OPEN) {
+            long elapsed = Instant.now().toEpochMilli() - lastFailureTime.toEpochMilli();
+            if (elapsed > recoveryTimeoutMs) {
+                state = State.HALF_OPEN;
+            } else {
+                throw new RuntimeException("Circuit is OPEN — service unavailable");  // fail fast
+            }
+        }
+        try {
+            T result = func.call();
+            onSuccess();
+            return result;
+        } catch (Exception e) {
+            onFailure();
+            throw e;
+        }
+    }
+
+    private void onSuccess() {
+        failureCount = 0;
+        state = State.CLOSED;
+    }
+
+    private void onFailure() {
+        failureCount++;
+        lastFailureTime = Instant.now();
+        if (failureCount >= failureThreshold) state = State.OPEN;
+    }
+}
 ```
 
 ---
@@ -176,12 +191,14 @@ When the circuit is open, what do you return?
 | **Throw fast error** | Fail immediately with 503 | User sees "service unavailable" |
 
 **Example:**
-```python
-def get_recommendations(user_id):
-    try:
-        return recommendation_service.get(user_id)  # might fail
-    except CircuitOpenError:
-        return get_popular_items()  # fallback: return trending items (cached)
+```java
+public List<Item> getRecommendations(String userId) {
+    try {
+        return recommendationService.get(userId);  // might fail
+    } catch (CircuitOpenException e) {
+        return getPopularItems();  // fallback: return trending items (cached)
+    }
+}
 ```
 
 ---

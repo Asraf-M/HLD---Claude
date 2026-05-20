@@ -171,42 +171,52 @@ Bloom filter of all breached hashes. Fast check before any DB lookup. False posi
 
 ## Implementation Sketch
 
-```python
-import hashlib
-import math
+```java
+import java.security.MessageDigest;
+import java.math.BigInteger;
 
-class BloomFilter:
-    def __init__(self, n_items, fp_rate=0.01):
-        # Calculate optimal m and k
-        m = math.ceil(-n_items * math.log(fp_rate) / (math.log(2)**2))
-        k = math.ceil((m / n_items) * math.log(2))
-        
-        self.m = m
-        self.k = k
-        self.bits = bytearray(math.ceil(m / 8))
-    
-    def _hashes(self, item):
-        positions = []
-        for i in range(self.k):
-            h = int(hashlib.md5(f"{i}:{item}".encode()).hexdigest(), 16)
-            positions.append(h % self.m)
-        return positions
-    
-    def add(self, item):
-        for pos in self._hashes(item):
-            self.bits[pos // 8] |= 1 << (pos % 8)
-    
-    def contains(self, item):
-        return all(
-            self.bits[pos // 8] & (1 << (pos % 8))
-            for pos in self._hashes(item)
-        )
+public class BloomFilter {
+    private final int m;   // number of bits
+    private final int k;   // number of hash functions
+    private final byte[] bits;
 
-bf = BloomFilter(n_items=1_000_000, fp_rate=0.01)
-bf.add("apple")
-print(bf.contains("apple"))   # True (definitely)
-print(bf.contains("cherry"))  # False (definitely not)
-print(bf.contains("mango"))   # Might be True (false positive, ~1%)
+    public BloomFilter(int nItems, double fpRate) {
+        this.m = (int) Math.ceil(-nItems * Math.log(fpRate) / (Math.log(2) * Math.log(2)));
+        this.k = (int) Math.ceil((double) m / nItems * Math.log(2));
+        this.bits = new byte[(int) Math.ceil(m / 8.0)];
+    }
+
+    private int[] hashes(String item) {
+        int[] positions = new int[k];
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            for (int i = 0; i < k; i++) {
+                byte[] digest = md.digest((i + ":" + item).getBytes());
+                positions[i] = new BigInteger(1, digest).mod(BigInteger.valueOf(m)).intValue();
+            }
+        } catch (Exception e) { throw new RuntimeException(e); }
+        return positions;
+    }
+
+    public void add(String item) {
+        for (int pos : hashes(item))
+            bits[pos / 8] |= (1 << (pos % 8));
+    }
+
+    public boolean contains(String item) {
+        for (int pos : hashes(item))
+            if ((bits[pos / 8] & (1 << (pos % 8))) == 0) return false;
+        return true;
+    }
+
+    public static void main(String[] args) {
+        BloomFilter bf = new BloomFilter(1_000_000, 0.01);
+        bf.add("apple");
+        System.out.println(bf.contains("apple"));   // true  (definitely)
+        System.out.println(bf.contains("cherry"));  // false (definitely not)
+        System.out.println(bf.contains("mango"));   // might be true (~1% false positive)
+    }
+}
 ```
 
 ---

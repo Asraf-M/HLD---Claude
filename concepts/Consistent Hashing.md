@@ -55,25 +55,42 @@ Result: keys distribute evenly across all servers.
 
 ## Implementation
 
-```python
-import hashlib
-from sortedcontainers import SortedDict
+```java
+import java.security.MessageDigest;
+import java.math.BigInteger;
+import java.util.Map;
+import java.util.TreeMap;
 
-ring = SortedDict()
+public class ConsistentHashRing {
+    private final TreeMap<Long, String> ring = new TreeMap<>();
+    private final int vnodes;
 
-def add_server(server_id, vnodes=150):
-    for i in range(vnodes):
-        key = f"{server_id}#{i}"
-        pos = int(hashlib.md5(key.encode()).hexdigest(), 16)
-        ring[pos] = server_id
+    public ConsistentHashRing(int vnodes) {
+        this.vnodes = vnodes;
+    }
 
-def get_server(data_key):
-    pos = int(hashlib.md5(data_key.encode()).hexdigest(), 16)
-    # Find first position >= pos (wrap around if needed)
-    idx = ring.bisect_left(pos)
-    if idx == len(ring):
-        idx = 0
-    return ring.values()[idx]
+    public void addServer(String serverId) {
+        for (int i = 0; i < vnodes; i++) {
+            long pos = hash(serverId + "#" + i);
+            ring.put(pos, serverId);
+        }
+    }
+
+    public String getServer(String dataKey) {
+        long pos = hash(dataKey);
+        Map.Entry<Long, String> entry = ring.ceilingEntry(pos);
+        if (entry == null) entry = ring.firstEntry();  // wrap around
+        return entry.getValue();
+    }
+
+    private long hash(String key) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] digest = md.digest(key.getBytes());
+            return new BigInteger(1, digest).longValue() & 0xFFFFFFFFL;
+        } catch (Exception e) { throw new RuntimeException(e); }
+    }
+}
 ```
 
 Lookup: **O(log N)** via binary search on sorted ring positions.

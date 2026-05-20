@@ -63,22 +63,22 @@ Content-Type: application/json
 ```
 
 **Server logic:**
-```python
-def charge_card(request):
-    key = request.headers["Idempotency-Key"]
-    
-    # Check if already processed
-    cached = redis.get(f"idempotency:{key}")
-    if cached:
-        return cached  # return same response as before
-    
-    # Process the payment (first time)
-    result = payment_processor.charge(request.body)
-    
-    # Store result with TTL (e.g., 24 hours)
-    redis.set(f"idempotency:{key}", result, ttl=86400)
-    
-    return result
+```java
+public Response chargeCard(HttpRequest request) {
+    String key = request.getHeader("Idempotency-Key");
+
+    // Check if already processed
+    String cached = redis.get("idempotency:" + key);
+    if (cached != null) return Response.of(cached);  // return same response as before
+
+    // Process the payment (first time)
+    String result = paymentProcessor.charge(request.getBody());
+
+    // Store result with TTL (e.g., 24 hours)
+    redis.set("idempotency:" + key, result, Duration.ofHours(24));
+
+    return Response.of(result);
+}
 ```
 
 **Retry behavior:**
@@ -107,28 +107,31 @@ CREATE TABLE idempotency_keys (
 );
 ```
 
-```python
-def handle_request(key, body):
-    with transaction():
-        record = db.query("SELECT * FROM idempotency_keys WHERE key = ?", key)
-        
-        if record:
-            if record.status == 'processing':
-                raise ConflictError("Request in progress")  # concurrent retry
-            if record.request_hash != hash(body):
-                raise BadRequestError("Same key, different body")
-            return record.response  # replay stored response
-        
-        # Insert with 'processing' status to lock concurrent requests
-        db.execute("INSERT INTO idempotency_keys (key, status) VALUES (?, 'processing')", key)
-    
-    # Do the actual work outside the lock
-    result = do_actual_work(body)
-    
-    # Update to 'completed'
-    db.execute("UPDATE idempotency_keys SET status='completed', response=? WHERE key=?",
-               result, key)
-    return result
+```java
+public Object handleRequest(String key, Object body) {
+    try (var tx = db.beginTransaction()) {
+        IdempotencyRecord record = db.query("SELECT * FROM idempotency_keys WHERE key = ?", key);
+
+        if (record != null) {
+            if ("processing".equals(record.getStatus()))
+                throw new ConflictException("Request in progress");  // concurrent retry
+            if (!record.getRequestHash().equals(hash(body)))
+                throw new BadRequestException("Same key, different body");
+            return record.getResponse();  // replay stored response
+        }
+
+        // Insert with 'processing' status to lock concurrent requests
+        db.execute("INSERT INTO idempotency_keys (key, status) VALUES (?, 'processing')", key);
+        tx.commit();
+    }
+
+    // Do the actual work outside the lock
+    Object result = doActualWork(body);
+
+    // Update to 'completed'
+    db.execute("UPDATE idempotency_keys SET status='completed', response=? WHERE key=?", result, key);
+    return result;
+}
 ```
 
 ---
@@ -146,17 +149,19 @@ Effectively exactly-once behavior
 ```
 
 **Pattern: Deduplication table**
-```python
-def process_message(msg):
-    # Check if already processed
-    if db.exists("SELECT 1 FROM processed_messages WHERE msg_id = ?", msg.id):
-        return  # skip duplicate
-    
-    # Process message
-    do_work(msg)
-    
-    # Mark as processed (atomic with do_work in a transaction)
-    db.insert("INSERT INTO processed_messages (msg_id) VALUES (?)", msg.id)
+```java
+public void processMessage(Message msg) {
+    // Check if already processed
+    boolean exists = db.exists("SELECT 1 FROM processed_messages WHERE msg_id = ?", msg.getId());
+    if (exists) return;  // skip duplicate
+
+    // Process message and mark as processed atomically
+    try (var tx = db.beginTransaction()) {
+        doWork(msg);
+        db.insert("INSERT INTO processed_messages (msg_id) VALUES (?)", msg.getId());
+        tx.commit();
+    }
+}
 ```
 
 ---

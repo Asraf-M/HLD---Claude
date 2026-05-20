@@ -74,11 +74,12 @@ These points are 1 meter apart but share only 5-character prefix.
 [SW] [S ] [SE]
 ```
 
-```python
-import geohash2
-neighbors = geohash2.neighbors("u09tv")
-# Returns 8 surrounding geohash cells
-search_cells = [current_geohash] + neighbors
+```java
+// Using davidmoten/geo library
+String currentGeohash = "u09tv";
+List<String> neighbors = GeoHash.neighbors(currentGeohash);  // 8 surrounding cells
+List<String> searchCells = new ArrayList<>(neighbors);
+searchCells.add(currentGeohash);
 ```
 
 ### Database Query with Geohash

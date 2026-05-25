@@ -122,30 +122,266 @@ Mobile Users
 
 ### What is Pub/Sub?
 
-**Pub/Sub = Publish/Subscribe.** It's a messaging pattern where:
-- A **publisher** sends a message to a **channel** (without knowing who's listening)
-- All **subscribers** of that channel receive the message instantly
+**Pub/Sub = Publish/Subscribe.** It is a messaging pattern with two roles:
+- A **publisher** sends a message to a **channel** (a named topic). It does not know or care who is listening.
+- A **subscriber** listens on a channel and receives every message the moment it is published.
 
-> **Analogy:** Pub/Sub is like a radio station. The DJ (publisher) broadcasts to a frequency (channel). Anyone who has their radio tuned to that frequency (subscriber) receives it. The DJ doesn't need to know who's listening or how many people there are.
+> **Analogy:** Think of a WhatsApp group. When Alice posts a message to the group, every member instantly sees it — Alice does not send it to each person individually. Redis Pub/Sub works exactly like that. The "group" is the channel, Alice is the publisher, and the group members are the subscribers.
 
-### How It Works for Nearby Friends
+---
 
-**Every user has their own Pub/Sub channel:** `user:A:location`
+### What Does a Redis Pub/Sub Channel Look Like?
 
-When User A moves:
-1. WebSocket Server publishes to `user:A:location`: "A is at (37.77, -122.41)"
-2. All of A's friends who are subscribed to `user:A:location` receive this message
-3. Their WebSocket servers push the update to their phones
+A channel is just a **named string**. In this system, every user gets their own personal channel:
 
-When User B comes online:
-- B's WebSocket server **subscribes** to channels for each of B's friends: `user:A:location`, `user:C:location`, etc.
-- Now whenever any friend moves, B's server gets notified automatically
+```
+Channel name format:  user:{user_id}:location
 
-When User B goes offline:
-- B's WebSocket server **unsubscribes** from all friend channels
+Alice's channel:   user:alice:location
+Bob's channel:     user:bob:location
+Charlie's channel: user:charlie:location
+```
 
-> **Question:** Why not one shared channel for everyone?  
-> **Answer:** Privacy. If all 10M users shared one channel, you'd receive location updates for strangers. With per-user channels, you only receive updates from people you subscribe to (your friends).
+Whenever Alice moves, her location update is **published** to `user:alice:location`.  
+Whoever is subscribed to that channel — Alice's friends' servers — instantly receive it.
+
+---
+
+### The Three Redis Pub/Sub Commands
+
+```
+SUBSCRIBE   user:alice:location       ← "I want to receive Alice's updates"
+PUBLISH     user:alice:location  <msg> ← "Alice moved, tell everyone"
+UNSUBSCRIBE user:alice:location       ← "Stop sending me Alice's updates"
+```
+
+That is the entire API. Simple.
+
+---
+
+### Full Worked Example: Alice Moves, Bob and Charlie Are Her Friends
+
+**Setup:**
+- Alice, Bob, and Charlie are all friends
+- All three have the app open
+- Bob is on WebSocket Server 1 (WS1)
+- Charlie is on WebSocket Server 2 (WS2)
+- Alice is on WebSocket Server 3 (WS3)
+
+**When Bob opened the app (initialization — covered in Step 6):**
+```
+WS1 (Bob's server) subscribes to Alice's and Charlie's channels:
+  SUBSCRIBE user:alice:location
+  SUBSCRIBE user:charlie:location
+
+Redis notes: "WS1 wants Alice's and Charlie's updates"
+```
+
+**When Charlie opened the app:**
+```
+WS2 (Charlie's server) subscribes to Alice's and Bob's channels:
+  SUBSCRIBE user:alice:location
+  SUBSCRIBE user:bob:location
+
+Redis notes: "WS2 also wants Alice's updates"
+```
+
+**Now Alice moves to a new location:**
+
+```
+Alice's phone  →  GPS: (lat=37.778, lon=-122.415)
+     ↓
+WebSocket Server 3 (WS3) receives it via WebSocket connection
+     ↓
+WS3 runs three things in parallel:
+  1. Save to Cassandra (location history)
+  2. Update Redis cache: SET user:alice:location {lat, lon, time}
+  3. PUBLISH user:alice:location "{lat:37.778, lon:-122.415}"
+     ↓
+Redis broadcasts to ALL subscribers of user:alice:location:
+  → WS1 receives it  (Bob's server)
+  → WS2 receives it  (Charlie's server)
+     ↓
+WS1 checks: is Alice within 5 miles of Bob?
+  Alice: (37.778, -122.415)
+  Bob:   (37.780, -122.410)  ← Bob's position is in WS1's memory
+  Distance: 0.3 miles → YES, send update
+  → WS1 pushes "Alice is 0.3 miles away" to Bob's phone ✅
+
+WS2 checks: is Alice within 5 miles of Charlie?
+  Alice:   (37.778, -122.415)
+  Charlie: (37.500, -122.100)  ← Charlie is far away
+  Distance: 22 miles → NO, drop the update ❌
+  Charlie's phone sees nothing (Alice is not "nearby")
+```
+
+The whole flow from Alice's GPS ping to Bob's phone update takes **under 100ms**.
+
+---
+
+### Visual: The Full Pub/Sub Flow
+
+```
+Alice's phone
+    |  GPS update every 30s
+    ↓
+[WS Server 3]  ──PUBLISH──►  Redis Pub/Sub
+                              Channel: user:alice:location
+                              Message: {lat:37.778, lon:-122.415}
+                                   |
+                    ┌──────────────┴──────────────┐
+                    ↓                             ↓
+             [WS Server 1]                 [WS Server 2]
+              (Bob's server)              (Charlie's server)
+              subscribed ✅                subscribed ✅
+                    |                             |
+              Distance check               Distance check
+              0.3 miles ✅                 22 miles ❌
+                    |                             |
+              Push to Bob's phone          Drop update
+              "Alice: 0.3mi away"
+```
+
+---
+
+### What Happens When a New Friend Comes Online?
+
+Say Dave is Alice's friend. Dave was offline and just opened the app.
+
+```
+Dave opens app → connects to WS4 (Dave's WebSocket server)
+
+WS4 does on startup:
+  1. Fetch Dave's friend list from User DB → [Alice, Bob, Charlie]
+  2. SUBSCRIBE user:alice:location    ← start watching Alice
+     SUBSCRIBE user:bob:location      ← start watching Bob
+     SUBSCRIBE user:charlie:location  ← start watching Charlie
+  3. Fetch current positions from Redis cache for all 3 friends
+  4. Filter: who is within 5 miles of Dave right now?
+  5. Send Dave the initial list → "Alice is 1.2mi away, Bob is 3mi away"
+
+From now on: WS4 receives all future updates via Pub/Sub automatically
+```
+
+---
+
+### What Happens When a Friend Goes Offline?
+
+Say Bob closes the app or loses connection.
+
+```
+Bob closes app → WebSocket connection to WS1 breaks
+
+WS1 detects disconnection:
+  UNSUBSCRIBE user:alice:location   ← stop receiving Alice's updates
+  UNSUBSCRIBE user:charlie:location ← stop receiving Charlie's updates
+
+Redis removes WS1 from the subscriber list for both channels.
+
+Result: Alice's and Charlie's updates are no longer sent to WS1.
+Nobody wastes bandwidth delivering updates nobody will use.
+```
+
+Meanwhile, Bob's Redis cache entry (`user:bob:location`) expires after 10 minutes TTL → Bob automatically disappears from everyone's map.
+
+---
+
+### Why One Channel Per User (Not One Global Channel)?
+
+A natural question: why not have a single `all:locations` channel that everyone publishes to?
+
+```
+BAD — single global channel:
+  Every user publishes to: all:locations
+  Every server subscribes to: all:locations
+
+  If 10M users each update every 30s:
+  = 333,000 messages/sec through ONE channel
+  = Every server receives ALL 333,000 msg/sec
+  = 99.99% of messages are for users you don't care about
+  = Massive wasted processing and bandwidth
+```
+
+```
+GOOD — per-user channel:
+  Alice publishes to: user:alice:location
+  Only servers with Alice's friends subscribed receive it
+  
+  Alice has 200 friends, 50 are online
+  = 50 servers receive Alice's update
+  = 0 irrelevant servers receive it
+  = No wasted work
+```
+
+Per-user channels give you **targeted fan-out** — you only get updates you actually need.
+
+---
+
+### One More Thing: What If Two Friends Are on the Same WebSocket Server?
+
+If Bob and Dave are both connected to WS1, and both are friends with Alice:
+
+```
+WS1 subscribes to user:alice:location   (once — not twice)
+
+Redis sends Alice's update once to WS1.
+
+WS1:
+  Check Bob's distance from Alice → within 5 miles → push to Bob ✅
+  Check Dave's distance from Alice → 18 miles → drop ❌
+```
+
+Redis sends **one message** to WS1 regardless of how many of Alice's friends are on that server. WS1 handles the fan-out to its own users locally. This is efficient — you never get duplicate messages from Redis.
+
+---
+
+### Summary: Why Redis Pub/Sub Fits This Problem Perfectly
+
+| Requirement | How Pub/Sub Solves It |
+|---|---|
+| Real-time delivery | Message delivered in milliseconds, no polling |
+| Only relevant updates | Per-user channels → servers only receive their users' friends' updates |
+| User goes offline | UNSUBSCRIBE cleans up immediately |
+| User comes online | SUBSCRIBE and fetch current positions in one startup sequence |
+| Scales with users | Each channel is independent — adding users adds channels, not load to existing ones |
+| Simple to reason about | Publish one message → all subscribers get it — no complex routing logic |
+
+> **Question:** Why not use Kafka instead of Redis Pub/Sub here?  
+> **Answer:** Kafka is durable — it stores messages on disk and lets consumers replay them. For location updates, you do not need durability. If you missed a location update from 2 seconds ago, the next one arrives in 30 seconds anyway. Redis Pub/Sub is fire-and-forget (no storage, no replay) — which is exactly what you want here. Lower latency, simpler setup, no disk I/O.
+
+---
+
+### Who Plays Which Role — Quick Clarification
+
+A common confusion is who exactly is the publisher, the channel, and the subscriber. Here it is clearly:
+
+```
+Alice's phone
+    │  sends GPS update via WebSocket
+    ▼
+[WS Server 3]  ← PUBLISHER  (server publishes to Redis)
+    │
+    │  PUBLISH user:alice:location "{lat, lon}"
+    ▼
+[Redis Pub/Sub]  ← CHANNEL lives here  (just a message bus, stores nothing)
+    │
+    ├──────────────────────┐
+    ▼                      ▼
+[WS Server 1]         [WS Server 2]
+  SUBSCRIBER            SUBSCRIBER
+(Bob's server)        (Charlie's server)
+    │                      │
+    ▼                      ▼
+Bob's phone          Charlie's phone
+```
+
+| Role | Who plays it |
+|---|---|
+| **Publisher** | A WebSocket Server — the one Alice is connected to |
+| **Channel** | Lives inside Redis (`user:alice:location`) |
+| **Subscriber** | Other WebSocket Servers — the ones Bob's and Charlie's phones connect to |
+
+The phones **never talk to Redis directly**. Redis is purely a **server-to-server message bus** — servers publish to it, servers subscribe to it. The phones only ever talk to their own WebSocket server.
 
 ---
 
@@ -263,24 +499,285 @@ But 200 channels (one per user) × 10 bytes each ≈ only **~200 GB memory** →
 
 **The bottleneck is CPU, not memory.** You need 140 servers for compute, not storage.
 
+---
+
+### Channel vs Redis Server — What is the Difference?
+
+These are two completely different things:
+
+| | Redis Server | Channel |
+|---|---|---|
+| **What it is** | Physical machine/process | A logical pub/sub topic (just a string name) |
+| **Where it lives** | Data center rack | *Inside* a Redis server |
+| **Example** | R1, R2, ... R140 | `"location:alice"`, `"location:bob"` |
+| **Scale** | 140 servers | Millions of channels |
+
+One Redis server hosts thousands of channels. Think of it like:
+
+```
+Redis Server 1 (R1)              Redis Server 2 (R2)
+┌──────────────────────┐         ┌──────────────────────┐
+│  channel:alice       │         │  channel:bob         │
+│  channel:charlie     │         │  channel:david       │
+│  channel:eve         │         │  channel:frank       │
+└──────────────────────┘         └──────────────────────┘
+```
+
+**Consistent hashing decides: which Redis SERVER hosts a given channel.**
+
+```
+hash("location:alice") = 342  →  lands on R1  →  channel lives on R1
+hash("location:bob")   = 891  →  lands on R2  →  channel lives on R2
+```
+
+So when WS Server 1 wants to publish Alice's location:
+1. Hash `"location:alice"` → get `342` → go to **R1**
+2. On R1, publish to **channel:alice**
+
+When WS Server 2 wants to subscribe for Bob (who is friends with Alice):
+1. Hash `"location:alice"` → get `342` → go to **R1** (same result, always)
+2. On R1, subscribe to **channel:alice** → receives Alice's updates
+
+**Alice and Bob are on different WS servers — but they reach the same Redis channel on R1 because the hash is deterministic.**
+
+---
+
+### Who Sends What Channel ID to Redis?
+
+Both WS servers use **Alice's channel ID** as input — not Bob's. The channel belongs to the person being tracked (Alice), not the person watching (Bob).
+
+```
+Alice moves
+  → Phone → WS Server 1 → PUBLISH  "location:alice" + coordinates → Redis R1
+                                            ↑
+                                     same channel name
+                                            ↓
+Bob (friend of Alice)
+  → Phone ← WS Server 2 ← SUBSCRIBE "location:alice"              → Redis R1
+```
+
+- **WS Server 1** (Alice's server) sends: `PUBLISH location:alice <new_coordinates>`
+- **WS Server 2** (Bob's server) sends: `SUBSCRIBE location:alice`
+
+Bob's WS server subscribes to Alice's channel — not its own. Because Bob wants to *receive* Alice's location, not broadcast his own.
+
+**The rule:**
+- Your own WS server **publishes** to → **your channel**
+- Your friends' WS servers **subscribe** to → **your channel**
+
+So if Alice has 500 friends scattered across 50 different WS servers, all 50 of those servers subscribe to `location:alice` on Redis R1. When Alice's WS server publishes **once**, Redis fans it out to all 50 servers simultaneously — and each server pushes the update to their connected friends.
+
+---
+
 ### Distributing Channels Across Redis Servers
 
 With 140 servers, how does a WebSocket server know which Redis server holds `user:A:location`?
 
-**Answer: Consistent Hashing**
+---
+
+#### First, Understand the Problem
+
+Every channel (`user:alice:location`) lives on **exactly one** Redis server. When a WebSocket server wants to PUBLISH or SUBSCRIBE to a channel, it must connect to **the correct Redis server** — the one that owns that channel.
+
+If the publisher sends to Redis-7 but the subscriber is connected to Redis-3, they are on different servers and will **never see each other's messages**.
+
+```
+WRONG — publisher and subscriber on different Redis servers:
+
+WS3 → PUBLISH user:alice:location → Redis-7
+WS1 → SUBSCRIBE user:alice:location → Redis-3   ← different server!
+
+Result: WS1 never receives Alice's update. Bob never gets notified. ❌
+```
+
+```
+CORRECT — both on same Redis server:
+
+WS3 → PUBLISH user:alice:location → Redis-7
+WS1 → SUBSCRIBE user:alice:location → Redis-7   ← same server!
+
+Result: WS1 receives Alice's update instantly. Bob gets notified. ✅
+```
+
+So the rule is: **for a given channel, all publishers AND all subscribers must go to the same Redis server.** The routing logic must be deterministic and consistent.
+
+---
+
+#### Naive Approach: Modulo Hashing (and why it breaks)
+
+The simplest idea: hash the channel name, mod by number of servers.
+
+```
+Redis server index = hash("user:alice:location") % 140
+
+hash("user:alice:location") = 4,892,041
+4,892,041 % 140 = 41  → always goes to Redis-41
+```
+
+Every WebSocket server runs the same formula → always gets `41` → always connects to Redis-41 for Alice's channel. Publisher and subscriber agree. ✅
+
+**The problem: you add or remove a server.**
+
+```
+Before: 140 servers
+  hash("user:alice:location") % 140 = 41  → Redis-41
+
+You add 1 server: now 141 servers
+  hash("user:alice:location") % 141 = 103  → Redis-103  ← DIFFERENT!
+
+You remove 1 server: now 139 servers
+  hash("user:alice:location") % 139 = 78   → Redis-78   ← DIFFERENT AGAIN!
+```
+
+Every time you add or remove even one Redis server, **almost every channel gets remapped to a different server**. All WebSocket servers suddenly have wrong subscriptions. You get a massive storm of unsubscribe + resubscribe requests. Missed messages everywhere. System goes down.
+
+---
+
+#### The Real Solution: Consistent Hashing
 
 <img src="../../system-design-notes/17. Nearby Friends/images/channel-distribution-data.png" alt="Channel Distribution" width="450">
 
 <img src="../../system-design-notes/17. Nearby Friends/images/consistent-hashing.png" alt="Consistent Hashing" width="450">
 
-Each channel's name is hashed → the hash value determines which Redis server is responsible. WebSocket servers use a **Zookeeper/etcd** service registry to look up this routing information (cached in-memory on each WebSocket server for efficiency).
+Consistent hashing imagines all possible hash values arranged in a **circle (ring)** from 0 to 2³²-1. Redis servers are placed at positions on the ring. A channel maps to the **first Redis server clockwise from its hash position**.
 
-> **Why consistent hashing?** When you add or remove Redis servers, consistent hashing minimizes the number of channels that need to be remapped. Normal hashing would reshuffle nearly all channels — consistent hashing reshuffles only a small fraction.
+**Step 1: Place Redis servers on the ring**
 
-**When scaling up/down:**
-- Do it at **lowest-traffic hours** (e.g., 3am)
-- Expect a brief period of re-subscription requests from WebSocket servers
-- Expect some missed location updates during remapping (acceptable)
+```
+Hash ring (0 to 4,294,967,295):
+
+         0
+         │
+    R2 ──┤ (hash=350M)
+         │
+    R5 ──┤ (hash=900M)
+         │
+    R1 ──┤ (hash=1.4B)
+         │
+    R4 ──┤ (hash=2.1B)
+         │
+    R3 ──┤ (hash=3.2B)
+         │
+         4,294,967,295  (wraps back to 0)
+```
+
+With 140 Redis servers, they are spread roughly evenly around the ring (using virtual nodes for balance — more on that below).
+
+**Step 2: Hash a channel name to find its server**
+
+```
+Channel: "user:alice:location"
+hash("user:alice:location") = 1,100,000,000
+
+Walk clockwise from 1.1B on the ring:
+  R2 at 350M  → already passed (counter-clockwise)
+  R5 at 900M  → already passed
+  R1 at 1.4B  → FIRST server clockwise from 1.1B ✅
+
+→ Alice's channel lives on R1
+```
+
+```
+Channel: "user:bob:location"
+hash("user:bob:location") = 620,000,000
+
+Walk clockwise from 620M:
+  R2 at 350M  → already passed
+  R5 at 900M  → FIRST server clockwise from 620M ✅
+
+→ Bob's channel lives on R5
+```
+
+```
+Channel: "user:charlie:location"
+hash("user:charlie:location") = 3,800,000,000
+
+Walk clockwise from 3.8B:
+  R3 at 3.2B  → already passed
+  (wrap around to 0...)
+  R2 at 350M  → FIRST server clockwise from 3.8B (after wrap) ✅
+
+→ Charlie's channel lives on R2
+```
+
+---
+
+#### Step 3: Both Publisher and Subscriber Run the Same Hash
+
+Every WebSocket server has the ring configuration in memory (synced from Zookeeper/etcd). They all run the exact same hash function.
+
+```
+WS3 (Alice's server) wants to PUBLISH "user:alice:location":
+  hash("user:alice:location") → 1.1B → clockwise → R1
+  → connects to R1, publishes ✅
+
+WS1 (Bob's server) wants to SUBSCRIBE "user:alice:location":
+  hash("user:alice:location") → 1.1B → clockwise → R1
+  → connects to R1, subscribes ✅
+
+Both independently computed the same answer: R1.
+Publisher and subscriber are on the same Redis server.
+Message flows correctly.
+```
+
+---
+
+#### Step 4: What Happens When You Add a New Redis Server
+
+Say you add **R6** at hash position `1,200,000,000` (between R1 at 1.4B and R5 at 900M on the ring).
+
+```
+Ring before adding R6:
+  ...R5 (900M) → R1 (1.4B)...
+
+Ring after adding R6:
+  ...R5 (900M) → R6 (1.2B) → R1 (1.4B)...
+```
+
+Now recheck Alice's channel:
+```
+hash("user:alice:location") = 1,100,000,000
+
+Before: clockwise from 1.1B → R1 (first at 1.4B)
+After:  clockwise from 1.1B → R6 (first at 1.2B) ← NEW SERVER
+```
+
+Only channels whose hash falls **between 900M and 1.2B** are affected — they move from R1 to R6. All other channels stay exactly where they were.
+
+```
+With modulo hashing:  ~99% of channels remapped  ❌
+With consistent hashing: ~1/141 of channels remapped  ✅ (only the slice R6 takes over)
+```
+
+WebSocket servers detect the ring change (via Zookeeper watch), re-subscribe only the affected channels on R6, and unsubscribe them from R1. A small, contained migration.
+
+---
+
+#### Virtual Nodes: Fixing Uneven Distribution
+
+With only 140 real servers, they might cluster unevenly on the ring — one server gets 30% of channels, another gets 2%.
+
+**Fix:** Each Redis server gets **150 virtual nodes** — 150 positions on the ring, all pointing to the same physical server.
+
+```
+R1 appears at positions: 1.4B, 0.2B, 2.8B, 3.6B, ...  (150 spots)
+R2 appears at positions: 0.35B, 1.9B, 3.1B, 0.7B, ... (150 spots)
+...
+```
+
+With 140 × 150 = 21,000 points on the ring, channels distribute **almost perfectly evenly** across all 140 Redis servers.
+
+---
+
+#### Summary
+
+| Question | Answer |
+|---|---|
+| How does WS know which Redis? | Hash the channel name → walk ring clockwise → first Redis server |
+| What if publisher and subscriber hash differently? | They can't — same channel name + same hash function = same result always |
+| What if a Redis server is added? | Only ~1/N channels remapped, not all of them |
+| What if a Redis server crashes? | Its channels shift to the next server clockwise — only those channels are affected |
+| Where is the ring config stored? | Zookeeper/etcd — all WebSocket servers watch it and cache it in memory |
 
 ---
 

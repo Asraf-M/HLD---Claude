@@ -97,6 +97,132 @@ hash("key3") → lands just before s3 → clockwise → s3 owns it
 
 ---
 
+### But Why Won't All Keys Land at the Same Position?
+
+This is the most important question to understand. The entire system only works if keys spread out across the ring — not pile up at one spot.
+
+The answer: **it is the nature of a good hash function to spread outputs uniformly across its entire output range, no matter what the inputs look like.**
+
+---
+
+#### What a Hash Function Guarantees
+
+A hash function like MurmurHash or SHA-1 has one core property:
+
+> **Small change in input → completely unpredictable, totally different output.**
+
+There is no pattern, no formula linking input to output. Even two inputs that are nearly identical produce outputs that are far apart on the ring.
+
+```
+Input              Hash output (simplified to 0–1000 range)
+─────────────────────────────────────────────────────────
+"user:1"        →  83
+"user:2"        →  741          ← completely different from "user:1"
+"user:3"        →  312
+"user:4"        →  509
+"user:5"        →  197
+"user:6"        →  864
+"user:7"        →  44
+"user:8"        →  623
+```
+
+Notice: even though the keys are sequential (`user:1`, `user:2`, `user:3`...), the outputs jump all over the range. There is no pattern — `user:2` did not land near `user:1`.
+
+---
+
+#### Proof by Analogy: Shuffling a Deck of Cards
+
+Imagine hashing is like a perfect card shuffle. You put 52 cards in order (Ace to King × 4 suits). After one perfect shuffle, the cards are in completely random order — the original sequence is gone. No two adjacent cards in the shuffled deck were adjacent before.
+
+Hash functions do the same to numbers. Sequential inputs become scattered outputs.
+
+---
+
+#### Concrete Example: 1 Million User IDs on a Ring with 4 Servers
+
+Ring range: 0 to 999,999 (simplified)
+
+Servers placed at:
+```
+s0 → position 120,000
+s1 → position 380,000
+s2 → position 650,000
+s3 → position 890,000
+```
+
+Now hash 1 million user IDs. Where do they land?
+
+```
+hash("user:1")       →  45,213    → clockwise → s0 (first server at 120,000)
+hash("user:2")       →  732,891   → clockwise → s3 (first server at 890,000)
+hash("user:3")       →  401,556   → clockwise → s2 (first server at 650,000)
+hash("user:4")       →  118,999   → clockwise → s0 (first server at 120,000)
+hash("user:5")       →  650,001   → clockwise → s3 (first server at 890,000)
+hash("user:6")       →  234,100   → clockwise → s1 (first server at 380,000)
+...
+hash("user:999999")  →  521,340   → clockwise → s2 (first server at 650,000)
+```
+
+After 1 million keys:
+```
+s0 owns: ~25% of keys  (keys landing in range 890,001 → 120,000, wrapping around)
+s1 owns: ~26% of keys  (keys landing in range 120,001 → 380,000)
+s2 owns: ~27% of keys  (keys landing in range 380,001 → 650,000)
+s3 owns: ~22% of keys  (keys landing in range 650,001 → 890,000)
+```
+
+Roughly equal distribution — no server is overloaded, none is empty. This is the uniform distribution property of the hash function at work.
+
+---
+
+#### Why Can't Two Keys Land at the Exact Same Position?
+
+The hash output space for SHA-1 is **2¹⁶⁰ ≈ 1,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000** positions.
+
+Even with 1 billion keys, the chance of two keys landing at the same exact position is:
+
+```
+P(collision) = 1 billion / 2^160
+             = 10^9 / 10^48
+             = 0.000000000000000000000000000000000000001%
+```
+
+Effectively zero. Every key gets its own unique spot on the ring.
+
+---
+
+#### What If the Hash Function Were Bad?
+
+To see why this matters, imagine a **bad hash function** that always returns a value between 0 and 100, no matter what:
+
+```
+Bad hash:
+  "user:1"     → 42
+  "user:2"     → 43
+  "user:3"     → 44
+  "user:1000"  → 99
+  "user:9999"  → 7
+```
+
+All 1 million keys land between 0 and 100 on a ring that goes to 2¹⁶⁰. Servers placed at positions 500M, 1B, 2B etc. would own zero keys — all keys would pile up at the first server after position 100. **The system breaks completely.**
+
+This is why systems like Cassandra use **MurmurHash3** — it is specifically chosen because it produces a perfectly flat, uniform distribution across the full output range.
+
+---
+
+#### Summary: Why Keys Spread Evenly
+
+| Property | What it means |
+|---|---|
+| **Uniform output distribution** | Hash function spreads outputs evenly across 0 to 2¹⁶⁰ — no clustering at one spot |
+| **Avalanche effect** | Tiny input change → totally different output — sequential keys scatter across the ring |
+| **Huge output space** | 2¹⁶⁰ positions — collision probability is negligibly small |
+| **Deterministic** | Same key always hashes to the same position — lookups are consistent |
+
+> **Bottom line:** You cannot predict where a key will land on the ring just by looking at it. Two keys right next to each other in name (`"user:1"` and `"user:2"`) can land on opposite ends of the ring. This unpredictability is exactly what gives you the even distribution across servers.
+
+---
+
 ## Step 3: Adding a Server — Almost Nothing Changes
 
 <img src="../../system-design-notes/05. Consistent Hashing/images/adding-server.png" alt="Adding Server" width="450">

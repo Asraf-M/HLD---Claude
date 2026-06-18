@@ -228,20 +228,21 @@ CREATE TABLE ledger_entries (
 
 ## Step 5: High-Level Architecture
 
-```mermaid
-flowchart TB
-  A[Merchant and Buyer Apps] --> B[API Gateway Auth and Rate Limit]
-  B --> C[Transaction Service]
-  B --> D[Fraud Detection Service]
+![High-Level Architecture](diagrams/paypal-01-payment-gateway-step5.svg)
 
-  C --> E[Card Token Service]
-  C --> F[Processor Router Visa Mastercard ACH]
-  C --> G[Payment Events Kafka]
-  C --> H[Webhook Queue Kafka]
-  C --> I[(PostgreSQL Transactions)]
-
-  I --> J[(PostgreSQL Settlement Ledger)]
-  D --> I
+```text
+[Architecture diagram]
+[Merchant and Buyer Apps]
+          |
+    [API Gateway]
+      /        \
+[Transaction]  [Fraud Detection]
+    |     |      |        |
+[Token][Router][Events][Webhook]
+    \      |      /       /
+      [PostgreSQL Transactions]
+                 |
+      [PostgreSQL Settlement Ledger]
 ```
 
 **Key Services:**

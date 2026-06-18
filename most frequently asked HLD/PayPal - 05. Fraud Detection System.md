@@ -260,19 +260,21 @@ CREATE TABLE transaction_features (
 
 ## Step 5: High-Level Architecture
 
-```mermaid
-flowchart TB
-  A[Payment Service] --> B[Fraud Scoring Service Real Time Under 100ms]
+![High-Level Architecture](diagrams/paypal-05-fraud-detection-step5.svg)
 
-  B --> C[Rule Engine Deterministic Patterns]
-  B --> D[ML Model Inference]
-
-  C --> E[Redis Feature Cache]
-  C --> F[(PostgreSQL Rules Store)]
-  D --> G[Model Registry]
-
-  B --> H[Kafka Alerts Stream]
-  H --> I[Alert Service]
+```text
+[Architecture diagram]
+[Payment Service]
+    |
+[Fraud Scoring Service]
+  /            \
+[Rule Engine]    [ML Inference]
+    /    \             |
+[Redis] [Rules DB] [Model Registry]
+  \      |        /
+   [Kafka Alerts Stream]
+        |
+     [Alert Service]
 ```
 
 **Key Services:**

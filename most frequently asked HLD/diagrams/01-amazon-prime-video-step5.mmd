@@ -1,0 +1,12 @@
+graph TB
+  A[User Devices] --> B[CDN]
+  B --> C[API Gateway]
+  C --> D[Metadata Service]
+  C --> E[Playback Service]
+  C --> F[Recommendation Service]
+  C --> G[User Service]
+  D --> H[MongoDB and Elasticsearch]
+  E --> I[Redis and Cassandra]
+  E --> J[S3 Video Storage]
+  F --> K[ML Models and Redis]
+  G --> L[PostgreSQL]

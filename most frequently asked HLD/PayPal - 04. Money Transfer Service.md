@@ -255,20 +255,21 @@ TTL: 1 hour
 
 ## Step 5: High-Level Architecture
 
-```mermaid
-flowchart TB
-  A[Mobile and Web Apps] --> B[API Gateway Auth and Rate Limit]
+![High-Level Architecture](diagrams/paypal-04-money-transfer-step5.svg)
 
-  B --> C[Transfer Service]
-  B --> D[Fraud Detection]
-
-  C --> E[Wallet Service]
-  C --> F[(PostgreSQL Transfer DB)]
-  C --> G[Kafka Queue]
-  C --> H[Settlement Service]
-
-  D --> C
-  H --> I[Bank Integration ACH and SWIFT]
+```text
+[Architecture diagram]
+[Mobile and Web Apps]
+          |
+    [API Gateway]
+      /        \
+[Transfer Service] [Fraud Detection]
+   /    |    \         |
+[Wallet][PostgreSQL][Kafka]   |
+        \          /          |
+          [Settlement Service]
+                   |
+     [Bank Integration ACH/SWIFT]
 ```
 
 **Key Services:**

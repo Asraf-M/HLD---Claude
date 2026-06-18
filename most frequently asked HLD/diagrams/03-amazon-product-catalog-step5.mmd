@@ -1,0 +1,9 @@
+graph TB
+  A[User App] --> B[API Gateway]
+  B --> C[Search Service]
+  B --> D[Product Service]
+  C --> E[Elasticsearch]
+  D --> F[MongoDB]
+  C --> G[Redis Cache]
+  D --> H[Inventory Service]
+  H --> I[PostgreSQL]

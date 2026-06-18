@@ -1,0 +1,10 @@
+graph TB
+  A[Mobile and Web Apps] --> B[API Gateway]
+  B --> C[Transfer Service]
+  B --> D[Fraud Detection]
+  C --> E[Wallet Service]
+  C --> F[Transfer DB]
+  C --> G[Kafka Queue]
+  C --> H[Settlement Service]
+  D --> C
+  H --> I[Bank Integration]

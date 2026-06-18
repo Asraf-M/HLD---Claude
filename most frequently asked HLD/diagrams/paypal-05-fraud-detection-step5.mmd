@@ -1,0 +1,9 @@
+graph TB
+  A[Payment Service] --> B[Fraud Scoring Service]
+  B --> C[Rule Engine]
+  B --> D[ML Inference]
+  C --> E[Redis Feature Cache]
+  C --> F[Rules Store]
+  D --> G[Model Registry]
+  B --> H[Kafka Alerts]
+  H --> I[Alert Service]

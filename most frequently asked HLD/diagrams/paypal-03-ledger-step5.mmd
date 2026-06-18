@@ -1,0 +1,11 @@
+graph TB
+  A[Payment and Transfer Services] --> B[Ledger Service]
+  B --> C[Entry Validator]
+  B --> D[Posting Engine]
+  C --> E[Ledger DB]
+  D --> E
+  B --> F[Redis Cache]
+  B --> G[Kafka Journal]
+  B --> H[Snapshots Store]
+  H --> I[Reconciliation Service]
+  E --> I

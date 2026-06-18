@@ -1,0 +1,9 @@
+graph TB
+  A[User App] --> B[API Gateway]
+  B --> C[Cart Service]
+  C --> D[Redis Cache]
+  C --> E[PostgreSQL Cart DB]
+  C --> F[Inventory Service]
+  F --> G[Inventory DB]
+  C --> H[Product Service]
+  C --> I[Order Service]

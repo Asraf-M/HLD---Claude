@@ -1,0 +1,11 @@
+graph TB
+  A[Merchant] --> B[Payment Gateway API]
+  B --> C[Transaction Service]
+  B --> D[Fraud Service]
+  B --> E[Idempotency Cache]
+  C --> F[Payment DB]
+  C --> G[Card Vault]
+  C --> H[Payment Processor]
+  C --> I[Secrets Vault]
+  C --> J[Kafka Events]
+  E --> K[Redis]

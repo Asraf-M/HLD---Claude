@@ -1,0 +1,11 @@
+graph TB
+  A[Mobile and Web Apps] --> B[API Gateway]
+  B --> C[Wallet Service]
+  B --> D[Transfer Service]
+  C --> E[Redis Cache]
+  C --> F[Wallet DB]
+  D --> F
+  D --> G[Kafka Events]
+  D --> H[Fraud Service]
+  D --> I[Settlement Service]
+  I --> J[Bank Networks]

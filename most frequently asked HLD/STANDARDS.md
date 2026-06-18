@@ -216,8 +216,15 @@ CREATE TABLE users (
 **Purpose:** Visual overview of system components  
 **Must Include:**
 
-**a) ASCII Diagram:**
+**a) Embedded SVG Diagram (Primary):**
 ```markdown
+![High-Level Architecture](diagrams/<file-slug>-step5.svg)
+```
+
+**b) ASCII Diagram (Fallback):**
+```markdown
+```text
+[Architecture diagram]
 ┌─────────────────────┐
 │  Client Apps        │
 └──────────┬──────────┘
@@ -232,8 +239,9 @@ CREATE TABLE users (
 │Service A  │ │Service B  │
 └──────────┘ └──────────┘
 ```
+```
 
-**b) Component Description Table:**
+**c) Component Description Table:**
 ```markdown
 | Component | Responsibility | Technology |
 |-----------|---|---|
@@ -244,7 +252,10 @@ CREATE TABLE users (
 ```
 
 **Guidelines:**
-- Use ASCII diagrams (box drawing characters)
+- Use embedded SVG as the primary architecture visual (stable across GitHub/VS Code)
+- Always include an ASCII fallback block below the SVG
+- Keep Mermaid source in `diagrams/*.mmd` files if needed for regeneration
+- Do not rely on inline Mermaid fenced blocks inside main HLD files
 - Show 5-8 key components
 - Show data flow between components
 - Include client layer, API layer, service layer, data layer
@@ -391,6 +402,7 @@ A ride-sharing system requires:
 - Use markdown headers (`#`, `##`, `###`) for clear hierarchy
 - Use tables for comparisons (databases, tradeoffs, decisions)
 - Use code blocks for schema, examples, pseudocode
+- For architecture, place SVG first and ASCII fallback directly below it
 - Use bullet points for lists (not paragraphs)
 - Use bold (`**text**`) for important concepts
 - Break up long text with subheadings
@@ -421,6 +433,7 @@ A ride-sharing system requires:
 - Include implementation details (for HLD, focus on architecture)
 - Create diagrams that are hard to read
 - Skip the Database Design section
+- Rely only on inline Mermaid in main docs (renderer behavior can be inconsistent)
 
 ✅ **Do:**
 - Explain "why" for every design decision
@@ -444,14 +457,14 @@ Before considering a file complete:
 - [ ] API Design has 2-4 endpoints with request/response examples
 - [ ] Database Design has decision table (SQL vs NoSQL reasoning)
 - [ ] Data Schema shows 2-3 tables/collections with key fields
-- [ ] Architecture has ASCII diagram + component table
+- [ ] Architecture has SVG image + ASCII fallback + component table
 - [ ] 2-5 Deep Dive sections covering system-specific challenges
 - [ ] Key Design Decisions & Tradeoffs table (4-6 rows)
 - [ ] Interview Cheat Sheet has **exactly 6 Q&A pairs**
 - [ ] Summary has 8-12 bullet points with ✅ checkboxes
 - [ ] All sections use consistent markdown formatting
 - [ ] No implementation code (this is HLD, not LLD)
-- [ ] All diagrams use ASCII art (no external image files)
+- [ ] Diagram assets exist under `diagrams/` and links resolve correctly
 
 ---
 
@@ -462,12 +475,14 @@ Before considering a file complete:
 1. **Copy the structure** — Use one of the 14 completed files as a template
 2. **Fill in each section** — Work through sections 1-11 in order
 3. **Add concrete numbers** — Research or estimate QPS, storage, scale
-4. **Create the architecture diagram** — Draw with ASCII art
-5. **Write the deep dives** — Cover 2-5 system-specific challenges
-6. **Add tradeoff table** — Explain 4-6 major design decisions
-7. **Write 6 Q&A pairs** — Include common interview questions
-8. **Run the checklist** — Verify all sections are complete
-9. **Proofread** — Check tone, numbers, explanations
+4. **Create architecture source** — Write Mermaid in `diagrams/<file-slug>-step5.mmd` (optional but recommended)
+5. **Generate SVG** — Export to `diagrams/<file-slug>-step5.svg`
+6. **Embed diagram in Step 5** — Add SVG markdown image line, then ASCII fallback block
+7. **Write the deep dives** — Cover 2-5 system-specific challenges
+8. **Add tradeoff table** — Explain 4-6 major design decisions
+9. **Write 6 Q&A pairs** — Include common interview questions
+10. **Run the checklist** — Verify all sections are complete
+11. **Proofread** — Check tone, numbers, explanations
 
 ### For Updating an Existing File:
 

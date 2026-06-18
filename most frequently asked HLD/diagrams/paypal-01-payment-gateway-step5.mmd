@@ -1,0 +1,11 @@
+graph TB
+  A[Merchant and Buyer Apps] --> B[API Gateway]
+  B --> C[Transaction Service]
+  B --> D[Fraud Detection Service]
+  C --> E[Card Token Service]
+  C --> F[Processor Router]
+  C --> G[Payment Events]
+  C --> H[Webhook Queue]
+  C --> I[Transactions DB]
+  I --> J[Settlement Ledger DB]
+  D --> I

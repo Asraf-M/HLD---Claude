@@ -292,21 +292,21 @@ CREATE TABLE posting_batches (
 
 ## Step 5: High-Level Architecture
 
-```mermaid
-flowchart TB
-  A[Payment and Transfer Services] --> B[Ledger Service Main Entry Point]
+![High-Level Architecture](diagrams/paypal-03-ledger-step5.svg)
 
-  B --> C[Entry Validator Debit Credit Checks]
-  B --> D[Posting Engine Immutable Append]
-
-  C --> E[(PostgreSQL Ledger DB)]
-  D --> E
-  B --> F[Redis Balance Cache]
-  B --> G[Kafka Journal]
-  B --> H[(TimescaleDB Snapshots)]
-
-  H --> I[Reconciliation Service]
-  E --> I
+```text
+[Architecture diagram]
+[Payment and Transfer Services]
+             |
+      [Ledger Service]
+        /           \
+[Entry Validator] [Posting Engine]
+      \            /
+      [PostgreSQL Ledger DB]
+        |      |       |
+    [Redis] [Kafka] [TimescaleDB]
+         \      |      /
+      [Reconciliation Service]
 ```
 
 **Key Services:**

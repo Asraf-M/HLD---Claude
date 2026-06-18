@@ -253,20 +253,19 @@ TTL: 5 minutes
 
 ## Step 5: High-Level Architecture
 
-```mermaid
-flowchart TB
-  A[Mobile and Web Apps] --> B[API Gateway Auth and Rate Limit]
-  B --> C[Wallet Service Balance Management]
-  B --> D[Transfer Service P2P and Merchant Flows]
+![High-Level Architecture](diagrams/paypal-02-digital-wallet-step5.svg)
 
-  C --> E[Redis Cache]
-  C --> F[(PostgreSQL Wallet DB)]
-  D --> F
-  D --> G[Kafka Events]
-  D --> H[Fraud Service]
-  D --> I[Settlement Service]
-
-  I --> J[Bank Networks]
+```text
+[Architecture diagram]
+[Mobile and Web Apps]
+          |
+    [API Gateway]
+      /        \
+[Wallet Service] [Transfer Service]
+     |        /   |      |      \
+ [Redis] [PostgreSQL] [Kafka] [Fraud] [Settlement]
+                                     |
+                               [Bank Networks]
 ```
 
 **Key Services:**

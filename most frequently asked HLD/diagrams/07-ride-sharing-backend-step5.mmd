@@ -1,0 +1,9 @@
+graph TB
+  A[Rider and Driver Apps] --> B[API Gateway and LB]
+  B --> C[Location Service]
+  B --> D[Matching Service]
+  D --> E[ETA Service]
+  C --> F[Redis Geo]
+  D --> G[PostgreSQL]
+  D --> H[Kafka Events]
+  D --> I[Payment Service]

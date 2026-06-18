@@ -255,43 +255,27 @@ TTL: 1 hour
 
 ## Step 5: High-Level Architecture
 
-```
-┌──────────────────────────┐
-│  Mobile/Web Apps         │
-└──────────┬───────────────┘
-           │
-    ┌──────▼──────────────┐
-    │  API Gateway        │
-    │  (Auth, Rate Limit) │
-    └──────┬──────────────┘
-           │
-    ┌──────┴────────────────────────┐
-    │                               │
-┌───▼──────────────┐  ┌────────────┐ │
-│Transfer Service  │  │Fraud       │ │
-│                  │  │Detection   │ │
-└───┬──────────────┘  └────┬───────┘ │
-    │                      │         │
-    ├──────┬───────────────┤         │
-    │      │               │         │
-┌───▼──┐ ┌─▼──┐ ┌────────┐ │ ┌──────▼───┐
-│Wallet│ │PG  │ │Kafka   │ │ │Settlement│
-│Svc   │ │DB  │ │Queue   │ │ │Service   │
-└──────┘ └────┘ └────────┘ │ └──────────┘
-    │                       │
-    └───────────────────────┘
-           │
-    ┌──────▼──────────────┐
-    │ Bank Integration    │
-    │ (ACH, SWIFT)        │
-    └─────────────────────┘
+```mermaid
+flowchart TB
+  A[Mobile and Web Apps] --> B[API Gateway Auth and Rate Limit]
 
-Services:
-- Transfer Service: Initiates transfers, handles logic
-- Fraud Detection: Real-time risk scoring
-- Settlement Service: Batch processing to banks
-- Bank Integration: Routes to ACH/SWIFT networks
+  B --> C[Transfer Service]
+  B --> D[Fraud Detection]
+
+  C --> E[Wallet Service]
+  C --> F[(PostgreSQL Transfer DB)]
+  C --> G[Kafka Queue]
+  C --> H[Settlement Service]
+
+  D --> C
+  H --> I[Bank Integration ACH and SWIFT]
 ```
+
+**Key Services:**
+- **Transfer Service:** Initiates transfers, handles logic
+- **Fraud Detection:** Real-time risk scoring
+- **Settlement Service:** Batch processing to banks
+- **Bank Integration:** Routes to ACH/SWIFT networks
 
 ---
 

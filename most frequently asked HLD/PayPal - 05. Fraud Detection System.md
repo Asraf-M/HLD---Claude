@@ -260,36 +260,26 @@ CREATE TABLE transaction_features (
 
 ## Step 5: High-Level Architecture
 
-```
-┌──────────────────────────┐
-│  Payment Service         │
-└──────────┬───────────────┘
-           │
-    ┌──────▼──────────────────────┐
-    │  Fraud Scoring Service      │
-    │  (Real-time, < 100ms)       │
-    └──────┬──────────────────────┘
-           │
-    ┌──────┴──────────────────────────┐
-    │                                 │
-┌───▼──────────────┐  ┌──────────────┐ │
-│Rule Engine       │  │ML Model      │ │
-│(Pattern rules)   │  │(Neural net)  │ │
-└───┬──────────────┘  └──┬───────────┘ │
-    │                    │             │
-    ├────────┬───────────┤             │
-    │        │           │             │
-┌───▼──┐ ┌──▼───┐ ┌─────▼──┐ ┌──────▼──┐
-│Redis │ │PG DB │ │Kafka   │ │Model    │
-│Cache │ │Rules │ │Alerts  │ │Registry │
-└──────┘ └──────┘ └────────┘ └─────────┘
+```mermaid
+flowchart TB
+  A[Payment Service] --> B[Fraud Scoring Service Real Time Under 100ms]
 
-Services:
-- Fraud Scoring: Orchestrates rules + ML
-- Rule Engine: Pattern-based rules (velocity, new merchant)
-- ML Model: Neural network inference (trained daily)
-- Alert Service: Sends notifications for suspicious activity
+  B --> C[Rule Engine Deterministic Patterns]
+  B --> D[ML Model Inference]
+
+  C --> E[Redis Feature Cache]
+  C --> F[(PostgreSQL Rules Store)]
+  D --> G[Model Registry]
+
+  B --> H[Kafka Alerts Stream]
+  H --> I[Alert Service]
 ```
+
+**Key Services:**
+- **Fraud Scoring:** Orchestrates rules + ML
+- **Rule Engine:** Pattern-based rules (velocity, new merchant)
+- **ML Model:** Neural network inference (trained daily)
+- **Alert Service:** Sends notifications for suspicious activity
 
 ---
 

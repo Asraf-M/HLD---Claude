@@ -228,37 +228,20 @@ CREATE TABLE ledger_entries (
 
 ## Step 5: High-Level Architecture
 
-```
-┌─────────────────────────────┐
-│  Merchant/Buyer Apps        │
-└──────────┬──────────────────┘
-           │
-    ┌──────▼──────────────────┐
-    │  API Gateway            │
-    │  (Auth, Rate Limit)     │
-    └──────┬──────────────────┘
-           │
-    ┌──────┴─────────────────────────────┐
-    │                                    │
-┌───▼─────────────┐  ┌─────────────────┐ │
-│Transaction      │  │Fraud Detection  │ │
-│Service          │  │Service          │ │
-└───┬─────────────┘  └─────────────────┘ │
-    │                                    │
-    ├──────────┬──────────┬─────────────┤
-    │          │          │             │
-┌───▼──┐ ┌────▼──┐ ┌─────▼──┐ ┌──────▼─┐
-│Card  │ │Bank   │ │Payment │ │Webhook │
-│Token │ │Proces │ │Events  │ │Queue   │
-│Store │ │sor    │ │(Kafka) │ │(Kafka) │
-└──────┘ └───────┘ └────────┘ └────────┘
-    │                              │
-┌───┴──────────────────────────────┘
-│
-┌▼─────────────────────────────────┐
-│  PostgreSQL (Transactions +       │
-│  Settlement Ledger)               │
-└──────────────────────────────────┘
+```mermaid
+flowchart TB
+  A[Merchant and Buyer Apps] --> B[API Gateway Auth and Rate Limit]
+  B --> C[Transaction Service]
+  B --> D[Fraud Detection Service]
+
+  C --> E[Card Token Service]
+  C --> F[Processor Router Visa Mastercard ACH]
+  C --> G[Payment Events Kafka]
+  C --> H[Webhook Queue Kafka]
+  C --> I[(PostgreSQL Transactions)]
+
+  I --> J[(PostgreSQL Settlement Ledger)]
+  D --> I
 ```
 
 **Key Services:**

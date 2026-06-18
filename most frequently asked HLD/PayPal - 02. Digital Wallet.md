@@ -253,36 +253,27 @@ TTL: 5 minutes
 
 ## Step 5: High-Level Architecture
 
-```
-┌──────────────────────────┐
-│  Mobile/Web Apps         │
-└──────────┬───────────────┘
-           │
-    ┌──────▼──────────────┐
-    │  API Gateway        │
-    │  (Auth, Rate Limit) │
-    └──────┬──────────────┘
-           │
-    ┌──────┴────────────────────────────┐
-    │                                   │
-┌───▼──────────────┐  ┌────────────────┐ │
-│Wallet Service    │  │Transfer Service│ │
-│(Balance mgmt)    │  │(P2P, merchant) │ │
-└───┬──────────────┘  └────┬───────────┘ │
-    │                      │             │
-    ├──────────┬───────────┤             │
-    │          │           │             │
-┌───▼──┐ ┌────▼──┐ ┌──────▼──┐ ┌──────▼──┐
-│Redis │ │PG DB  │ │Kafka    │ │Fraud    │
-│Cache │ │       │ │Events   │ │Service  │
-└──────┘ └───────┘ └─────────┘ └─────────┘
+```mermaid
+flowchart TB
+  A[Mobile and Web Apps] --> B[API Gateway Auth and Rate Limit]
+  B --> C[Wallet Service Balance Management]
+  B --> D[Transfer Service P2P and Merchant Flows]
 
-Services:
-- Wallet Service: Manages balance, deposits, withdrawals
-- Transfer Service: P2P transfers, merchant payments
-- Fraud Service: Real-time risk scoring
-- Settlement Service: Batch settlement to banks
+  C --> E[Redis Cache]
+  C --> F[(PostgreSQL Wallet DB)]
+  D --> F
+  D --> G[Kafka Events]
+  D --> H[Fraud Service]
+  D --> I[Settlement Service]
+
+  I --> J[Bank Networks]
 ```
+
+**Key Services:**
+- **Wallet Service:** Manages balance, deposits, withdrawals
+- **Transfer Service:** P2P transfers, merchant payments
+- **Fraud Service:** Real-time risk scoring
+- **Settlement Service:** Batch settlement to banks
 
 ---
 

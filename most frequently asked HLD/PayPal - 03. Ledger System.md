@@ -292,36 +292,28 @@ CREATE TABLE posting_batches (
 
 ## Step 5: High-Level Architecture
 
-```
-┌─────────────────────────────┐
-│  Payment/Transfer Services  │
-└──────────┬──────────────────┘
-           │
-    ┌──────▼──────────────────┐
-    │  Ledger Service         │
-    │  (Main entry point)     │
-    └──────┬──────────────────┘
-           │
-    ┌──────┴─────────────────────────────┐
-    │                                    │
-┌───▼──────────────┐  ┌────────────────┐ │
-│Entry Validator   │  │Posting Engine  │ │
-│(Check math)      │  │(Immutable log) │ │
-└───┬──────────────┘  └────┬───────────┘ │
-    │                      │             │
-    ├──────────┬───────────┤             │
-    │          │           │             │
-┌───▼──┐ ┌────▼──┐ ┌──────▼──┐ ┌──────▼──┐
-│Cache │ │PG DB  │ │Kafka    │ │TimescaleDB
-│Redis │ │       │ │Journal  │ │Snapshots
-└──────┘ └───────┘ └─────────┘ └─────────┘
+```mermaid
+flowchart TB
+  A[Payment and Transfer Services] --> B[Ledger Service Main Entry Point]
 
-Services:
-- Ledger Service: Main API, coordinates posting
-- Entry Validator: Ensures debits = credits
-- Posting Engine: Writes to immutable log
-- Reconciliation Service: Verifies balance correctness
+  B --> C[Entry Validator Debit Credit Checks]
+  B --> D[Posting Engine Immutable Append]
+
+  C --> E[(PostgreSQL Ledger DB)]
+  D --> E
+  B --> F[Redis Balance Cache]
+  B --> G[Kafka Journal]
+  B --> H[(TimescaleDB Snapshots)]
+
+  H --> I[Reconciliation Service]
+  E --> I
 ```
+
+**Key Services:**
+- **Ledger Service:** Main API, coordinates posting
+- **Entry Validator:** Ensures debits = credits
+- **Posting Engine:** Writes to immutable log
+- **Reconciliation Service:** Verifies balance correctness
 
 ---
 

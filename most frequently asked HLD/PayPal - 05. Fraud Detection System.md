@@ -1,4 +1,4 @@
-# System Design: Fraud Detection System (PayPal-Style) (Beginner-Friendly Guide)
+﻿# System Design: Fraud Detection System (PayPal-Style) (Beginner-Friendly Guide)
 
 ---
 
@@ -452,6 +452,31 @@ A: Set low threshold for challenge (50% fraud probability), high threshold for d
 
 ---
 
+## Full Flow (Start to End)
+
+### Happy Path
+1. Client request enters API Gateway and is authenticated/authorized.
+2. Orchestrator service validates input and routing context.
+3. Core service executes primary business logic and required checks.
+4. Read path uses cache first; fallback goes to durable database/store.
+5. Write path updates fast layer first (where applicable) and publishes async events.
+6. Downstream consumers persist durable state and trigger secondary effects.
+7. Response is returned to client with final status and metadata.
+
+### Failure and Retry Paths
+1. Cache miss: read from durable store, then repopulate cache.
+2. Dependency timeout: retry with backoff or circuit-breaker fallback.
+3. Async event failure: retry queue and dead-letter queue (DLQ) handling.
+4. Duplicate request: idempotency key returns prior successful outcome.
+5. Concurrent updates: version/lock conflict triggers re-read and safe retry.
+
+### End-State Guarantees
+- Low-latency user operations on the hot path.
+- Durable correctness in the source-of-truth datastore.
+- Eventual consistency for non-critical async side effects.
+- Strict correctness at critical boundaries (commit/payment/finalization).
+
+---
 ## Summary
 
 A fraud detection system requires:
@@ -465,3 +490,5 @@ A fraud detection system requires:
 - ✅ User profile caching (velocity, history, risk flags)
 - ✅ Multiple response actions (approve, challenge, decline)
 - ✅ Auditability (log every decision for disputes)
+
+

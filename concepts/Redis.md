@@ -152,6 +152,109 @@ Tradeoff:
 
 ---
 
+## Purpose of Atomic Operations in Redis
+
+Atomic means an operation is completed as one indivisible step.
+No other client can observe a half-done state for that operation.
+
+Why this is important:
+1. Prevents race conditions when many clients update same key
+2. Keeps counters, quotas, and stock updates correct under concurrency
+3. Reduces need for heavy database locking in hot paths
+
+### Example 1: Rate Limiting Counter
+
+If 50 API servers increment a per-user request counter at same time:
+
+```text
+INCR rate:user:123:minute:202606191210
+```
+
+Redis guarantees each increment is atomic, so count is exact.
+
+Without atomic increment, two servers can read same old value and both write back one increment, losing updates.
+
+### Example 1.5: User A Balance Update (Your Scenario)
+
+Start value:
+```text
+user:A:balance = 100
+```
+
+Without atomic operation:
+1. Service X reads balance = 100
+2. Service X calculates new value = 80 (subtract 20)
+3. Before Service X writes 80, Service Y updates balance to 90
+4. Service X writes 80 using SET
+
+Final value becomes 80, and Service Y update to 90 is lost.
+
+This is a classic read-modify-write race.
+
+How to fix:
+- Use one atomic command when possible (for example DECRBY 20)
+- Or use a Lua script so read + validate + write runs as one atomic block
+
+```text
+DECRBY user:A:balance 20
+```
+
+This avoids the GET then SET gap where another update can slip in.
+
+### Example 2: Limited Stock Decrement
+
+```text
+DECR inventory:product:987
+```
+
+Each decrement is atomic, so concurrent buyers cannot corrupt counter value.
+
+Important note:
+- A single command is atomic.
+- Multi-step logic is not automatically atomic.
+
+Bad multi-step flow (race-prone):
+1. GET stock
+2. if stock > 0 then DECR
+
+Two clients can both read stock=1 and both pass check.
+
+Safer options:
+1. Use a Lua script for check-and-decrement in one atomic execution
+2. Use transactions with WATCH carefully (more retry logic)
+
+### Lua Script Pattern (Atomic check + update)
+
+```lua
+local stock = tonumber(redis.call('GET', KEYS[1]) or '0')
+if stock <= 0 then
+    return -1
+end
+redis.call('DECR', KEYS[1])
+return stock - 1
+```
+
+This executes as one atomic unit on the Redis server.
+
+### Tradeoffs of Atomic Operations in Redis
+
+Pros:
+- Correctness under high concurrency
+- Very low latency compared to DB locks
+- Simple primitives for counters, quotas, and inventory gates
+
+Tradeoffs:
+- Atomicity is usually per command/script on a single shard, not a global multi-service transaction
+- Long Lua scripts block Redis event loop and can increase latency for others
+- Cross-key operations across different hash slots (cluster) are harder
+- Atomic Redis update still needs durability/reconciliation strategy with primary DB
+
+Practical rule:
+- Use Redis atomic ops for fast control-plane decisions (limit, reserve, admit/reject)
+- Persist final business state in durable database asynchronously or in a coordinated write path
+
+---
+
 ## Practical Best Practices
 
 1. Use TTL for almost all cache keys
@@ -227,6 +330,43 @@ In real systems, use them together:
 - SQL or NoSQL as durable source of truth
 
 This gives both low latency and reliable persistence.
+
+### Flash-Sale Admission Tradeoff: Load Balancer First vs Queue First
+
+For sudden spikes (for example 1 million users adding same item):
+
+**Approach A: Load Balancer -> API Nodes -> Redis Gate -> Kafka**
+1. Load balancer spreads traffic to many API nodes
+2. API performs atomic stock check/decrement in Redis
+3. If stock available, accept and publish event to Kafka
+4. If stock is zero, reject immediately
+
+Pros:
+- Very low user latency (fast accept/reject)
+- Avoids filling Kafka with requests that will be rejected
+- Protects database by enqueueing only accepted work
+
+Tradeoffs:
+- Strict global first-come fairness is harder
+- Needs careful idempotency and retry handling at API layer
+
+**Approach B: Queue First (all requests to Kafka), then process**
+1. All incoming requests are pushed to Kafka
+2. Consumers process requests in queue order
+3. Stock decisions happen in consumer pipeline
+
+Pros:
+- Better auditability and fairness semantics (ordered processing)
+- Natural smoothing/backpressure through queue
+
+Tradeoffs:
+- Higher user wait time due to queue delay
+- Large backlog for requests that may be rejected anyway
+- More operational pressure during extreme spikes
+
+Practical recommendation:
+- Use Approach A for most flash sales where fast user response matters
+- Use Approach B when strict fairness/lottery semantics are a hard requirement
 
 ---
 

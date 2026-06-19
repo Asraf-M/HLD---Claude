@@ -1,4 +1,4 @@
-# HLD Documentation Standards & Format Guide
+﻿# HLD Documentation Standards & Format Guide
 
 **Last Updated:** 2026-06-18  
 **Applied to:** All 14 "most frequently asked HLD" files  
@@ -515,4 +515,5 @@ If creating a new HLD file and uncertain:
 5. Verify all sections are filled in
 
 **Goal:** Every HLD file in this folder should be interview-ready, beginner-friendly, and comprehensive.
+
 

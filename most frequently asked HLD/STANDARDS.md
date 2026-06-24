@@ -1,6 +1,6 @@
 ﻿# HLD Documentation Standards & Format Guide
 
-**Last Updated:** 2026-06-18  
+**Last Updated:** 2026-06-22  
 **Applied to:** All 14 "most frequently asked HLD" files  
 **Reference Template:** Hotel Reservation System README.md
 
@@ -170,6 +170,30 @@ Response:
 - Scalability needs
 - Cost considerations
 
+**Session-Proven Format (Preferred):**
+- For each chosen datastore, use this mini-structure:
+  - `Purpose` (1-2 lines)
+  - `Sample Data` (table rows with realistic values)
+  - `Tradeoffs` (what we gain vs what we give up)
+- Prefer practical sample rows over long DDL declarations.
+- Do not include full table declarations unless explicitly requested.
+- Show at least one realistic record per datastore (with IDs, timestamps, sizes, region/class fields where relevant).
+
+**Example mini-template:**
+```markdown
+### PostgreSQL: Structured Metadata (Source of Truth)
+**Purpose:** Store bucket/object metadata with strong consistency.
+
+**Sample Data:**
+| object_id | bucket_id | object_key | version_id | size_bytes | storage_class |
+|-----------|-----------|------------|------------|------------|---------------|
+| 1 | 1 | backups/db.sql | v847291 | 2147483648 | STANDARD |
+
+**Tradeoffs:**
+- ✅ Strong consistency, reliable indexing
+- ❌ Higher write latency than cache/append stores
+```
+
 ---
 
 ### 6. Data Schema
@@ -209,6 +233,8 @@ CREATE TABLE users (
 - Include important indexes
 - Mark primary/foreign keys clearly
 - Add brief comments explaining fields
+- Prefer schema summary + realistic sample rows over verbose declarations
+- If the audience is beginner-focused, add a plain-language note for each major field group
 
 ---
 
@@ -282,6 +308,40 @@ CREATE TABLE users (
 - Show the solution with code/pseudocode if helpful
 - Explain tradeoffs
 - Include examples with numbers
+
+**When topic is conceptually hard (required):**
+- Add a short `in 30 seconds (Beginner)` explainer box.
+- Add a `How it actually works` subsection with step-by-step mechanics.
+- Include one concrete worked example (numbers or tiny equations).
+
+**Example topics requiring beginner box:**
+- Erasure coding
+- Consistent hashing
+- Quorum reads/writes
+- Distributed transactions
+
+---
+
+### 8A. End-to-End Flow with Tradeoffs (Recommended)
+**Purpose:** Interview revision-friendly flow from request start to final guarantee.
+
+Use a compact table format:
+
+```markdown
+## Start-to-End Flow with Tradeoffs (Quick Revision)
+
+| Step | What Happens | Tradeoff |
+|------|--------------|----------|
+| 1 | Request enters API gateway | Extra auth latency for safety |
+| 2 | Cache check then fallback | Fast hits, stale-read risk |
+| 3 | Source-of-truth write | Durable correctness, write overhead |
+| 4 | Async indexing/events | Better throughput, eventual consistency |
+```
+
+Guidelines:
+- Keep 7-10 steps for major systems.
+- Mention where correctness is strict vs eventual.
+- End with one `Rule of thumb` line.
 
 ---
 
@@ -434,6 +494,8 @@ A ride-sharing system requires:
 - Create diagrams that are hard to read
 - Skip the Database Design section
 - Rely only on inline Mermaid in main docs (renderer behavior can be inconsistent)
+- Default to heavy DDL/schema declarations when sample records communicate better
+- Explain hard concepts without a beginner-friendly interpretation
 
 ✅ **Do:**
 - Explain "why" for every design decision
@@ -444,6 +506,9 @@ A ride-sharing system requires:
 - Balance breadth (all major topics) with depth (understand each)
 - Include real-world tradeoffs
 - Keep language conversational ("we" language works well)
+- Use sample-data-first sections for databases
+- Add a quick revision flow table for interview recall
+- Add beginner explainer blocks for complex mechanisms
 
 ---
 
@@ -457,9 +522,13 @@ Before considering a file complete:
 - [ ] API Design has 2-4 endpoints with request/response examples
 - [ ] Database Design has decision table (SQL vs NoSQL reasoning)
 - [ ] Data Schema shows 2-3 tables/collections with key fields
+- [ ] Each chosen datastore includes purpose + sample data + tradeoffs
+- [ ] Avoided unnecessary table declarations unless explicitly needed
 - [ ] Architecture has SVG image + ASCII fallback + component table
 - [ ] 2-5 Deep Dive sections covering system-specific challenges
+- [ ] Complex topics include beginner explainer + mechanics walkthrough
 - [ ] Key Design Decisions & Tradeoffs table (4-6 rows)
+- [ ] Added Start-to-End Flow with Tradeoffs table (recommended)
 - [ ] Interview Cheat Sheet has **exactly 6 Q&A pairs**
 - [ ] Summary has 8-12 bullet points with ✅ checkboxes
 - [ ] All sections use consistent markdown formatting

@@ -1,9 +1,19 @@
 graph TB
   A[User App] --> B[API Gateway]
+
   B --> C[Search Service]
   B --> D[Product Service]
-  C --> E[Elasticsearch]
-  D --> F[MongoDB]
+
   C --> G[Redis Cache]
+  G -->|Cache miss| E[Elasticsearch]
+
+  D --> F[MongoDB Catalog]
   D --> H[Inventory Service]
-  H --> I[PostgreSQL]
+
+  H --> I[PostgreSQL Inventory]
+  H --> G
+
+  D --> J[Kafka Events]
+  H --> J
+  J --> K[Search Indexer]
+  K --> E
